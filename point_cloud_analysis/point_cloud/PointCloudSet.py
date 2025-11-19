@@ -60,7 +60,7 @@ class PointCloudSet:
         self._val = {'frame_id': [], 'observations': [], 'class_labels': [], 'part_labels': []}
         self._test = {'frame_id': [], 'observations': [], 'class_labels': [], 'part_labels': []}
 
-    def build_from_aftr_output(self, dir_path: str, shuffle_points: bool = True, class_label: str = 'kc46'):
+    def add_from_aftr_output(self, dir_path: str, class_label: str, shuffle_points: bool = True):
         '''
         Parses the standard SensorDatumLogger output.
 
@@ -247,7 +247,7 @@ class PointCloudSet:
     def get_info(self):
         out = f'{self._description}\n'
         out += f'Is one-hot encoded: {self._one_hot}\n'
-        out += f'Random seed: {self._random_seed}' if (type(self._random_seed) == int) else f'Is not seeded\n'
+        out += f'Random seed: {self._random_seed}\n' if (type(self._random_seed) == int) else f'Is not seeded\n'
         out += f'Class labels: {self._class_labels}\n'
         out += f'Part labels: {self._part_labels}\n'
 
