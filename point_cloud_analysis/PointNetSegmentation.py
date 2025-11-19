@@ -111,7 +111,9 @@ class PointNetSegmentation(Model):
         self.mlp_3_2 = ConvLayer(filters = 256, name = 's3_l2_256', activation = tf.nn.relu, apply_bn = True)
         self.mlp_3_3 = ConvLayer(filters = 128, name = 's3_l3_128', activation = tf.nn.relu, apply_bn = True)
         self.mlp_3_4 = ConvLayer(filters = 128, name = 's3_l4_128', activation = tf.nn.relu, apply_bn = True)
-        self.mlp_3_5 = ConvLayer(filters = output_width, name = 's3_l5_output', activation = tf.nn.softmax, apply_bn = False)
+        self.mlp_3_5 = ConvLayer(filters = output_width, name = 's3_l5_output', activation = None, apply_bn = False)
+
+        self.softmax = Activation(tf.nn.softmax)
         
     def build(self, input_shape):
         '''
@@ -141,6 +143,9 @@ class PointNetSegmentation(Model):
         self.mlp_3_3.build((input_shape[0], input_shape[1], 1, 256))
         self.mlp_3_4.build((input_shape[0], input_shape[1], 1, 128))
         self.mlp_3_5.build((input_shape[0], input_shape[1], 1, 128))
+
+        # Softmax layer
+        self.softmax.build((input_shape[0], input_shape[1], self._output_width))
 
     def call(self, input, training = False):
         print(f'Training: {training}')
@@ -183,6 +188,7 @@ class PointNetSegmentation(Model):
         X = self.mlp_3_5(X, training = training)
         X = tf.squeeze(X, axis = 2)
 
+        # Prefer to trian from logits, but want softmax for inference
         return X
     
     def get_config(self):
