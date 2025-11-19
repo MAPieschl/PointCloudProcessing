@@ -27,5 +27,25 @@ if [ "$INSTALLED_PYTHON_VERSION" != "$REQUIRED_PYTHON_VERSION" ]; then
     make -j$(nproc)
     sudo make altinstall
 
+    NEW_VER=$(python3.10 --version 2>&1)
+
+    echo "Installed Python $NEW_VER - use command 'python3.10' for REPL access"
+
     cd $PROJ_PATH
 
+if [ $(pwd) == $PROJ_PATH ]; then
+    echo "Initializing virtual environment..."
+    python3.10 -m venv .venv
+
+    echo "Entering virtual environment..."
+    source .venv/bin/activate
+
+    echo "Installing dependencies..."
+
+    # Because of a conflicting dependency (protobuf) between
+    # tensorflow and tf2onnx, tf2onnx MUST be installed first,
+    # followed by tensorflow[and-cuda]
+    python3.10 -m pip install --upgrade pip
+    pip install -r requirements_no_tf2onnx_tensorflow.txt
+    pip install tf2onnx
+    pip install tensorflow
