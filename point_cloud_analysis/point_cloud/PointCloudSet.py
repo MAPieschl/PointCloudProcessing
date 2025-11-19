@@ -60,7 +60,7 @@ class PointCloudSet:
         self._val = {'frame_id': [], 'observations': [], 'class_labels': [], 'part_labels': []}
         self._test = {'frame_id': [], 'observations': [], 'class_labels': [], 'part_labels': []}
 
-    def build_from_aftr_output(self, dir_path: str, shuffle_points: bool = True, class_label: str = 'kc46'):
+    def add_from_aftr_output(self, dir_path: str, class_label: str, shuffle_points: bool = True):
         '''
         Parses the standard SensorDatumLogger output.
 

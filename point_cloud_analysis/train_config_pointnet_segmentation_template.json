@@ -1,7 +1,10 @@
 {
     "info": {
-        "name": "_betha_test",
+        "name": "_bertha_test",
         "class_labels": {
+            "0": "kc46"
+        },
+        "part_labels": {
             "0": "fuselage", 
             "1": "left_engine", 
             "2": "right_engine", 
@@ -18,7 +21,8 @@
         },
         "datasets": {
             "0": "collect_2025.Nov.19_00.33.24.3472488.UTC"
-        }
+        },
+        "continue_training_model": ""
     },
     "params": {
         "input_width": 4096,
