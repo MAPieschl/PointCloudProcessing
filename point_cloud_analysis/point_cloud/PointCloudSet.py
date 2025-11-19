@@ -247,7 +247,7 @@ class PointCloudSet:
     def get_info(self):
         out = f'{self._description}\n'
         out += f'Is one-hot encoded: {self._one_hot}\n'
-        out += f'Random seed: {self._random_seed}' if (type(self._random_seed) == int) else f'Is not seeded\n'
+        out += f'Random seed: {self._random_seed}\n' if (type(self._random_seed) == int) else f'Is not seeded\n'
         out += f'Class labels: {self._class_labels}\n'
         out += f'Part labels: {self._part_labels}\n'
 

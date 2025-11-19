@@ -1,1 +1,1 @@
-python3.10 train/pointnet_seg.py
+python3.10 -m training.pointnet_seg $*

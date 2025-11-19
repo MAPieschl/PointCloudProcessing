@@ -20,7 +20,7 @@
             "12": "boom_hose"
         },
         "datasets": {
-            "0": "collect_2025.Nov.19_00.33.24.3472488.UTC"
+            "0": "collect_2025.Nov.19_00.33.24.3472488.UTC/"
         },
         "continue_training_model": ""
     },
@@ -38,7 +38,6 @@
     },
     "file_system": {
         "model_path": "models/",
-        "input_path": "data/",
-        "output_path": "data/"
+        "input_path": "data/"
     }
 }
