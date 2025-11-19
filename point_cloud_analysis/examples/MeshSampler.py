@@ -14,7 +14,7 @@ import open3d as o3d
 import numpy as np
 import plotly.graph_objects as go
 
-import mat_ops
+import utils.mat_ops as mat_ops
 
 class MeshSampler:
     def __init__(self, 
