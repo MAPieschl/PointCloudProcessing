@@ -84,6 +84,7 @@ class PointCloudSet:
         part_labels = []
 
         frames_searched = 0
+        non_num_found = 0
         
         collect_contents = get_dir_contents(dir_path)
         lidar_contents = get_dir_contents(f'{dir_path}/Virtual Flash Lidar')
@@ -94,7 +95,7 @@ class PointCloudSet:
                 with open(f'{dir_path}/Virtual Flash Lidar/frame_{i}.txt', 'r') as f:
                     obs = []
                     label = []
-                    for line in f:
+                    for j, line in enumerate(f):
                         line = line.strip().replace(" ", "")
                         pos_start_idx = line.find('(')
                         pos_end_idx = line.find(')')
@@ -104,23 +105,29 @@ class PointCloudSet:
                         for val in pos_str:
                             pos.append(float(val))
 
-                        obs.append(np.array(pos))
-                        label.append(line[pos_end_idx + 1:])
+                        if( np.isfinite( np.array( pos ) ).all() ):
+                            obs.append(np.array(pos))
+                            label.append(line[pos_end_idx + 1:])
+                        else:
+                            non_num_found += 1
 
                     if(len(obs) != 0):
                         obs, label = self._adjust_to_input_width(np.array(obs), np.array(label))
 
-                        frame_id.append(i)
-                        observations.append(obs)
-                        class_labels.append(class_label)
-                        part_labels.append(label)
+                        if( np.isfinite( obs ).all() ):
+                            frame_id.append(i)
+                            observations.append(obs)
+                            class_labels.append(class_label)
+                            part_labels.append(label)
+                        else:
+                            print( f'Per-line check failed - frame_{i} discarded after detecting non-finite value.' )
 
             except:
                 if(frames_searched == 0): frames_searched = i
 
         self.add_data(np.array(frame_id), np.array(observations), np.array(class_labels), np.array(part_labels), shuffle_points)
             
-        print(f'{dir_path} parsed:  found {len(frame_id)} valid frames out of {frames_searched} total.')
+        print(f'{dir_path} parsed:  found {len(frame_id)} valid frames out of {frames_searched} total. {non_num_found} total lines discarded for non-numeric values.')
 
     def add_data(self, frame_id: np.ndarray, observations: np.ndarray, class_labels: np.ndarray, part_labels: np.ndarray, shuffle_points: bool = True):
 
@@ -380,5 +387,5 @@ if __name__ == "__main__":
     class_labels = ['kc46']
     part_labels = ['fuselage', 'left_engine', 'right_engine', 'left_wing', 'right_wing', 'left_hstab', 'right_hstab', 'vstab', 'left_boom_stab', 'right_boom_stab', 'boom_wing', 'boom_hull', 'boom_hose']
     pc = PointCloudSet(True, class_labels, part_labels, False, INPUT_SIZE, rand_seed = RANDOM_SEED)
-    pc.build_from_aftr_output(f'{PALINDROME_DATA_PATH}collect_2025.Nov.12_16.57.13.0087094.UTC')
+    pc.add_from_aftr_output(f'{PALINDROME_DATA_PATH}collect_2025.Nov.12_16.57.13.0087094.UTC', 'kc46')
     pc.get_info()

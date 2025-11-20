@@ -1,0 +1,44 @@
+{
+    "info": {
+        "name": "_bertha_test",
+        "class_labels": {
+            "0": "kc46"
+        },
+        "part_labels": {
+            "0": "fuselage", 
+            "1": "left_engine", 
+            "2": "right_engine", 
+            "3": "left_wing", 
+            "4": "right_wing", 
+            "5": "left_hstab", 
+            "6": "right_hstab", 
+            "7": "vstab", 
+            "8": "left_boom_stab", 
+            "9": "right_boom_stab", 
+            "10": "boom_wing", 
+            "11": "boom_hull", 
+            "12": "boom_hose"
+        },
+        "datasets": {
+            "0": "collect_2025.Nov.20_01.02.52.3750022.UTC/"
+        },
+        "continue_training_model": ""
+    },
+    "params": {
+        "input_width": 4096,
+        "epochs": 1000,
+        "patience": 100,
+        "batch_size": 1,
+        "learning": {
+            "rate": 0.0001,
+            "decay_steps": 7000,
+            "decay_rate": 0.7
+        },
+        "random_seed": 42,
+        "debugging": false
+    },
+    "file_system": {
+        "model_path": "models/",
+        "input_path": "/mnt/d/repos/aburn/usr/hub/palindrome_playground/DataCollect/"
+    }
+}

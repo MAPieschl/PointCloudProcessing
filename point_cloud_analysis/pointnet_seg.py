@@ -57,6 +57,9 @@ class TrainProfile:
         self._learning_decay_steps = config['params']['learning']['decay_steps']
         self._learning_decay_rate = config['params']['learning']['decay_rate']
         self._random_seed = config['params']['random_seed']
+        self._debugging = config['params']['debugging']
+
+        if( self._debugging ): tf.config.run_functions_eagerly( True )
 
         # Filesystem Information (relative paths)
         self._model_path = config['file_system']['model_path']
@@ -75,19 +78,18 @@ class TrainProfile:
 
         # Build Point Cloud
         self._pc = PointCloudSet(one_hot = True,
-                                    class_labels = self._class_labels, 
-                                    part_labels = self._part_labels, 
-                                    pretrain_tnet = False, 
-                                    network_input_width = self._input_width,
-                                    batch_size = self._batch_size,
-                                    rand_seed = self._random_seed)
+                                 class_labels = self._class_labels, 
+                                 part_labels = self._part_labels, 
+                                 pretrain_tnet = False, 
+                                 network_input_width = self._input_width,
+                                 batch_size = self._batch_size,
+                                 rand_seed = self._random_seed)
         
         self._profile_datasets()
         
         # Build Segmentation Model
         self._training_callbacks = []
-        self._model = None
-        if( not self._build_pointnet() ): self._advise_and_abort( "Model build failed." )
+        self._model = self._build_pointnet()
 
         # Create Model Training Data Directory
         self._specific_model_path = f"{self._model_path}{self._name}/"
@@ -150,8 +152,8 @@ class TrainProfile:
 
     def _build_pointnet( self ):
 
-        self._model = PointNetSegmentation( output_width = len( self._part_labels ) )
-        self._model.build(input_shape = (None, self._input_width, 3))
+        model = PointNetSegmentation( output_width = len( self._part_labels ), random_seed = self._random_seed, debugging = self._debugging )
+        model.build(input_shape = (None, self._input_width, 3))
 
         lr_schedule = keras.optimizers.schedules.ExponentialDecay(
             self._learning_rate,
@@ -162,12 +164,18 @@ class TrainProfile:
 
         optimizer = keras.optimizers.Adam(
             learning_rate = lr_schedule,
-            clipnorm = 1.0
+            global_clipnorm = 1.0
         )
 
-        self._model.compile(
+        def debug_loss(y_true, y_pred):
+            y_true = tf.debugging.check_numerics(y_true, "Labels (y_true) contain NaNs or Infs")
+            loss = keras.losses.categorical_crossentropy(y_true, y_pred, from_logits=True)
+            loss = tf.debugging.check_numerics(loss, "Loss calculation produced NaN")
+            return loss
+
+        model.compile(
             optimizer = optimizer,
-            loss = keras.losses.CategoricalCrossentropy(from_logits = True),
+            loss = debug_loss if self._debugging else keras.losses.CategoricalCrossentropy( from_logits = True ),
             metrics = [keras.metrics.CategoricalAccuracy()]
         )
 
@@ -178,7 +186,7 @@ class TrainProfile:
             restore_best_weights = True
         ) )
 
-        return True
+        return model
     
     def _find_optimal_batch_size( self ) -> int:
         '''
@@ -227,20 +235,20 @@ def train_pointnet_seg( *args, **kwargs ) -> bool:
         print( 'GPUs Available: ', len( physical_devices ) )
         tf.config.experimental.set_memory_growth( physical_devices[0], True )
 
-        print( "Configuring GPU..." )
+        # print( "Configuring GPU..." )
 
-        os.environ["TF_XLA_FLAGS"] = "--tf_xla_auto_jit=0"
-        os.environ["XLA_FLAGS"] = "--xla_cpu_fast_math_honor_infs=1"
-        os.environ["XLA_FLAGS"] += " --xla_cpu_fast_math_honor_nans=1"
-        os.environ["TF_ENABLE_XLA"] = "0"
-        print( "XLA disabled..." )
+        # os.environ["TF_XLA_FLAGS"] = "--tf_xla_auto_jit=0"
+        # os.environ["XLA_FLAGS"] = "--xla_cpu_fast_math_honor_infs=1"
+        # os.environ["XLA_FLAGS"] += " --xla_cpu_fast_math_honor_nans=1"
+        # os.environ["TF_ENABLE_XLA"] = "0"
+        # print( "XLA disabled..." )
 
-        os.environ["TF_DETERMINISTIC_OPS"] = "1"
-        print( "Forced deterministic kernels..." )
+        # os.environ["TF_DETERMINISTIC_OPS"] = "1"
+        # print( "Forced deterministic kernels..." )
 
-        tf.config.experimental.enable_tensor_float_32_execution(False)
-        keras.mixed_precision.set_global_policy("float32")
-        print( "Set precision to FP32..." )
+        # tf.config.experimental.enable_tensor_float_32_execution(False)
+        # keras.mixed_precision.set_global_policy("float32")
+        # print( "Set precision to FP32..." )
 
     else:   
         print( "No GPUs available. Would you like to continue?" )
@@ -261,7 +269,7 @@ def print_help():
         '''PointNetSegmentation Training Module\n\n
         This module is capable of training both new and pretrained PointNetSegmentation models. To use,
         append a separate configuration file to the train_pointnet_seg.sh command for each training session.
-        The configuration file should follow the train_config_pointnet_segmentation_template.json provided.
+        The configuration file should follow the examples/train_config_pointnet_segmentation_template.json provided.
         In its absense, here is an overview of the configuration file required to train a PointNetSegmentation Model:
         {
         \tinfo: {
@@ -289,6 +297,7 @@ def print_help():
         \t\t\tdecay_rate: per tensorflow
         \t\t},
         \t\trandom_seed: used for all random processes
+        \t\tdebugging: sets Tensorflow to run eagerly and checks for non-numerics at each layer
         \t},
         \tfile_system: {
         \t\tmodel_path: directory where the model will be stored after training

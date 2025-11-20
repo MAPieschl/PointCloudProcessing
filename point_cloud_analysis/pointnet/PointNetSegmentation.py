@@ -78,11 +78,11 @@ import numpy as np
 import plotly.graph_objects as go
 
 from tensorflow.keras.layers import Layer, Conv2D, BatchNormalization, Dense, Activation
-from tensorflow.keras import Model, saving
+from tensorflow.keras import Model, saving, initializers
 
 @saving.register_keras_serializable(package="Project")
 class PointNetSegmentation(Model):
-    def __init__(self, output_width: int, **kwargs):
+    def __init__(self, output_width: int, random_seed: int, debugging: bool = False, **kwargs):
         '''
         Implements https://github.com/luis-gonzales/pointnet_own/blob/master/src/model.py get_model
 
@@ -93,25 +93,27 @@ class PointNetSegmentation(Model):
 
         super(PointNetSegmentation, self).__init__(**kwargs)
         self._output_width = output_width
+        self._random_seed = random_seed
+        self._debugging = debugging
         self.input_names = ['pointnet_seg_input']
         self.output_names = ['segmentation_output']
 
-        self.input_transform = TNet(name = 'input_transform')
+        self.input_transform = TNet(name = 'input_transform', add_regularization = False, random_seed = self._random_seed)
 
-        self.mlp_1_1 = ConvLayer(filters = 64, name = 's1_l1_64', activation = tf.nn.relu, apply_bn = True)
-        self.mlp_1_2 = ConvLayer(filters = 64, name = 's1_l2_64', activation = tf.nn.relu, apply_bn = True)
+        self.mlp_1_1 = ConvLayer(filters = 64, name = 's1_l1_64', activation = tf.nn.relu, apply_bn = True, random_seed = self._random_seed)
+        self.mlp_1_2 = ConvLayer(filters = 64, name = 's1_l2_64', activation = tf.nn.relu, apply_bn = True, random_seed = self._random_seed)
 
-        self.feature_transform = TNet(name = 'feature_transform', add_regularization = True)
+        self.feature_transform = TNet(name = 'feature_transform', add_regularization = False, random_seed = self._random_seed)
 
-        self.mlp_2_1 = ConvLayer(filters = 64, name = 's2_l1_64', activation = tf.nn.relu, apply_bn = True)
-        self.mlp_2_2 = ConvLayer(filters = 128, name = 's2_l2_128', activation = tf.nn.relu, apply_bn = True)
-        self.mlp_2_3 = ConvLayer(filters = 1024, name = 's2_l3_1024', activation = tf.nn.relu, apply_bn = True)
+        self.mlp_2_1 = ConvLayer(filters = 64, name = 's2_l1_64', activation = tf.nn.relu, apply_bn = True, random_seed = self._random_seed)
+        self.mlp_2_2 = ConvLayer(filters = 128, name = 's2_l2_128', activation = tf.nn.relu, apply_bn = True, random_seed = self._random_seed)
+        self.mlp_2_3 = ConvLayer(filters = 1024, name = 's2_l3_1024', activation = tf.nn.relu, apply_bn = True, random_seed = self._random_seed)
 
-        self.mlp_3_1 = ConvLayer(filters = 512, name = 's3_l1_512', activation = tf.nn.relu, apply_bn = True)
-        self.mlp_3_2 = ConvLayer(filters = 256, name = 's3_l2_256', activation = tf.nn.relu, apply_bn = True)
-        self.mlp_3_3 = ConvLayer(filters = 128, name = 's3_l3_128', activation = tf.nn.relu, apply_bn = True)
-        self.mlp_3_4 = ConvLayer(filters = 128, name = 's3_l4_128', activation = tf.nn.relu, apply_bn = True)
-        self.mlp_3_5 = ConvLayer(filters = output_width, name = 's3_l5_output', activation = None, apply_bn = False)
+        self.mlp_3_1 = ConvLayer(filters = 512, name = 's3_l1_512', activation = tf.nn.relu, apply_bn = True, random_seed = self._random_seed)
+        self.mlp_3_2 = ConvLayer(filters = 256, name = 's3_l2_256', activation = tf.nn.relu, apply_bn = True, random_seed = self._random_seed)
+        self.mlp_3_3 = ConvLayer(filters = 128, name = 's3_l3_128', activation = tf.nn.relu, apply_bn = True, random_seed = self._random_seed)
+        self.mlp_3_4 = ConvLayer(filters = 128, name = 's3_l4_128', activation = tf.nn.relu, apply_bn = True, random_seed = self._random_seed)
+        self.mlp_3_5 = ConvLayer(filters = output_width, name = 's3_l5_output', activation = None, apply_bn = False, random_seed = self._random_seed)
         
     def build(self, input_shape):
         '''
@@ -142,17 +144,25 @@ class PointNetSegmentation(Model):
         self.mlp_3_4.build((input_shape[0], input_shape[1], 1, 128))
         self.mlp_3_5.build((input_shape[0], input_shape[1], 1, 128))
 
-    def call(self, input, training = False):
+    def call(self, pc, training = False):
         print(f'Training: {training}')
 
+        pc = pc if not self._debugging else tf.debugging.check_numerics( pc, 'Input point cloud contains nan values' )
+
         # Input Transform
-        R = self.input_transform(input, training = training)        # (b x 3 x 3)
-        X = tf.matmul(input, R)                                     # (b x n x 3)
+        R = self.input_transform(pc, training = training)        # (b x 3 x 3)
+        X = tf.matmul(pc, R)                                     # (b x n x 3)
+        X = X if not self._debugging else tf.debugging.check_numerics( X, 'Input transform produced nan values.' )
         
         # MLP (64, 64)
         X = tf.expand_dims(X, axis = 2)                             # (b x n x 1 x 3)
+
         X = self.mlp_1_1(X, training = training)                    # (b x n x 1 x 64)
+        X = X if not self._debugging else tf.debugging.check_numerics( X, 'mlp_1_1 produced nan values.' )
+
         X = self.mlp_1_2(X, training = training)                    # (b x n x 1 x 64)
+        X = X if not self._debugging else tf.debugging.check_numerics( X, 'mlp_1_2 produced nan values.' )
+
         X = tf.squeeze(X, axis = 2)                                 # (b x n x 64)
 
         # Feature Transform
@@ -161,9 +171,16 @@ class PointNetSegmentation(Model):
 
         # MLP (64, 128, 1024)
         X = tf.expand_dims(X_64, axis = 2)                          # (b x n x 1 x 64)
+
         X = self.mlp_2_1(X, training = training)                    # (b x n x 1 x 64)
+        X = X if not self._debugging else tf.debugging.check_numerics( X, 'mlp_2_1 produced nan values.' )
+
         X = self.mlp_2_2(X, training = training)                    # (b x n x 1 x 128)
+        X = X if not self._debugging else tf.debugging.check_numerics( X, 'mlp_2_2 produced nan values.' )
+
         X = self.mlp_2_3(X, training = training)                    # (b x n x 1 x 1024)
+        X = X if not self._debugging else tf.debugging.check_numerics( X, 'mlp_2_3 produced nan values.' )
+
         X = tf.squeeze(X, axis = 2)                                 # (b x n x 1024)
 
         # Max pooling
@@ -171,26 +188,38 @@ class PointNetSegmentation(Model):
 
         # Concatenate local feature set and global feature set
         X = tf.expand_dims(X, axis = 1)
-        X = tf.tile(X, [1, input.shape[1], 1])
+        X = tf.tile(X, [1, pc.shape[1], 1])
         X = tf.concat([X_64, X], axis = -1)
 
         # Segmentation MLP (512, 256, 128, 128, output_width)
         X = tf.expand_dims(X, axis = 2)
+        
         X = self.mlp_3_1(X, training = training)
+        X = X if not self._debugging else tf.debugging.check_numerics( X, 'mlp_3_1 produced nan values.' )
+
         X = self.mlp_3_2(X, training = training)
+        X = X if not self._debugging else tf.debugging.check_numerics( X, 'mlp_3_2 produced nan values.' )
+
         X = self.mlp_3_3(X, training = training)
+        X = X if not self._debugging else tf.debugging.check_numerics( X, 'mlp_3_3 produced nan values.' )
+
         X = self.mlp_3_4(X, training = training)
+        X = X if not self._debugging else tf.debugging.check_numerics( X, 'mlp_3_4 produced nan values.' )
+
         X = self.mlp_3_5(X, training = training)
+        X = X if not self._debugging else tf.debugging.check_numerics( X, 'mlp_3_5 produced nan values.' )
+
         X = tf.squeeze(X, axis = 2)
 
-        # Prefer to trian from logits, but want softmax for inference
         return X
     
     def get_config(self):
         """Returns the non-layer configuration of the model."""
         config = super(PointNetSegmentation, self).get_config()
         config.update({
-            'output_width': self._output_width
+            'output_width': self._output_width,
+            'random_seed': self._random_seed,
+            'debugging': self._debugging
         })
         return config
 
@@ -208,7 +237,12 @@ class PointNetSegmentation(Model):
 
 @saving.register_keras_serializable(package="Project")
 class TNetRegressor(Model):
-    def __init__(self, add_regularization: bool = False, bn_momentum: float = 0.99, tnet_layer_widths: list = [64, 128, 1024, 512, 256], **kwargs):
+    def __init__(self, 
+                 add_regularization: bool = False, 
+                 bn_momentum: float = 0.99, 
+                 tnet_layer_widths: list = [64, 128, 1024, 512, 256], 
+                 random_seed = None,
+                 **kwargs):
         '''
         This model can be used to pretrain the TNet layer of the PointNet to correctly predict the rotation of the object prior to training
         the classification network.
@@ -219,7 +253,7 @@ class TNetRegressor(Model):
         '''
         super(TNetRegressor, self).__init__(**kwargs)
 
-        self.input_transform = TNet(name = 'input_transform', add_regularization = add_regularization, bn_momentum = bn_momentum, layer_widths = tnet_layer_widths)
+        self.input_transform = TNet(name = 'input_transform', add_regularization = add_regularization, bn_momentum = bn_momentum, layer_widths = tnet_layer_widths, random_seed = random_seed)
 
     def build(self, input_shape):
         super(TNetRegressor, self).build(input_shape)
@@ -237,7 +271,13 @@ class TNetRegressor(Model):
 
 @saving.register_keras_serializable(package="Project")
 class TNet(Model):
-    def __init__(self, name: str, add_regularization: bool = False, bn_momentum: float = 0.99, layer_widths: list = [64, 128, 1024, 512, 256], **kwargs):
+    def __init__(self, 
+                 name: str, 
+                 add_regularization: bool = False,
+                 bn_momentum: float = 0.99,
+                 layer_widths: list = [64, 128, 1024, 512, 256], 
+                 random_seed = None,
+                 **kwargs):
         '''
         Implements https://github.com/luis-gonzales/pointnet_own/blob/master/src/model.py TNet class
         
@@ -252,14 +292,15 @@ class TNet(Model):
 
         self.add_regularization = add_regularization
         self.bn_momentum = bn_momentum
+        self.seed = random_seed
         self._last_predicted = None
 
         # Layer Construction
-        self.conv_layer_1 = ConvLayer(filters = layer_widths[0], activation = tf.nn.relu, kernel_size = (1, 1), strides = (1, 1), bn_momentum = bn_momentum, name = f"{name}_convolution_layer_1")
-        self.conv_layer_2 = ConvLayer(filters = layer_widths[1], activation = tf.nn.relu, kernel_size = (1, 1), strides = (1, 1), bn_momentum = bn_momentum, name = f"{name}_convolution_layer_2")
-        self.conv_layer_3 = ConvLayer(filters = layer_widths[2], activation = tf.nn.relu, kernel_size = (1, 1), strides = (1, 1), bn_momentum = bn_momentum, name = f"{name}_convolution_layer_3")
-        self.dense_layer_1 = DenseLayer(units = layer_widths[3], activation = tf.nn.relu, apply_bn = True, bn_momentum = bn_momentum, name = f"{name}_dense_layer_1")
-        self.dense_layer_2 = DenseLayer(units = layer_widths[4], activation = tf.nn.relu, apply_bn = True, bn_momentum = bn_momentum, name = f"{name}_dense_layer_2")
+        self.conv_layer_1 = ConvLayer(filters = layer_widths[0], activation = tf.nn.relu, kernel_size = (1, 1), strides = (1, 1), bn_momentum = bn_momentum, name = f"{name}_convolution_layer_1", random_seed = self.seed)
+        self.conv_layer_2 = ConvLayer(filters = layer_widths[1], activation = tf.nn.relu, kernel_size = (1, 1), strides = (1, 1), bn_momentum = bn_momentum, name = f"{name}_convolution_layer_2", random_seed = self.seed)
+        self.conv_layer_3 = ConvLayer(filters = layer_widths[2], activation = tf.nn.relu, kernel_size = (1, 1), strides = (1, 1), bn_momentum = bn_momentum, name = f"{name}_convolution_layer_3", random_seed = self.seed)
+        self.dense_layer_1 = DenseLayer(units = layer_widths[3], activation = tf.nn.relu, apply_bn = True, bn_momentum = bn_momentum, name = f"{name}_dense_layer_1", random_seed = self.seed)
+        self.dense_layer_2 = DenseLayer(units = layer_widths[4], activation = tf.nn.relu, apply_bn = True, bn_momentum = bn_momentum, name = f"{name}_dense_layer_2", random_seed = self.seed)
 
     def build(self, input_shape: tuple):
         super(TNet, self).build(input_shape)
@@ -290,13 +331,14 @@ class TNet(Model):
         X = tf.squeeze(X, axis = 1)                     # (b x K^2)
         X = tf.reshape(X, (-1, self.K, self.K))         # (b x K x K)
 
-        # Add bias term
+        # Add bias term, random_seed = self.seed
         X += self.b                                     # (b x K x K)
 
         # Store for recall
         self._last_predicted = X
 
         if(self.add_regularization):
+            print('TNet has been regularized.')
             I = tf.constant(np.eye(self.K), dtype = tf.float32)
             X_XT = tf.matmul(X, tf.transpose(X, perm = [0, 2, 1]))  # X @ X.T = 1 for orthogonal matrix (perm for batch dimension)
             reg_loss = tf.nn.l2_loss(I - X_XT)                      # ...and punish otherwise
@@ -309,7 +351,8 @@ class TNet(Model):
         config = super(TNet, self).get_config()
         config.update({
             'add_regularization': self.add_regularization,
-            'bn_momentum': self.bn_momentum
+            'bn_momentum': self.bn_momentum,
+            'seed': self.seed
         })
 
     def get_last_predicted_transformation(self):
@@ -326,6 +369,7 @@ class ConvLayer(Layer):
                  activation = None,
                  apply_bn: bool = True,
                  bn_momentum: float = 0.99,
+                 random_seed = None,
                  **kwargs):
         '''
         Implements https://github.com/luis-gonzales/pointnet_own/blob/master/src/model.py CustomConv class
@@ -351,6 +395,9 @@ class ConvLayer(Layer):
         self.apply_bn = apply_bn
         self.bn_momentum = bn_momentum
         self.name = f"{name}_convolution_layer"
+        self.seed = random_seed
+
+        self.initializer = initializers.GlorotUniform( seed = self.seed ) if type( self.seed ) == int else initializers.GlorotUniform()
 
         # The activation function is added after a batch normalization layer
         self.conv = Conv2D(filters = filters, 
@@ -359,7 +406,8 @@ class ConvLayer(Layer):
                            padding = padding,
                            activation = None, 
                            use_bias = not apply_bn,
-                           name = self.name)
+                           name = self.name,
+                           kernel_initializer = self.initializer)
         
         if(apply_bn):
             self.bn = BatchNormalization(momentum = bn_momentum)
@@ -399,7 +447,9 @@ class ConvLayer(Layer):
             'padding': self.padding,
             'activation': self.activation,
             'apply_bn': self.apply_bn,
-            'bn_momentum': self.bn_momentum})
+            'bn_momentum': self.bn_momentum,
+            'seed': self.seed,
+            'initializer': self.initializer})
         
         return config
 
@@ -411,6 +461,7 @@ class DenseLayer(Layer):
                  activation = None,
                  apply_bn: bool = False,
                  bn_momentum: float = 0.99,
+                 random_seed = None,
                  **kwargs):
         '''
         Implements https://github.com/luis-gonzales/pointnet_own/blob/master/src/model.py CustomDense class
@@ -430,9 +481,12 @@ class DenseLayer(Layer):
         self.apply_bn = apply_bn
         self.bn_momentum = bn_momentum
         self.name = f"{name}_dense_layer"
+        self.seed = random_seed
+
+        self.initializer = initializers.GlorotUniform( seed = self.seed ) if type( self.seed ) == int else initializers.GlorotUniform()
 
         # The activation function is added after a batch normalization layer
-        self.dense = Dense(units = units, activation = None, use_bias = not apply_bn, name = self.name)
+        self.dense = Dense( units = units, activation = None, use_bias = not apply_bn, name = self.name, kernel_initializer = self.initializer )
 
         if(apply_bn):
             self.bn = BatchNormalization(momentum = bn_momentum)
@@ -469,6 +523,8 @@ class DenseLayer(Layer):
             'units': self.units,
             'activation': self.activation,
             'apply_bn': self.apply_bn,
-            'bn_momentum': self.bn_momentum})
+            'bn_momentum': self.bn_momentum,
+            'seed': self.seed,
+            'initializer': self.initializer})
         
         return config

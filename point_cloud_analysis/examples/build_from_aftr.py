@@ -21,7 +21,7 @@ if __name__=="__main__":
                                 network_input_width = 4096,
                                 batch_size = 8,
                                 rand_seed = 42)
-        pc.build_from_aftr_output(aftr_path)
+        pc.add_from_aftr_output(aftr_path, 'kc46')
         pc.get_info()
         with open(f"data/{aftr_path.split('/')[-1]}.pkl", 'wb') as p:
             pickle.dump(pc, p)

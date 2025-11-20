@@ -20,7 +20,7 @@
             "12": "boom_hose"
         },
         "datasets": {
-            "0": "collect_2025.Nov.19_00.33.24.3472488.UTC/"
+            "0": "collect_2025.Nov.20_01.02.52.3750022.UTC/"
         },
         "continue_training_model": ""
     },
@@ -28,16 +28,17 @@
         "input_width": 4096,
         "epochs": 1000,
         "patience": 100,
-        "batch_size": 32,
+        "batch_size": 1,
         "learning": {
             "rate": 0.0001,
             "decay_steps": 7000,
             "decay_rate": 0.7
         },
-        "random_seed": 42
+        "random_seed": 42,
+        "debugging": false
     },
     "file_system": {
         "model_path": "models/",
-        "input_path": "data/"
+        "input_path": "/mnt/d/repos/aburn/usr/hub/palindrome_playground/DataCollect/"
     }
 }
