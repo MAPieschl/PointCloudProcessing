@@ -77,12 +77,12 @@ import tensorflow as tf
 import numpy as np
 import plotly.graph_objects as go
 
-from tensorflow.keras.layers import Layer, Conv2D, BatchNormalization, Dense, Activation
+from tensorflow.keras.layers import Layer, Conv2D, BatchNormalization, Dense, Dropout
 from tensorflow.keras import Model, saving, initializers
 
 @saving.register_keras_serializable(package="Project")
-class PointNetSegmentation(Model):
-    def __init__(self, output_width: int, random_seed: int, debugging: bool = False, **kwargs):
+class PointNet(Model):
+    def __init__(self, classification_output_width: int, segmentation_output_width: int, dropout_rate: float, random_seed: int, debugging: bool = False, **kwargs):
         '''
         Implements https://github.com/luis-gonzales/pointnet_own/blob/master/src/model.py get_model
 
@@ -91,14 +91,16 @@ class PointNetSegmentation(Model):
         @params output_width    (int) number of output classes
         '''
 
-        super(PointNetSegmentation, self).__init__(**kwargs)
-        self._output_width = output_width
+        super(PointNet, self).__init__(**kwargs)
+        self._classification_output_width = classification_output_width
+        self._segmentation_output_width = segmentation_output_width
         self._random_seed = random_seed
         self._debugging = debugging
+        self._layers = []
         self.input_names = ['pointnet_seg_input']
-        self.output_names = ['segmentation_output']
+        self.output_names = ['classification_output', 'segmentation_output', 'rotation_matrix']
 
-        self.input_transform = TNet(name = 'input_transform', add_regularization = False, random_seed = self._random_seed)
+        self.input_transform = TNet(name = 'input_transform', add_regularization = True, random_seed = self._random_seed)
 
         self.mlp_1_1 = ConvLayer(filters = 64, name = 's1_l1_64', activation = tf.nn.relu, apply_bn = True, random_seed = self._random_seed)
         self.mlp_1_2 = ConvLayer(filters = 64, name = 's1_l2_64', activation = tf.nn.relu, apply_bn = True, random_seed = self._random_seed)
@@ -109,11 +111,36 @@ class PointNetSegmentation(Model):
         self.mlp_2_2 = ConvLayer(filters = 128, name = 's2_l2_128', activation = tf.nn.relu, apply_bn = True, random_seed = self._random_seed)
         self.mlp_2_3 = ConvLayer(filters = 1024, name = 's2_l3_1024', activation = tf.nn.relu, apply_bn = True, random_seed = self._random_seed)
 
-        self.mlp_3_1 = ConvLayer(filters = 512, name = 's3_l1_512', activation = tf.nn.relu, apply_bn = True, random_seed = self._random_seed)
-        self.mlp_3_2 = ConvLayer(filters = 256, name = 's3_l2_256', activation = tf.nn.relu, apply_bn = True, random_seed = self._random_seed)
-        self.mlp_3_3 = ConvLayer(filters = 128, name = 's3_l3_128', activation = tf.nn.relu, apply_bn = True, random_seed = self._random_seed)
-        self.mlp_3_4 = ConvLayer(filters = 128, name = 's3_l4_128', activation = tf.nn.relu, apply_bn = True, random_seed = self._random_seed)
-        self.mlp_3_5 = ConvLayer(filters = output_width, name = 's3_l5_output', activation = None, apply_bn = False, random_seed = self._random_seed)
+        # Classification Head
+        self.mlp_cls_1 = DenseLayer(units = 512, name = 's3_l1_512', activation = tf.nn.relu, apply_bn = True)
+        self.dropout_1 = Dropout(rate = dropout_rate)
+        self.mlp_cls_2 = DenseLayer(units = 256, name = 's3_l2_256', activation = tf.nn.relu, apply_bn = True)
+        self.dropout_2 = Dropout(rate = dropout_rate)
+        self.mlp_cls_3 = DenseLayer(units = self._classification_output_width, name = 'output', activation = tf.nn.softmax)
+
+        # Segmentation Head
+        self.mlp_seg_1 = ConvLayer(filters = 512, name = 'seg_l1_512', activation = tf.nn.relu, apply_bn = True, random_seed = self._random_seed)
+        self.mlp_seg_2 = ConvLayer(filters = 256, name = 'seg_l2_256', activation = tf.nn.relu, apply_bn = True, random_seed = self._random_seed)
+        self.mlp_seg_3 = ConvLayer(filters = 128, name = 'seg_l3_128', activation = tf.nn.relu, apply_bn = True, random_seed = self._random_seed)
+        self.mlp_seg_4 = ConvLayer(filters = 128, name = 'seg_l4_128', activation = tf.nn.relu, apply_bn = True, random_seed = self._random_seed)
+        self.mlp_seg_5 = ConvLayer(filters = self._segmentation_output_width, name = 'seg_l5_output', activation = None, apply_bn = False, random_seed = self._random_seed)
+
+        # Save layers in iterable format
+        self.layers.append(self.input_transform)
+        self.layers.append(self.mlp_1_1)
+        self.layers.append(self.mlp_1_2)
+        self.layers.append(self.feature_transform)
+        self.layers.append(self.mlp_2_1)
+        self.layers.append(self.mlp_2_2)
+        self.layers.append(self.mlp_2_3)
+        self.layers.append(self.mlp_cls_1)
+        self.layers.append(self.mlp_cls_2)
+        self.layers.append(self.mlp_cls_3)
+        self.layers.append(self.mlp_seg_1)
+        self.layers.append(self.mlp_seg_2)
+        self.layers.append(self.mlp_seg_3)
+        self.layers.append(self.mlp_seg_4)
+        self.layers.append(self.mlp_seg_5)
         
     def build(self, input_shape):
         '''
@@ -122,7 +149,7 @@ class PointNetSegmentation(Model):
         @param input_shape: Expected input shape (b, n, 3)
         '''
 
-        super(PointNetSegmentation, self).build(input_shape)
+        super(PointNet, self).build(input_shape)
         
         self.input_transform.build(input_shape)
 
@@ -136,16 +163,22 @@ class PointNetSegmentation(Model):
         self.mlp_2_1.build((input_shape[0], input_shape[1], 1, 64))
         self.mlp_2_2.build((input_shape[0], input_shape[1], 1, 64))
         self.mlp_2_3.build((input_shape[0], input_shape[1], 1, 128))
+
+        # Classification network
+        self.mlp_cls_1.build((input_shape[0], 1024))
+        self.dropout_1.build((input_shape[0], 1024))
+        self.mlp_cls_2.build((input_shape[0], 512))
+        self.dropout_2.build((input_shape[0], 512))
+        self.mlp_cls_3.build((input_shape[0], 256))
         
         # Segmentation network
-        self.mlp_3_1.build((input_shape[0], input_shape[1], 1, 1088))
-        self.mlp_3_2.build((input_shape[0], input_shape[1], 1, 512))
-        self.mlp_3_3.build((input_shape[0], input_shape[1], 1, 256))
-        self.mlp_3_4.build((input_shape[0], input_shape[1], 1, 128))
-        self.mlp_3_5.build((input_shape[0], input_shape[1], 1, 128))
+        self.mlp_seg_1.build((input_shape[0], input_shape[1], 1, 1088))
+        self.mlp_seg_2.build((input_shape[0], input_shape[1], 1, 512))
+        self.mlp_seg_3.build((input_shape[0], input_shape[1], 1, 256))
+        self.mlp_seg_4.build((input_shape[0], input_shape[1], 1, 128))
+        self.mlp_seg_5.build((input_shape[0], input_shape[1], 1, 128))
 
     def call(self, pc, training = False):
-        print(f'Training: {training}')
 
         pc = pc if not self._debugging else tf.debugging.check_numerics( pc, 'Input point cloud contains nan values' )
 
@@ -184,40 +217,117 @@ class PointNetSegmentation(Model):
         X = tf.squeeze(X, axis = 2)                                 # (b x n x 1024)
 
         # Max pooling
-        X = tf.reduce_max(X, axis = 1)                              # (b x 1024)
+        global_features = tf.reduce_max(X, axis = 1)                # (b x 1024)
+
+        ### CLASSIFICATION HEAD ###
+
+        X_cls = self.mlp_cls_1(global_features, training = training)
+        X_cls = X_cls if not self._debugging else tf.debugging.check_numerics( X_cls, 'mlp_2_1 produced nan values.' )
+
+        X_cls = self.dropout_1(X_cls, training = training)
+
+        X_cls = self.mlp_cls_2(X_cls, training = training)
+        X_cls = X_cls if not self._debugging else tf.debugging.check_numerics( X_cls, 'mlp_2_1 produced nan values.' )
+
+        X_cls = self.dropout_2(X_cls, training = training)
+
+        X_cls = self.mlp_cls_3(X_cls, training = training)
+        X_cls = X_cls if not self._debugging else tf.debugging.check_numerics( X_cls, 'mlp_2_1 produced nan values.' )
+
+        ### SEGMENTATION HEAD ###
 
         # Concatenate local feature set and global feature set
-        X = tf.expand_dims(X, axis = 1)
-        X = tf.tile(X, [1, pc.shape[1], 1])
-        X = tf.concat([X_64, X], axis = -1)
+        X_seg = tf.expand_dims(global_features, axis = 1)
+        X_seg = tf.tile(X_seg, [1, pc.shape[1], 1])
+        X_seg = tf.concat([X_64, X_seg], axis = -1)
 
         # Segmentation MLP (512, 256, 128, 128, output_width)
-        X = tf.expand_dims(X, axis = 2)
+        X_seg = tf.expand_dims(X_seg, axis = 2)
         
-        X = self.mlp_3_1(X, training = training)
-        X = X if not self._debugging else tf.debugging.check_numerics( X, 'mlp_3_1 produced nan values.' )
+        X_seg = self.mlp_seg_1(X_seg, training = training)
+        X_seg = X_seg if not self._debugging else tf.debugging.check_numerics( X_seg, 'mlp_3_1 produced nan values.' )
 
-        X = self.mlp_3_2(X, training = training)
-        X = X if not self._debugging else tf.debugging.check_numerics( X, 'mlp_3_2 produced nan values.' )
+        X_seg = self.mlp_seg_2(X_seg, training = training)
+        X_seg = X_seg if not self._debugging else tf.debugging.check_numerics( X_seg, 'mlp_3_2 produced nan values.' )
 
-        X = self.mlp_3_3(X, training = training)
-        X = X if not self._debugging else tf.debugging.check_numerics( X, 'mlp_3_3 produced nan values.' )
+        X_seg = self.mlp_seg_3(X_seg, training = training)
+        X_seg = X_seg if not self._debugging else tf.debugging.check_numerics( X_seg, 'mlp_3_3 produced nan values.' )
 
-        X = self.mlp_3_4(X, training = training)
-        X = X if not self._debugging else tf.debugging.check_numerics( X, 'mlp_3_4 produced nan values.' )
+        X_seg = self.mlp_seg_4(X_seg, training = training)
+        X_seg = X_seg if not self._debugging else tf.debugging.check_numerics( X_seg, 'mlp_3_4 produced nan values.' )
 
-        X = self.mlp_3_5(X, training = training)
-        X = X if not self._debugging else tf.debugging.check_numerics( X, 'mlp_3_5 produced nan values.' )
+        X_seg = self.mlp_seg_5(X_seg, training = training)
+        X_seg = X_seg if not self._debugging else tf.debugging.check_numerics( X_seg, 'mlp_3_5 produced nan values.' )
 
-        X = tf.squeeze(X, axis = 2)
+        X_seg = tf.squeeze(X_seg, axis = 2)
 
-        return X
+        return [ X_cls, X_seg, R ]
+    
+    def freeze_input_transform(self) -> None:
+        self.input_transform.freeze()
+
+    def thaw_input_transform(self) -> None:
+        self.input_transform.unfreeze()
+
+    def freeze_shared_network(self) -> None:
+        self.input_transform.freeze()
+        self.mlp_1_1.freeze()
+        self.mlp_1_2.freeze()
+        self.feature_transform.freeze()
+        self.mlp_2_1.freeze()
+        self.mlp_2_2.freeze()
+        self.mlp_2_3.freeze()
+
+    def thaw_shared_network(self) -> None:
+        self.input_transform.thaw()
+        self.mlp_1_1.thaw()
+        self.mlp_1_2.thaw()
+        self.feature_transform.thaw()
+        self.mlp_2_1.thaw()
+        self.mlp_2_2.thaw()
+        self.mlp_2_3.thaw()
+
+    def freeze_segmentation_head(self) -> None:
+        self.mlp_seg_1.freeze()
+        self.mlp_seg_2.freeze()
+        self.mlp_seg_3.freeze()
+        self.mlp_seg_4.freeze()
+        self.mlp_seg_5.freeze()
+
+    def thaw_segmentation_head(self) -> None:
+        self.mlp_seg_1.thaw()
+        self.mlp_seg_2.thaw()
+        self.mlp_seg_3.thaw()
+        self.mlp_seg_4.thaw()
+        self.mlp_seg_5.thaw()
+
+    def freeze_classification_head(self) -> None:
+        self.mlp_seg_1.freeze()
+        self.mlp_seg_2.freeze()
+        self.mlp_seg_3.freeze()
+        self.mlp_seg_4.freeze()
+        self.mlp_seg_5.freeze()
+
+    def thaw_classification_head(self) -> None:
+        self.mlp_seg_1.thaw()
+        self.mlp_seg_2.thaw()
+        self.mlp_seg_3.thaw()
+        self.mlp_seg_4.thaw()
+        self.mlp_seg_5.thaw()
+
+    def get_layer_trainability(self) -> dict:
+        trainability_dict = {}
+        for layer_ in self._layers:
+            trainability_dict[layer_.name] = layer_.is_trainable()
+
+        return trainability_dict
     
     def get_config(self):
         """Returns the non-layer configuration of the model."""
-        config = super(PointNetSegmentation, self).get_config()
+        config = super(PointNet, self).get_config()
         config.update({
-            'output_width': self._output_width,
+            'classification_output_width': self._classification_output_width,
+            'segmentation_output_width': self._segmentation_output_width,
             'random_seed': self._random_seed,
             'debugging': self._debugging
         })
@@ -293,7 +403,7 @@ class TNet(Model):
         self.add_regularization = add_regularization
         self.bn_momentum = bn_momentum
         self.seed = random_seed
-        self._last_predicted = None
+        self.name = name
 
         # Layer Construction
         self.conv_layer_1 = ConvLayer(filters = layer_widths[0], activation = tf.nn.relu, kernel_size = (1, 1), strides = (1, 1), bn_momentum = bn_momentum, name = f"{name}_convolution_layer_1", random_seed = self.seed)
@@ -338,7 +448,6 @@ class TNet(Model):
         self._last_predicted = X
 
         if(self.add_regularization):
-            print('TNet has been regularized.')
             I = tf.constant(np.eye(self.K), dtype = tf.float32)
             X_XT = tf.matmul(X, tf.transpose(X, perm = [0, 2, 1]))  # X @ X.T = 1 for orthogonal matrix (perm for batch dimension)
             reg_loss = tf.nn.l2_loss(I - X_XT)                      # ...and punish otherwise
@@ -355,8 +464,26 @@ class TNet(Model):
             'seed': self.seed
         })
 
-    def get_last_predicted_transformation(self):
-        return None if self._last_predicted == None else self._last_predicted
+    def freeze(self):
+        self.conv_layer_1.freeze()
+        self.conv_layer_2.freeze()
+        self.conv_layer_3.freeze()
+        self.dense_layer_1.freeze()
+        self.dense_layer_2.freeze()
+
+    def thaw(self):
+        self.conv_layer_1.thaw()
+        self.conv_layer_2.thaw()
+        self.conv_layer_3.thaw()
+        self.dense_layer_1.thaw()
+        self.dense_layer_2.thaw()
+
+    def is_trainable(self):
+        return  self.conv_layer_1.is_trainable() and \
+                self.conv_layer_2.is_trainable() and \
+                self.conv_layer_3.is_trainable() and \
+                self.dense_layer_1.is_trainable() and \
+                self.dense_layer_2.is_trainable()
 
 @saving.register_keras_serializable(package="Project")
 class ConvLayer(Layer):
@@ -452,6 +579,15 @@ class ConvLayer(Layer):
             'initializer': self.initializer})
         
         return config
+    
+    def freeze(self):
+        self.trainable = False
+
+    def thaw(self):
+        self.trainable = True
+
+    def is_trainable(self):
+        return self.trainable
 
 @saving.register_keras_serializable(package="Project")
 class DenseLayer(Layer):
@@ -527,4 +663,13 @@ class DenseLayer(Layer):
             'seed': self.seed,
             'initializer': self.initializer})
         
-        return config
+        return 
+    
+    def freeze(self):
+        self.trainable = False
+
+    def thaw(self):
+        self.trainable = True
+
+    def is_trainable(self):
+        return self.trainable

@@ -2,7 +2,32 @@
     "info": {
         "name": "_vizzer_test",
         "class_labels": {
-            "0": "kc46"
+            "0": "a-10",
+            "1": "airship",
+            "2": "b-1b",
+            "3": "b-2.obj",
+            "4": "c-5.obj",
+            "5": "c-12.obj",
+            "6": "c-17a.obj",
+            "7": "c-32.obj",
+            "8": "c-130j.obj",
+            "9": "drogue.obj",
+            "10": "e-3.obj",
+            "11": "f-15e.obj",
+            "12": "f-16.obj",
+            "13": "f-18e.obj",
+            "14": "f-22.obj",
+            "15": "g-iii.obj",
+            "16": "kc-46.obj",
+            "17": "kc-135.obj",
+            "18": "lj-25.obj",
+            "19": "lj-25_nosecone.obj",
+            "20": "mig-29.obj",
+            "21": "mq-20.obj",
+            "22": "sr-71.obj",
+            "23": "su-27.obj",
+            "24": "vc-25a.obj",
+            "25": "x-47b.obj" 
         },
         "part_labels": {
             "0": "fuselage", 
@@ -19,8 +44,49 @@
             "11": "boom_hull", 
             "12": "boom_hose"
         },
-        "datasets": {
-            "0": "collect_2025.Nov.20_14.24.21.2858466.UTC"
+        "training_profile": {
+            "tnet_train": {
+                "datasets": {
+                    "0": ""
+                },
+                "noise": {
+                    "x_stdev_m": 0.1,
+                    "y_stdev_m": 0.1,
+                    "z_stdev_m": 0.1
+                },
+                "trainable": {
+                    "shared_network": false,
+                    "input_transform": true,
+                    "classification_head": false,
+                    "segmentation_head": false
+                },
+                "loss_weights": {
+                    "classification": 0.0,
+                    "segmentation": 0.0,
+                    "rotation": 1.0
+                }
+            },
+            "class_train": {
+                "datasets": {
+                    "0": ""
+                },
+                "noise": {
+                    "x_stdev_m": 0.1,
+                    "y_stdev_m": 0.1,
+                    "z_stdev_m": 0.1
+                },
+                "trainable": {
+                    "shared_network": true,
+                    "input_transform": true,
+                    "classification_head": false,
+                    "segmentation_head": false
+                },
+                "loss_weights": {
+                    "classification": 0.0,
+                    "segmentation": 0.0,
+                    "rotation": 1.0
+                }
+            }
         },
         "continue_training_model": ""
     },
@@ -35,8 +101,7 @@
             "decay_rate": 0.7
         },
         "random_seed": 42,
-        "debugging": false,
-        "jitter_stdev_m": 0.1
+        "debugging": false
     },
     "file_system": {
         "model_path": "models/",

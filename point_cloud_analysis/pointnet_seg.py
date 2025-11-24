@@ -11,7 +11,7 @@ import tensorflow as tf
 import onnxruntime as ort
 import onnx
 
-from pointnet.PointNetSegmentation import PointNetSegmentation
+from pointnet.PointNet import PointNet
 from point_cloud.PointCloudSet import PointCloudSet
 
 from tqdm import tqdm
@@ -148,7 +148,12 @@ class TrainProfile:
 
     def _build_pointnet( self ):
 
-        model = PointNetSegmentation( output_width = len( self._part_labels ), random_seed = self._random_seed, debugging = self._debugging )
+        model = PointNet( classification_output_width = len( self._class_labels ),
+                         segmentation_output_width = len( self._part_labels ), 
+                         dropout_rate = 0.3,
+                         random_seed = self._random_seed, 
+                         debugging = self._debugging )
+        
         model.build(input_shape = (None, self._input_width, 3))
 
         lr_schedule = keras.optimizers.schedules.ExponentialDecay(
@@ -184,23 +189,6 @@ class TrainProfile:
 
         return model
     
-    def _find_optimal_batch_size( self ) -> int:
-        '''
-        This method is triggered when a '0' is input for batch size. Runtime can be extensive.
-        '''
-
-        batch_size = input( 
-            '''TrainProfile detected a batch size of 0 -> if you would like to search for the optimal
-            batch size, input 0. Otherwise, input the desired batch size. Note that search time for this
-            function WILL be extensive, especially for large datasets. Press Enter when finished:'''
-            )
-        
-        if( batch_size > 0 ):
-            return batch_size
-        
-        else:
-            return 32
-
     def _advise_and_abort( self, msg: str ) -> None:
         print( f"Error in TrainProfile:  {msg}" )
         return None
@@ -271,7 +259,7 @@ def print_help():
         \t\tinput_width: input width of the network (number of points in the point cloud)
         \t\tepochs: max number of epochs for this training session
         \t\tpatience: per tensorflow
-        \t\tbatch_size: per tensorflow; a value of 0 will force the model to perform a search for the maximum batch size \n\t\t\tallowable for the GPU in use
+        \t\tbatch_size: per tensorflow (>= 1)
         \t\tlearning: {
         \t\t\trate: per tensorflow
         \t\t\tdecay_steps: per tensorflow
