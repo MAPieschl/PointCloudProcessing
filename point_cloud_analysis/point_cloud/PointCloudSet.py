@@ -24,9 +24,8 @@ class PointCloudSet:
                  one_hot: bool,
                  class_labels: list,
                  part_labels: list,
-                 pretrain_tnet: bool,
                  network_input_width: int,
-                 jitter_stdev_m: float = 0,
+                 jitter_stdev_m: np.ndarray = np.array( [ 0, 0, 0 ] ),
                  val: float = 0.15,
                  test: float = 0.10,
                  batch_size: int = 32,
@@ -38,7 +37,6 @@ class PointCloudSet:
         self._one_hot = one_hot
         self._class_labels = class_labels
         self._part_labels = part_labels
-        self._pretrain_tnet = pretrain_tnet
         self._network_input_width = network_input_width
         self._jitter_stdev_m = jitter_stdev_m
 
@@ -185,9 +183,6 @@ class PointCloudSet:
             self._train['observations'].append(observations[i])
             self._train['class_labels'].append(class_labels[i])
             self._train['part_labels'].append(part_labels[i])
-
-    def get_tnet_trainability(self):
-        return self._pretrain_tnet
     
     def get_train_class_set(self):
         labels = np.array(self._train['class_labels']) if not self._one_hot else self._one_hot_encode_class_labels(self._train['class_labels'])

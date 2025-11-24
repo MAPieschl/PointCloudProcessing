@@ -37,64 +37,68 @@ class TrainProfile:
         except:
             print( f"Unable to open {config_file}" )
 
-        # Save Config Path ( will be saved in model folder )
+        # save config path ( will be saved in model folder )
         self._config_file = config_file
 
-        # General Info
-        self._name = config['info']['name']
-        self._class_labels = list( config['info']['class_labels'].values() )
-        self._part_labels = list( config['info']['part_labels'].values() )
-        self._datasets = list( config['info']['datasets'].values() )
-        self._pretrained_model = config['info']['continue_training_model']
+        # general info
+        self._name                              : str   = config['info']['name']
+        self._class_labels                      : list  = list( config['info']['class_labels'].values() )
+        self._part_labels                       : list  = list( config['info']['part_labels'].values() )
+        self._training_profiles                 : dict  = config['info']['training_profiles']
+        self._pretrained_model                  : str   = config['info']['continue_training_model']
 
-        # Training Parameters
-        self._input_width = config['params']['input_width']
-        self._epochs = config['params']['epochs']
-        self._patience = config['params']['patience']
-        self._batch_size = config['params']['batch_size']
-        self._learning_rate = config['params']['learning']['rate']
-        self._learning_decay_steps = config['params']['learning']['decay_steps']
-        self._learning_decay_rate = config['params']['learning']['decay_rate']
-        self._random_seed = config['params']['random_seed']
-        self._debugging = config['params']['debugging']
-        self._jitter_stdev_m = config['params']['jitter_stdev']['m']
+        # training parameters
+        self._input_width                       : int   = config['params']['input_width']
+        self._epochs                            : int   = config['params']['epochs']
+        self._patience                          : int   = config['params']['patience']
+        self._batch_size                        : int   = config['params']['batch_size']
+        self._learning_rate                     : float = config['params']['learning']['rate']
+        self._learning_decay_steps              : int   = config['params']['learning']['decay_steps']
+        self._learning_decay_rate               : float = config['params']['learning']['decay_rate']
+        self._random_seed                       : int   = config['params']['random_seed']
+        self._debugging                         : bool = config['params']['debugging']
 
+        # filesystem information (relative paths)
+        self._model_path                        : str = config['file_system']['model_path']  
+        self._input_path                        : str = config['file_system']['input_path']
+        
+        # set debug mode
         if( self._debugging ): tf.config.run_functions_eagerly( True )
 
-        # Filesystem Information (relative paths)
-        self._model_path = config['file_system']['model_path']
-        self._input_path = config['file_system']['input_path']
-
-        # Verify All Paths
+        # verify all paths
         if( not os.path.isdir( self._model_path ) ): return self._advise_and_abort( f"{self._model_path} does not exists" )
         if( not os.path.isdir( self._input_path ) ): return self._advise_and_abort( f"{self._input_path} does not exists" )
-        for ds in self._datasets:
-            if( not os.path.isdir( f'{self._input_path}{ds}' ) ): return self._advise_and_abort( f"{self._input_path}{ds} does not exists" )
+        for prof in list(self._training_profiles.keys()):
+            for ds in list(self._training_profiles[prof]['datasets'].values()):
+                if( not os.path.isdir( f'{self._input_path}{ds}' ) ): return self._advise_and_abort( f"{self._input_path}{ds} does not exists" )
         if( self._pretrained_model != "" ):
             if( not os.path.isfile( f'{self._model_path}{self._pretrained_model}' ) ): return self._advise_and_abort( f"{self._model_path}{self._pretrained_model} does not exists" )
 
-        # Verify Batch Size
-        if( self._batch_size == 0 ): self._batch_size = self._find_optimal_batch_size()
-
-        # Build Point Cloud
-        self._pc = PointCloudSet(one_hot = True,
-                                 class_labels = self._class_labels, 
-                                 part_labels = self._part_labels, 
-                                 pretrain_tnet = False, 
-                                 network_input_width = self._input_width,
-                                 batch_size = self._batch_size,
-                                 rand_seed = self._random_seed)
-        
-        self._profile_datasets()
-        
-        # Build Segmentation Model
-        self._training_callbacks = []
-        self._model = self._build_pointnet()
-
-        # Create Model Training Data Directory
+        # create model training data directory
         self._specific_model_path = f"{self._model_path}{self._name}/"
         if( not os.path.isdir(self._specific_model_path) ):
             os.mkdir(self._specific_model_path)
+
+        # create a pc set and training subdirectory for each training step
+        for prof in list(self._training_profiles.keys()):
+
+            # create pc set
+            self._training_profiles[prof]['pc'] = PointCloudSet( one_hot = True,
+                                                                 class_labels = self._class_labels,
+                                                                 part_labels = self._part_labels,
+                                                                 network_input_width = self._input_width,
+                                                                 jitter_stdev_m = np.ndarray( [ self._training_profiles[prof]['noise']['x_stdev_n'], \
+                                                                                                self._training_profiles[prof]['noise']['y_stdev_n'], \
+                                                                                                self._training_profiles[prof]['noise']['z_stdev_n'], ] ),
+                                                                 batch_size = 2,
+                                                                 rand_seed = 42,
+                                                                 description = prof )
+
+            # create training subdirectory
+            self._training_profiles[prof]['path'] = f"{self._specific_model_path}{prof}"
+            if( not os.path.isdir(self._training_profiles['path']) ):
+                os.mkdir(self._training_profiles['path'])
+            
         
     def train( self ):
         '''
@@ -138,7 +142,6 @@ class TrainProfile:
         shutil.copy( self._config_file, self._specific_model_path )
         
     def _profile_datasets( self ) -> None:
-        if( len( self._class_labels ) != 1 ):  print( "For a segmentation network there should be only one class label. Using the first class label listed for the set." )
         for ds, set_name in enumerate( self._datasets ):
             print( f"Adding data set {ds + 1} of {len( self._datasets )}" )
             self._pc.add_from_aftr_output( dir_path = f"{self._input_path}{set_name}", class_label = self._class_labels[0], shuffle_points = True )
@@ -236,10 +239,9 @@ def train_pointnet_seg( *args, **kwargs ) -> bool:
 def print_help():
     print(
         '''PointNetSegmentation Training Module\n\n
-        This module is capable of training both new and pretrained PointNetSegmentation models. To use,
-        append a separate configuration file to the train_pointnet_seg.sh command for each training session.
-        The configuration file should follow the examples/train_config_pointnet_segmentation_template.json provided.
-        In its absense, here is an overview of the configuration file required to train a PointNetSegmentation Model:
+        This module is capable of training both new and pretrained PointNetSegmentation models. The configuration file 
+        must follow the examples/train_config_pointnet_segmentation_template.json provided. In its absense, here is an 
+        overview of the configuration file required to train a PointNetSegmentation Model:
         {
         \tinfo: {
         \t\tname: this will be the output name for model trained

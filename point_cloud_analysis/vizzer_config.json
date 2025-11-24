@@ -44,7 +44,7 @@
             "11": "boom_hull", 
             "12": "boom_hose"
         },
-        "training_profile": {
+        "training_profiles": {
             "tnet_train": {
                 "datasets": {
                     "0": ""
@@ -77,14 +77,35 @@
                 },
                 "trainable": {
                     "shared_network": true,
-                    "input_transform": true,
-                    "classification_head": false,
+                    "input_transform": false,
+                    "classification_head": true,
                     "segmentation_head": false
                 },
                 "loss_weights": {
-                    "classification": 0.0,
+                    "classification": 1.0,
                     "segmentation": 0.0,
-                    "rotation": 1.0
+                    "rotation": 0.0
+                }
+            },
+            "seg_train": {
+                "datasets": {
+                    "0": ""
+                },
+                "noise": {
+                    "x_stdev_m": 0.1,
+                    "y_stdev_m": 0.1,
+                    "z_stdev_m": 0.1
+                },
+                "trainable": {
+                    "shared_network": true,
+                    "input_transform": false,
+                    "classification_head": false,
+                    "segmentation_head": true
+                },
+                "loss_weights": {
+                    "classification": 0.0,
+                    "segmentation": 1.0,
+                    "rotation": 0.0
                 }
             }
         },
