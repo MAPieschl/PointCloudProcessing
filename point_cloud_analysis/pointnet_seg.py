@@ -235,21 +235,6 @@ def train_pointnet_seg( *args, **kwargs ) -> bool:
         print( 'GPUs Available: ', len( physical_devices ) )
         tf.config.experimental.set_memory_growth( physical_devices[0], True )
 
-        # print( "Configuring GPU..." )
-
-        # os.environ["TF_XLA_FLAGS"] = "--tf_xla_auto_jit=0"
-        # os.environ["XLA_FLAGS"] = "--xla_cpu_fast_math_honor_infs=1"
-        # os.environ["XLA_FLAGS"] += " --xla_cpu_fast_math_honor_nans=1"
-        # os.environ["TF_ENABLE_XLA"] = "0"
-        # print( "XLA disabled..." )
-
-        # os.environ["TF_DETERMINISTIC_OPS"] = "1"
-        # print( "Forced deterministic kernels..." )
-
-        # tf.config.experimental.enable_tensor_float_32_execution(False)
-        # keras.mixed_precision.set_global_policy("float32")
-        # print( "Set precision to FP32..." )
-
     else:   
         print( "No GPUs available. Would you like to continue?" )
         if( input( "(Y/n)" ) != "Y" ):

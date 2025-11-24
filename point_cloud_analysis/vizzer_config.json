@@ -1,6 +1,6 @@
 {
     "info": {
-        "name": "_bertha_test",
+        "name": "_vizzer_test",
         "class_labels": {
             "0": "kc46"
         },
@@ -20,7 +20,7 @@
             "12": "boom_hose"
         },
         "datasets": {
-            "0": "collect_2025.Nov.20_01.02.52.3750022.UTC/"
+            "0": "collect_2025.Nov.20_14.24.21.2858466.UTC"
         },
         "continue_training_model": ""
     },
@@ -28,7 +28,7 @@
         "input_width": 4096,
         "epochs": 1000,
         "patience": 100,
-        "batch_size": 1,
+        "batch_size": 16,
         "learning": {
             "rate": 0.0001,
             "decay_steps": 7000,
