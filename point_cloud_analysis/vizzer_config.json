@@ -35,7 +35,8 @@
             "decay_rate": 0.7
         },
         "random_seed": 42,
-        "debugging": false
+        "debugging": false,
+        "jitter_stdev_m": 0.1
     },
     "file_system": {
         "model_path": "models/",

@@ -37,7 +37,6 @@ class TrainProfile:
         except:
             print( f"Unable to open {config_file}" )
 
-        # try:
         # Save Config Path ( will be saved in model folder )
         self._config_file = config_file
 
@@ -58,6 +57,7 @@ class TrainProfile:
         self._learning_decay_rate = config['params']['learning']['decay_rate']
         self._random_seed = config['params']['random_seed']
         self._debugging = config['params']['debugging']
+        self._jitter_stdev_m = config['params']['jitter_stdev']['m']
 
         if( self._debugging ): tf.config.run_functions_eagerly( True )
 
@@ -95,10 +95,6 @@ class TrainProfile:
         self._specific_model_path = f"{self._model_path}{self._name}/"
         if( not os.path.isdir(self._specific_model_path) ):
             os.mkdir(self._specific_model_path)
-
-        # except:
-        #     print( f"{config_file} is not the correct format. Please use example train_config_template.json." )
-        #     return None
         
     def train( self ):
         '''
@@ -269,7 +265,7 @@ def print_help():
         \t\tdatasets: {
         \t\t\t0: add a row for each dataset; the name should match the outer folder from AftrBurner, such as -> \n\t\t\t\tcollect_2025.Nov.19_00.33.24.3472488.UTC
         \t\t},
-        \t\tcontinue_training_model: input the model name (ending in .keras) you would like to continue training; empty \n\t\t\tquotes assume a fresh model
+        \t\tcontinue_training_model: input the model directory you would like to continue training; the directory \n\t\t\tMUST reside in the model path listed below and exist in the format output by this program; empty \n\t\t\tquotes assume a fresh model
         \t},
         \tparams: {
         \t\tinput_width: input width of the network (number of points in the point cloud)
@@ -283,6 +279,7 @@ def print_help():
         \t\t},
         \t\trandom_seed: used for all random processes
         \t\tdebugging: sets Tensorflow to run eagerly and checks for non-numerics at each layer
+        \t\tjitter_stdev_m: the standard deviation of the jitter applied to the dataset in meters -> 0 will apply no jitter
         \t},
         \tfile_system: {
         \t\tmodel_path: directory where the model will be stored after training

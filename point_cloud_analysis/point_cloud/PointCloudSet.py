@@ -26,11 +26,12 @@ class PointCloudSet:
                  part_labels: list,
                  pretrain_tnet: bool,
                  network_input_width: int,
+                 jitter_stdev_m: float = 0,
                  val: float = 0.15,
                  test: float = 0.10,
                  batch_size: int = 32,
                  rand_seed = None,
-                 description: str = ''):
+                 description: str = '',):
         
         self._description = description
         self._batch_size = batch_size
@@ -39,6 +40,7 @@ class PointCloudSet:
         self._part_labels = part_labels
         self._pretrain_tnet = pretrain_tnet
         self._network_input_width = network_input_width
+        self._jitter_stdev_m = jitter_stdev_m
 
         if(type(rand_seed) == int):
             np.random.default_rng(seed = rand_seed)
@@ -137,6 +139,9 @@ class PointCloudSet:
         assert frame_id.shape[0] == observations.shape[0], error_string
         assert frame_id.shape[0] == class_labels.shape[0], error_string
         assert frame_id.shape[0] == part_labels.shape[0], error_string
+
+        # Jitter points
+        observations = self._jitter_observation( observations )
 
         # Shuffle points in point cloud
         if(shuffle_points):
@@ -247,6 +252,13 @@ class PointCloudSet:
     
     def get_raw_test_set(self):
         return self._test
+    
+    def get_labels_with_confidence(self, one_hot_vector: np.ndarray):
+        labels = []
+        for y_pred in one_hot_vector:
+            labels.append((self._class_labels[np.argmax(y_pred)], y_pred[np.argmax(y_pred)]))
+
+        return labels
 
     def get_description(self):
         return self._description
@@ -346,13 +358,10 @@ class PointCloudSet:
         assert part_labels.shape[0] == self._network_input_width, f'Failed to adjust part_labels to the network input width - should be {self._network_input_width}, not {part_labels.shape}'
 
         return observations, part_labels
-
-    def get_labels_with_confidence(self, one_hot_vector: np.ndarray):
-        labels = []
-        for y_pred in one_hot_vector:
-            labels.append((self._class_labels[np.argmax(y_pred)], y_pred[np.argmax(y_pred)]))
-
-        return labels
+    
+    def _jitter_observation( self, obs: np.ndarray ):
+        noise = np.random.Generator.normal( loc = 0, scale = self._jitter_stdev_m, size = obs.shape )
+        return obs + noise
     
 ### FREE HELPER FUNCTIONS ###
 def get_dir_contents(dir_path: str) -> list:
@@ -386,6 +395,6 @@ if __name__ == "__main__":
 
     class_labels = ['kc46']
     part_labels = ['fuselage', 'left_engine', 'right_engine', 'left_wing', 'right_wing', 'left_hstab', 'right_hstab', 'vstab', 'left_boom_stab', 'right_boom_stab', 'boom_wing', 'boom_hull', 'boom_hose']
-    pc = PointCloudSet(True, class_labels, part_labels, False, INPUT_SIZE, rand_seed = RANDOM_SEED)
-    pc.add_from_aftr_output(f'{PALINDROME_DATA_PATH}collect_2025.Nov.12_16.57.13.0087094.UTC', 'kc46')
+    pc = PointCloudSet(True, class_labels, part_labels, False, INPUT_SIZE, rand_seed = RANDOM_SEED, jitter_stdev_m = 0.1)
+    pc.add_from_aftr_output(f'{DATA_PATH}collect_2025.Nov.19_00.33.24.3472488.UTC', 'kc46')
     pc.get_info()
