@@ -10,6 +10,9 @@ import numpy as np
 import tensorflow as tf
 import onnxruntime as ort
 import onnx
+import traceback
+import logging
+import datetime
 
 from pointnet.PointNet import PointNet
 from point_cloud.PointCloudSet import PointCloudSet
@@ -61,6 +64,23 @@ class TrainProfile:
         # filesystem information (relative paths)
         self._model_path                        : str = config['file_system']['model_path']  
         self._input_path                        : str = config['file_system']['input_path']
+
+        # leave empty callback list (appended in _build_pointnet)
+        self._training_callbacks = []
+
+        # create logger
+        dt = datetime.datetime.now()
+        self._log = logging.getLogger()
+        self._log.setLevel( logging.DEBUG )
+
+        console_handler = logging.StreamHandler()
+        file_handler = logging.FileHandler( f'{self._model_path}log_{dt.strftime( "%Y%m%d_%H:%M%S" )}.log' )
+
+        console_handler.setFormatter( logging.Formatter('%(name)s - %(levelname)s - %(message)s') )
+        file_handler.setFormatter( logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s') )
+
+        self._log.addHandler( console_handler )
+        self._log.addHandler( file_handler )
         
         # set debug mode
         if( self._debugging ): tf.config.run_functions_eagerly( True )
@@ -89,75 +109,108 @@ class TrainProfile:
                                                                  network_input_width = self._input_width,
                                                                  jitter_stdev_m = np.ndarray( [ self._training_profiles[prof]['noise']['x_stdev_n'], \
                                                                                                 self._training_profiles[prof]['noise']['y_stdev_n'], \
-                                                                                                self._training_profiles[prof]['noise']['z_stdev_n'], ] ),
+                                                                                                self._training_profiles[prof]['noise']['z_stdev_n'] ] ),
                                                                  batch_size = 2,
                                                                  rand_seed = 42,
                                                                  description = prof )
+            
+            self._profile_datasets( prof )
 
             # create training subdirectory
-            self._training_profiles[prof]['path'] = f"{self._specific_model_path}{prof}"
-            if( not os.path.isdir(self._training_profiles['path']) ):
-                os.mkdir(self._training_profiles['path'])
+            self._training_profiles[prof]['path'] = f"{self._specific_model_path}{prof}/"
+            if( not os.path.isdir(self._training_profiles[prof]['path']) ):
+                os.mkdir(self._training_profiles[prof]['path'])
             
-        
     def train( self ):
         '''
-        Train the model and save it to the given:
-            model_path/name/name.keras
-            model_path/name/name.onnx
+        This function goes through each of the training stages defined in under training_profiles in the config.json provided. Models are output to
+        file_system.model_path/info.name/training_profiles/. Each model directory will contain:
+            {info.name}.onnx
+            {info.name}.keras
+            {info.name}_history.json
+            {config}.json
+            {continue_training_model}/
+        where {continue_training_model}/ contains all of the above components for the model upon which the current model was trained. This builds a
+        full history of the model through recursion.
         '''
+        for prof in list(self._training_profiles.keys()):
 
-        train = self._pc.get_train_seg_set()
-        val = self._pc.get_val_seg_set()
+            model = self._build_pointnet( prof )
 
-        # Train model
-        history = self._model.fit( x = train, epochs = self._epochs, verbose = 1, validation_data = val, callbacks = self._training_callbacks )
+            train = self._training_profiles[prof]['pc'].get_train_seg_set()
+            val = self._training_profiles[prof]['pc'].get_val_seg_set()
 
-        # Save Keras model
-        self._model.save(f'{self._specific_model_path}{self._name}.keras')
+            # train model
+            history = model.fit( x = train, epochs = self._epochs, verbose = 1, validation_data = val, callbacks = self._training_callbacks )
 
-        # Output training history
-        with open(f'{self._specific_model_path}{self._name}_history.json', 'w') as j:
-            json.dump({
-                'loss': history.history['loss'],
-                'val_loss': history.history['val_loss'],
-                'categorical_accuracy': history.history['categorical_accuracy'],
-                'val_categorical_accuracy': history.history['val_categorical_accuracy'],
-            }, j)
+            # save Keras model
+            model.save(f"{self._training_profiles[prof]['path']}{self._name}.keras")
 
-        # Save ONNX model
-        input_signature = [
-            tf.TensorSpec((None, self._input_width, 3), dtype = tf.float32)
-        ]
+            # output training history
+            with open(f"{self._training_profiles[prof]['path']}{self._name}_history.json", 'w') as j:
+                json.dump({
+                    'loss': history.history['loss'],
+                    'val_loss': history.history['val_loss'],
+                    'categorical_accuracy': history.history['categorical_accuracy'],
+                    'val_categorical_accuracy': history.history['val_categorical_accuracy'],
+                }, j)
 
-        onnx_model, _ = tf2onnx.convert.from_keras(
-            self._model,
-            input_signature = input_signature,
-            opset = 13
-        )
+            # save ONNX model
+            input_signature = [
+                tf.TensorSpec((None, self._input_width, 3), dtype = tf.float32)
+            ]
 
-        onnx.save(onnx_model, f'{self._specific_model_path}{self._name}.onnx')
+            onnx_model, _ = tf2onnx.convert.from_keras(
+                model,
+                input_signature = input_signature,
+                opset = 13
+            )
 
-        # Copy config file into specific model directory
-        shutil.copy( self._config_file, self._specific_model_path )
+            onnx.save(onnx_model, f"{self._training_profiles[prof]['path']}{self._name}.onnx")
+
+            # copy config file into specific model directory
+            shutil.copy( self._config_file, self._training_profiles[prof]['path'] )
+
+            # copy pretrained model into current directory
+            shutil.copy( f'{self._model_path}{self._pretrained_model}', self._training_profiles[prof]['path'] )
+
+            self._pretrained_model = self._training_profiles[prof]['path']
         
-    def _profile_datasets( self ) -> None:
-        for ds, set_name in enumerate( self._datasets ):
-            print( f"Adding data set {ds + 1} of {len( self._datasets )}" )
-            self._pc.add_from_aftr_output( dir_path = f"{self._input_path}{set_name}", class_label = self._class_labels[0], shuffle_points = True )
+    def _profile_datasets( self, profile ) -> None:
+        for ds, set_name in enumerate( list( self._training_profiles[profile]['datasets'].values() ) ):
+            self._log.info( f"Adding data set {ds + 1} of {len( self._training_profiles[profile]['datasets'] )}" )
+            self._training_profiles[profile]['pc'].add_from_aftr_output( dir_path = f"{self._input_path}{set_name}", class_label = self._class_labels[0], shuffle_points = True )
 
-        print( '\nDataset added successfully:\n' )
-        print( self._pc.get_info() )
+        self._log.info( '\nDataset added successfully:\n' )
+        self._log.info( self._training_profiles[profile]['pc'].get_info() )
 
-    def _build_pointnet( self ):
+    def _build_pointnet( self, profile: str ):
 
-        model = PointNet( classification_output_width = len( self._class_labels ),
-                         segmentation_output_width = len( self._part_labels ), 
-                         dropout_rate = 0.3,
-                         random_seed = self._random_seed, 
-                         debugging = self._debugging )
-        
-        model.build(input_shape = (None, self._input_width, 3))
+        self._training_callbacks = []
+
+        if( self._pretrained_model != "" ):
+            
+            custom_objects = {
+                "PointNetSegmentation": PointNet.PointNet,
+                "TNet": PointNet.TNet,
+                "ConvLayer": PointNet.ConvLayer,
+                "DenseLayer": PointNet.DenseLayer
+            }
+
+            model = tf.keras.models.load_model(
+                f'{self._model_path}{self._pretrained_model}.keras',
+                custom_objects = custom_objects
+            )
+
+        else:
+
+            model = PointNet( classification_output_width = len( self._class_labels ),
+                            segmentation_output_width = len( self._part_labels ), 
+                            dropout_rate = 0.3,
+                            random_seed = self._random_seed, 
+                            debugging = self._debugging )
+            
+            model.build(input_shape = (None, self._input_width, 3))
 
         lr_schedule = keras.optimizers.schedules.ExponentialDecay(
             self._learning_rate,
@@ -179,8 +232,21 @@ class TrainProfile:
 
         model.compile(
             optimizer = optimizer,
-            loss = debug_loss if self._debugging else keras.losses.CategoricalCrossentropy( from_logits = True ),
-            metrics = [keras.metrics.CategoricalAccuracy()]
+            loss = {
+                'classification_output': keras.losses.CategoricalCrossentropy( from_logits = True ),
+                'segmentation_output': keras.losses.CategoricalCrossentropy( from_logits = True ),
+                'rotation_matrix': keras.losses.MeanSquaredError()
+            },
+            loss_weights = {
+                'classification_output': self._training_profiles[profile]['loss_weights']['classification'],
+                'segmentation_output': self._training_profiles[profile]['loss_weights']['segmentation'],
+                'rotation_matrix': self._training_profiles[profile]['loss_weights']['rotation']
+            },
+            metrics = {
+                'classification_output': [keras.metrics.CategoricalAccuracy()],
+                'segmentation_output': [keras.metrics.CategoricalAccuracy()],
+                'rotation_matrix': [keras.metrics.RootMeanSquaredError()]
+            }
         )
 
         self._training_callbacks.append( EarlyStopping(
@@ -193,7 +259,7 @@ class TrainProfile:
         return model
     
     def _advise_and_abort( self, msg: str ) -> None:
-        print( f"Error in TrainProfile:  {msg}" )
+        self._log.warning( f"Error in TrainProfile:  {msg}" )
         return None
 
 def train_pointnet_seg( *args, **kwargs ) -> bool:
@@ -231,6 +297,7 @@ def train_pointnet_seg( *args, **kwargs ) -> bool:
     for cf in configs:
         tp = TrainProfile( cf )
         if( type(tp) != None ):
+
             tp.train()
         else:   return False
 

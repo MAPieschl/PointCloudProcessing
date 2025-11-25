@@ -38,7 +38,7 @@ class PointCloudSet:
         self._class_labels = class_labels
         self._part_labels = part_labels
         self._network_input_width = network_input_width
-        self._jitter_stdev_m = jitter_stdev_m
+        self._jitter_stdev_m: np.ndarray = jitter_stdev_m
 
         if(type(rand_seed) == int):
             np.random.default_rng(seed = rand_seed)
@@ -355,7 +355,11 @@ class PointCloudSet:
         return observations, part_labels
     
     def _jitter_observation( self, obs: np.ndarray ):
-        noise = np.random.Generator.normal( loc = 0, scale = self._jitter_stdev_m, size = obs.shape )
+        rng = np.random.default_rng()
+        x_noise = rng.normal( loc = 0, scale = self._jitter_stdev_m[0], size = (obs.shape[0], obs.shape[1], 1) )
+        y_noise = rng.normal( loc = 0, scale = self._jitter_stdev_m[1], size = (obs.shape[0], obs.shape[1], 1) )
+        z_noise = rng.normal( loc = 0, scale = self._jitter_stdev_m[2], size = (obs.shape[0], obs.shape[1], 1) )
+        noise = np.concatenate([x_noise, y_noise, z_noise], axis = -1)
         return obs + noise
     
 ### FREE HELPER FUNCTIONS ###
@@ -384,12 +388,22 @@ if __name__ == "__main__":
     MESH_PATH = 'mesh/'
     FIGURE_PATH = 'figures/'
     DATA_PATH = 'data/'
-    PALINDROME_DATA_PATH = '/mnt/c/repos/aburn/usr/hub/palindrome_playground/DataCollect/'
+    PALINDROME_DATA_PATH = '/mnt/d/repos/aburn/usr/hub/palindrome_playground/DataCollect/'
     INPUT_SIZE = 4096
     RANDOM_SEED = 42
 
-    class_labels = ['kc46']
-    part_labels = ['fuselage', 'left_engine', 'right_engine', 'left_wing', 'right_wing', 'left_hstab', 'right_hstab', 'vstab', 'left_boom_stab', 'right_boom_stab', 'boom_wing', 'boom_hull', 'boom_hose']
-    pc = PointCloudSet(True, class_labels, part_labels, False, INPUT_SIZE, rand_seed = RANDOM_SEED, jitter_stdev_m = 0.1)
-    pc.add_from_aftr_output(f'{DATA_PATH}collect_2025.Nov.19_00.33.24.3472488.UTC', 'kc46')
+    class_labels = ["a-10", "airship", "b-1b", "b-2", "c-5", "c-12", "c-17a", "c-32", "c-130j", "drogue", "e-3", "f-15e", "f-16", "f-18e", "f-22", "g-iii", "kc-46",
+                    "kc-135", "lj-25", "lj-25_nosecone", "mig-29", "mq-20", "sr-71", "su-27", "vc-25a", "x-47b" ]
+    part_labels = ['fuselage', 'left_engine', 'right_engine', 'left_wing', 'right_wing', 'left_hstab', 'right_hstab', 'vstab', 'left_boom_stab', 'right_boom_stab', 
+                   'boom_wing', 'boom_hull', 'boom_hose']
+    pc = PointCloudSet(one_hot = True, 
+                       class_labels = class_labels, 
+                       part_labels = part_labels, 
+                       network_input_width = INPUT_SIZE, 
+                       rand_seed = RANDOM_SEED, 
+                       jitter_stdev_m = np.array( [ 0.1, 0.1, 0.1 ] ))
+    
+    pc.add_from_aftr_output(f'{PALINDROME_DATA_PATH}collect_2025.Nov.24_18.52.46.7947129.UTC', 'kc46')
+    pc.get_info()
+    pc.add_from_aftr_output(f'{PALINDROME_DATA_PATH}collect_2025.Nov.24_19.16.10.8395925.UTC', 'kc46')
     pc.get_info()
