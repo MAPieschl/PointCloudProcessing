@@ -1,3 +1,16 @@
+### For interactive mode, use the run commands below; this will prevent lengthy imports every time
+### the program runs (such as Tensorflow) -- recommend running from the terminal once fully tested
+### to avoid issues/limitations with the Jupyter environment
+###
+### The autoreload modes are:
+### - 0: no reloads
+### - 1: whitelisted reloads only (using %aimport module_name)
+### - 2: reload any module that has changed since the last import
+
+# %%
+%load_ext autoreload
+%autoreload 2
+
 print( "Importing packages..." )
 
 import sys
@@ -13,14 +26,15 @@ import onnx
 import traceback
 import logging
 import datetime
-
-from pointnet.PointNet import PointNet
-from point_cloud.PointCloudSet import PointCloudSet
+import importlib
 
 from tqdm import tqdm
 from tensorflow import keras
 from tensorflow.keras import Model
 from tensorflow.keras.callbacks import EarlyStopping
+
+from pointnet.PointNet import PointNet
+from pointcloud.PointCloudSet import PointCloudSet
 
 print( "Package import complete." )
 
@@ -67,20 +81,6 @@ class TrainProfile:
 
         # leave empty callback list (appended in _build_pointnet)
         self._training_callbacks = []
-
-        # create logger
-        dt = datetime.datetime.now()
-        self._log = logging.getLogger()
-        self._log.setLevel( logging.DEBUG )
-
-        console_handler = logging.StreamHandler()
-        file_handler = logging.FileHandler( f'{self._model_path}log_{dt.strftime( "%Y%m%d_%H:%M%S" )}.log' )
-
-        console_handler.setFormatter( logging.Formatter('%(name)s - %(levelname)s - %(message)s') )
-        file_handler.setFormatter( logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s') )
-
-        self._log.addHandler( console_handler )
-        self._log.addHandler( file_handler )
         
         # set debug mode
         if( self._debugging ): tf.config.run_functions_eagerly( True )
@@ -99,6 +99,20 @@ class TrainProfile:
         if( not os.path.isdir(self._specific_model_path) ):
             os.mkdir(self._specific_model_path)
 
+        # create logger
+        dt = datetime.datetime.now()
+        self._log = logging.getLogger()
+        self._log.setLevel( logging.DEBUG )
+
+        console_handler = logging.StreamHandler()
+        file_handler = logging.FileHandler( f'{self._specific_model_path}log_{dt.strftime( "%Y%m%d_%H:%M%S" )}.log' )
+
+        console_handler.setFormatter( logging.Formatter('%(name)s - %(levelname)s - %(message)s') )
+        file_handler.setFormatter( logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s') )
+
+        self._log.addHandler( console_handler )
+        self._log.addHandler( file_handler )
+
         # create a pc set and training subdirectory for each training step
         for prof in list(self._training_profiles.keys()):
 
@@ -107,12 +121,13 @@ class TrainProfile:
                                                                  class_labels = self._class_labels,
                                                                  part_labels = self._part_labels,
                                                                  network_input_width = self._input_width,
-                                                                 jitter_stdev_m = np.ndarray( [ self._training_profiles[prof]['noise']['x_stdev_n'], \
-                                                                                                self._training_profiles[prof]['noise']['y_stdev_n'], \
-                                                                                                self._training_profiles[prof]['noise']['z_stdev_n'] ] ),
+                                                                 jitter_stdev_m = np.array( [ self._training_profiles[prof]['noise']['x_stdev_m'], \
+                                                                                              self._training_profiles[prof]['noise']['y_stdev_m'], \
+                                                                                              self._training_profiles[prof]['noise']['z_stdev_m'] ] ),
                                                                  batch_size = 2,
                                                                  rand_seed = 42,
-                                                                 description = prof )
+                                                                 description = prof,
+                                                                 print_func = self._log.info )
             
             self._profile_datasets( prof )
 
@@ -259,11 +274,16 @@ class TrainProfile:
         return model
     
     def _advise_and_abort( self, msg: str ) -> None:
-        self._log.warning( f"Error in TrainProfile:  {msg}" )
+
+        try:
+            self._log.warning( f"Error in TrainProfile:  {msg}" )
+        except AttributeError:
+            print( f"Error in TrainProfile:  {msg}" )
+
         return None
 
 def train_pointnet_seg( *args, **kwargs ) -> bool:
-    configs = args[0][1:]
+    configs = [ i for i in args[0] if i.split( '.' )[-1] == 'json' ]
 
     if( len(configs) == 0 ):
         print_help()
@@ -307,8 +327,8 @@ def print_help():
     print(
         '''PointNetSegmentation Training Module\n\n
         This module is capable of training both new and pretrained PointNetSegmentation models. The configuration file 
-        must follow the examples/train_config_pointnet_segmentation_template.json provided. In its absense, here is an 
-        overview of the configuration file required to train a PointNetSegmentation Model:
+        must follow the examples/template_config.json provided. In its absense, here is an 
+        overview of the configuration file required to train a PointNet Model. NOTE:  The file name MUST end in {somename}_config.json:
         {
         \tinfo: {
         \t\tname: this will be the output name for model trained
@@ -345,6 +365,10 @@ def print_help():
     )
 
 if __name__=='__main__':
+    if( not any([ i.split('_')[-1] == 'config.json' for i in sys.argv ]) ):
+        sys.argv = ['test_config.json']
+        print( f"No config file found. Defaulting to: {sys.argv}" )
+
     if( train_pointnet_seg( sys.argv ) ):
         print( "Model training completed successfully." )
     else:

@@ -18,6 +18,7 @@ import tensorflow as tf
 
 from tqdm import tqdm
 from copy import deepcopy
+from collections.abc import Callable
 
 class PointCloudSet:
     def __init__(self,
@@ -30,7 +31,8 @@ class PointCloudSet:
                  test: float = 0.10,
                  batch_size: int = 32,
                  rand_seed = None,
-                 description: str = '',):
+                 description: str = '',
+                 print_func: Callable[[str], None] = print ):
         
         self._description = description
         self._batch_size = batch_size
@@ -39,6 +41,7 @@ class PointCloudSet:
         self._part_labels = part_labels
         self._network_input_width = network_input_width
         self._jitter_stdev_m: np.ndarray = jitter_stdev_m
+        self._print = print_func
 
         if(type(rand_seed) == int):
             np.random.default_rng(seed = rand_seed)
@@ -56,11 +59,11 @@ class PointCloudSet:
             self._test_amt = 0.10
             print('PointCloudSet:  train_val_test_split incorrect format - set to default 75% / 15% / 10%')
 
-        self._train = {'frame_id': [], 'observations': [], 'class_labels': [], 'part_labels': []}
-        self._val = {'frame_id': [], 'observations': [], 'class_labels': [], 'part_labels': []}
-        self._test = {'frame_id': [], 'observations': [], 'class_labels': [], 'part_labels': []}
+        self._train = {'frame_id': [], 'observations': [], 'class_labels': [], 'part_labels': [], 'rotation': []}
+        self._val = {'frame_id': [], 'observations': [], 'class_labels': [], 'part_labels': [], 'rotation': []}
+        self._test = {'frame_id': [], 'observations': [], 'class_labels': [], 'part_labels': [], 'rotation': []}
 
-    def add_from_aftr_output(self, dir_path: str, class_label: str, shuffle_points: bool = True):
+    def add_from_aftr_output( self, dir_path: str, shuffle_points: bool = True ) -> bool:
         '''
         Parses the standard SensorDatumLogger output.
 
@@ -78,47 +81,70 @@ class PointCloudSet:
         @return True if parsing is successful / False otherwise
         '''
 
-        frame_id = []
-        observations = []
-        class_labels = []
-        part_labels = []
+        has_class_labels: bool = False
+        has_part_labels: bool = False
 
-        frames_searched = 0
-        non_num_found = 0
+        frame_id: list[str] = []
+        observations: list[np.ndarray] = []
+        class_labels: list[str] = []
+        part_labels: list[str] = []
+        rotation: list[np.ndarray] = []
+
+        frames_searched: int = 0
+        non_num_found: int = 0
         
-        collect_contents = get_dir_contents(dir_path)
-        lidar_contents = get_dir_contents(f'{dir_path}/Virtual Flash Lidar')
+        collect_contents: list = get_dir_contents( dir_path )
+        lidar_contents = get_dir_contents( f'{dir_path}/Virtual Flash Lidar' )
 
-        print(f'Parsing frames in {dir_path}...')
-        for i in tqdm(range(len(lidar_contents))):
+        print( f'Parsing frames in {dir_path}...' )
+        for i in tqdm( range( len( lidar_contents ) ) ):
             try:
-                with open(f'{dir_path}/Virtual Flash Lidar/frame_{i}.txt', 'r') as f:
+                with open( f'{dir_path}/Virtual Flash Lidar/frame_{i}.txt', 'r' ) as f:
                     obs = []
-                    label = []
-                    for j, line in enumerate(f):
-                        line = line.strip().replace(" ", "")
-                        pos_start_idx = line.find('(')
-                        pos_end_idx = line.find(')')
+                    cl = []
+                    pl = []
+                    for j, line in enumerate( f ):
+                        line = line.strip()
 
-                        pos_str = line[pos_start_idx + 1:pos_end_idx].split(',')
+                        # parse position
+                        pos_start_idx = line.find( '(' )
+                        pos_end_idx = line.find( ')' )
+
+                        pos_str = line[pos_start_idx + 1:pos_end_idx].split( ',' )
                         pos = []
                         for val in pos_str:
-                            pos.append(float(val))
+                            pos.append( float( val ) )
+
+                        # parse labels
+                        labels = line[pos_end_idx + 1:].split( " " )
+
+                        # determine if dataset has class labels and part labels on first iteration
+                        if( j == 1 ):
+                            if( len( labels ) > 0 ):
+                                if( labels[0] in self._class_labels ):  has_class_labels = True
+                            else:
+                                print(  )
+                            if( len( labels ) > 1 ):
+                                if( labels )
 
                         if( np.isfinite( np.array( pos ) ).all() ):
-                            obs.append(np.array(pos))
-                            label.append(line[pos_end_idx + 1:])
+                            obs.append( np.array( pos ) )
+                            if( len( labels ) > 0 ): cl.append( labels[0] )
+                            if( len( labels ) > 1 ): pl.append( labels[1] )
                         else:
                             non_num_found += 1
 
                     if(len(obs) != 0):
-                        obs, label = self._adjust_to_input_width(np.array(obs), np.array(label))
+                        obs, cl, pl, rot = self._adjust_to_input_width( np.array( obs ), np.array( cl ), np.array( pl ), np.array( rot ) )
 
                         if( np.isfinite( obs ).all() ):
                             frame_id.append(i)
-                            observations.append(obs)
-                            class_labels.append(class_label)
-                            part_labels.append(label)
+                            observations.append( obs )
+                            class_labels.append( cl )
+                            part_labels.append( pl )
+                            rotations.append( rot )
+
+
                         else:
                             print( f'Per-line check failed - frame_{i} discarded after detecting non-finite value.' )
 
@@ -128,6 +154,8 @@ class PointCloudSet:
         self.add_data(np.array(frame_id), np.array(observations), np.array(class_labels), np.array(part_labels), shuffle_points)
             
         print(f'{dir_path} parsed:  found {len(frame_id)} valid frames out of {frames_searched} total. {non_num_found} total lines discarded for non-numeric values.')
+
+        return True
 
     def add_data(self, frame_id: np.ndarray, observations: np.ndarray, class_labels: np.ndarray, part_labels: np.ndarray, shuffle_points: bool = True):
 
@@ -322,37 +350,47 @@ class PointCloudSet:
 
         return np.array(labels_out)
     
-    def _adjust_to_input_width(self, observations: np.ndarray, part_labels: np.ndarray) -> tuple:
+    def _adjust_to_input_width( self,observations: np.ndarray, class_labels: np.ndarray, part_labels: np.ndarray, rotations: np.ndarray ) -> tuple:
         '''
         Adjusts the input parameters to a uniform arrays of length _network_input_width by either splicing the first 
         _network_input_width samples from the oversized array, or appending a uniform sampling of exiting points. This
         method ensures that points remain aligned with their label when duplicated
 
         @param observations (np.ndarray) (n,3)
+        @param class_labels (np.ndarray) (n,)
         @param part_labels  (np.ndarray) (n,)
+        @param rotation     (np.ndarray) (n,3,3)
 
         @return (observations (np.ndarray), part_labels(np.ndarray))
         '''
 
+        assert observations.shape[0] == class_labels.shape[0], f'The input arrays, observations and class_labels, must have equal length. Currently they are {observations.shape} and {class_labels.shape}, respectively'
         assert observations.shape[0] == part_labels.shape[0], f'The input arrays, observations and part_labels, must have equal length. Currently they are {observations.shape} and {part_labels.shape}, respectively'
+        assert observations.shape[0] == rotations.shape[0], f'The input arrays, observations and rotations, must have equal length. Currently they are {observations.shape} and {rotations.shape}, respectively'
 
         if(observations.shape[0] > self._network_input_width):
-            return observations[:self._network_input_width], part_labels[:self._network_input_width]
+            return observations[:self._network_input_width], class_labels[:self._network_input_width], part_labels[:self._network_input_width], rotations[:self._network_input_width]
         
         else:
             repeated_indices = np.random.uniform(0, observations.shape[0], self._network_input_width - observations.shape[0])
             repeated_indices = repeated_indices.astype(np.int_)
 
             additional_obs = deepcopy(observations[repeated_indices])
+            additional_cl = deepcopy(class_labels[repeated_indices])
             additional_pl = deepcopy(part_labels[repeated_indices])
+            additional_rot = deepcopy(rotations[repeated_indices])
 
             observations = np.concatenate((observations, additional_obs), axis = 0)
+            class_labels = np.concatenate((class_labels, additional_cl), axis = 0)
             part_labels = np.concatenate((part_labels, additional_pl), axis = 0)
+            rotations = np.concatenate((rotations, additional_rot), axis = 0)
 
         assert observations.shape[0] == self._network_input_width, f'Failed to adjust observations to the network input width - should be {self._network_input_width}, not {observations.shape}'
+        assert class_labels.shape[0] == self._network_input_width, f'Failed to adjust class_labels to the network input width - should be {self._network_input_width}, not {class_labels.shape}'
         assert part_labels.shape[0] == self._network_input_width, f'Failed to adjust part_labels to the network input width - should be {self._network_input_width}, not {part_labels.shape}'
+        assert rotations.shape[0] == self._network_input_width, f'Failed to adjust rotations to the network input width - should be {self._network_input_width}, not {rotations.shape}'
 
-        return observations, part_labels
+        return observations, class_labels, part_labels, rotations
     
     def _jitter_observation( self, obs: np.ndarray ):
         rng = np.random.default_rng()

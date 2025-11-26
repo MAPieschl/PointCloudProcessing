@@ -48,28 +48,7 @@
             "tnet_train": {
                 "datasets": {
                     "0": "collect_2025.Nov.24_15.47.57.5524625.UTC",
-                    "1": "collect_2025.Nov.24_15.55.18.9256538.UTC",
-                    "2": "collect_2025.Nov.24_15.59.40.1348138.UTC",
-                    "3": "collect_2025.Nov.24_16.48.26.1897129.UTC",
-                    "4": "collect_2025.Nov.24_16.52.44.6435795.UTC",
-                    "5": "collect_2025.Nov.24_17.27.47.1515305.UTC",
-                    "6": "collect_2025.Nov.24_17.49.21.5883738.UTC",
-                    "7": "collect_2025.Nov.24_18.30.49.8439054.UTC",
-                    "8": "collect_2025.Nov.24_18.52.46.7947129.UTC",
-                    "9": "collect_2025.Nov.24_19.10.16.2125631.UTC",
-                    "10": "collect_2025.Nov.24_19.16.10.8395925.UTC",
-                    "11": "collect_2025.Nov.24_19.34.08.0974513.UTC",
-                    "12": "collect_2025.Nov.24_19.47.10.8025460.UTC",
-                    "13": "collect_2025.Nov.24_19.53.20.0352006.UTC",
-                    "14": "collect_2025.Nov.24_20.54.56.2390619.UTC",
-                    "15": "collect_2025.Nov.24_21.02.27.3469410.UTC",
-                    "16": "collect_2025.Nov.24_21.08.29.9771635.UTC",
-                    "17": "collect_2025.Nov.24_21.14.36.7288392.UTC",
-                    "18": "collect_2025.Nov.24_21.20.26.6812324.UTC",
-                    "19": "collect_2025.Nov.24_21.40.00.9439030.UTC",
-                    "20": "collect_2025.Nov.25_12.44.30.1940838.UTC",
-                    "21": "collect_2025.Nov.25_13.05.44.5925888.UTC",
-                    "22": "collect_2025.Nov.25_13.12.04.1835786.UTC"
+                    "1": "collect_2025.Nov.24_15.55.18.9256538.UTC"
                 },
                 "noise": {
                     "x_stdev_m": 0.1,
@@ -90,7 +69,8 @@
             },
             "class_train": {
                 "datasets": {
-                    "0": ""
+                    "0": "collect_2025.Nov.24_15.47.57.5524625.UTC",
+                    "1": "collect_2025.Nov.24_15.55.18.9256538.UTC"
                 },
                 "noise": {
                     "x_stdev_m": 0.1,
@@ -148,6 +128,6 @@
     },
     "file_system": {
         "model_path": "models/",
-        "input_path": "/mnt/d/repos/aburn/usr/hub/palindrome_playground/DataCollect/"
+        "input_path": "data/"
     }
 }

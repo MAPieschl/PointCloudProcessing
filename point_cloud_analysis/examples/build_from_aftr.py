@@ -1,4 +1,4 @@
-import point_cloud.PointCloudSet as PointCloudSet
+import pointcloud.PointCloudSet as PointCloudSet
 import pickle
 import sys
 import os
