@@ -1,0 +1,4 @@
+# SE3 matrix constants
+SE3_ROWS = 4
+SE3_COLS = 4
+SE3_SIZE = SE3_ROWS * SE3_COLS

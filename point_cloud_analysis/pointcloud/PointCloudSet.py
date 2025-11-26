@@ -15,6 +15,7 @@ import sys
 import numpy as np
 import pandas as pd
 import tensorflow as tf
+import utils.global_constants as gc
 
 from tqdm import tqdm
 from copy import deepcopy
@@ -41,7 +42,7 @@ class PointCloudSet:
         self._part_labels = part_labels
         self._network_input_width = network_input_width
         self._jitter_stdev_m: np.ndarray = jitter_stdev_m
-        self._print = self._print_func
+        self._print = print_func
 
         if(type(rand_seed) == int):
             np.random.default_rng(seed = rand_seed)
@@ -59,9 +60,9 @@ class PointCloudSet:
             self._test_amt = 0.10
             self._print('PointCloudSet:  train_val_test_split incorrect format - set to default 75% / 15% / 10%')
 
-        self._train = {'frame_id': [], 'observations': [], 'class_labels': [], 'part_labels': [], 'rotation': []}
-        self._val = {'frame_id': [], 'observations': [], 'class_labels': [], 'part_labels': [], 'rotation': []}
-        self._test = {'frame_id': [], 'observations': [], 'class_labels': [], 'part_labels': [], 'rotation': []}
+        self._train = {'frame_id': [], 'observations': [], 'class_labels': [], 'part_labels': [], 'se3': []}
+        self._val = {'frame_id': [], 'observations': [], 'class_labels': [], 'part_labels': [], 'se3': []}
+        self._test = {'frame_id': [], 'observations': [], 'class_labels': [], 'part_labels': [], 'se3': []}
 
     def add_from_aftr_output( self, dir_path: str, shuffle_points: bool = True ) -> bool:
         '''
@@ -83,18 +84,28 @@ class PointCloudSet:
 
         has_class_labels: bool = False
         has_part_labels: bool = False
+        has_state_info: bool = False
 
         frame_id: list[str] = []
         observations: list[np.ndarray] = []
         class_labels: list[str] = []
         part_labels: list[str] = []
-        rotation: list[np.ndarray] = []
+        se3: list[np.ndarray] = []
 
         frames_searched: int = 0
         non_num_found: int = 0
         
-        collect_contents: list = get_dir_contents( dir_path )
-        lidar_contents = get_dir_contents( f'{dir_path}/Virtual Flash Lidar' )
+        collect_contents: list[str] = get_dir_contents( dir_path )
+        lidar_contents: list[str] = get_dir_contents( f'{dir_path}/Virtual Flash Lidar' )
+
+        # treat the log file (containing pose information) as a csv and import into a pandas dataframe
+        pose_log: list[str] = [ i for i in collect_contents if '_palindrome_state' in i ]
+        if( len( pose_log ) == 1 ):
+            state_info: dict = self._parse_state_info( f'{dir_path}/{pose_log[0]}' )
+            has_state_info = True
+        else:
+            state_info: dict = {}
+            self._print( f"No pose information file (which must contain the substring '_palindrome_state') was found. No rotation information will be recorded from data collect." )
 
         self._print( f'Parsing frames in {dir_path}...' )
         for i in tqdm( range( len( lidar_contents ) ) ):
@@ -103,6 +114,7 @@ class PointCloudSet:
                     obs = []
                     cl = []
                     pl = []
+                    se = []
                     for j, line in enumerate( f ):
                         line = line.strip()
 
@@ -140,6 +152,9 @@ class PointCloudSet:
                                     obs.append( np.array( pos ) )
                                     cl.append( labels[0] )
 
+                                if( has_state_info ):
+                                    se.append( state_info[i]['tanker_in_sensor_frame'] )
+
                             # add data here if both a valid class and part label exist
                             elif( len( labels ) > 1 and has_class_labels and has_part_labels ):
 
@@ -149,20 +164,23 @@ class PointCloudSet:
                                     cl.append( labels[0] )
                                     pl.append( labels[1] )
 
+                                if( has_state_info ):
+                                    se.append( state_info[i]['tanker_in_sensor_frame'] )
+
                             else:
                                 self._print( f'No valid class or part label found for frameID {dir_path}_frame_{i}, line {j}' )
                         else:
                             non_num_found += 1
 
                     if(len(obs) != 0):
-                        obs, cl, pl, rot = self._adjust_to_input_width( np.array( obs ), np.array( cl ), np.array( pl ), np.array( rot ) )
+                        obs, cl, pl, se = self._adjust_to_input_width( np.array( obs ), np.array( cl ), np.array( pl ), np.array( se ) )
 
                         if( np.isfinite( obs ).all() ):
                             frame_id.append( f"{dir_path}_frame_{i}" )
                             observations.append( obs )
                             class_labels.append( cl )
                             part_labels.append( pl )
-                            rotations.append( rot )
+                            se3.append( se )
 
 
                         else:
@@ -412,7 +430,7 @@ class PointCloudSet:
 
         return observations, class_labels, part_labels, rotations
     
-    def _jitter_observation( self, obs: np.ndarray ):
+    def _jitter_observation( self, obs: np.ndarray ) -> np.ndarray:
         rng = np.random.default_rng()
         x_noise = rng.normal( loc = 0, scale = self._jitter_stdev_m[0], size = (obs.shape[0], obs.shape[1], 1) )
         y_noise = rng.normal( loc = 0, scale = self._jitter_stdev_m[1], size = (obs.shape[0], obs.shape[1], 1) )
@@ -420,6 +438,43 @@ class PointCloudSet:
         noise = np.concatenate([x_noise, y_noise, z_noise], axis = -1)
         return obs + noise
     
+    def _parse_state_info( self, filepath: str ) -> dict:
+
+        with open( filepath, 'r' ) as f:
+
+            # SE3 matrix constants
+            SE3_ROWS = 4
+            SE3_COLS = 4
+            SE3_SIZE = SE3_ROWS * SE3_COLS
+
+            # get the descriptor line
+            keys = f.readline().strip().split( "   " )
+
+            # removes unnecessary '' characters
+            keys = [ i for i in keys if len( i ) > 1 ]
+
+            # readline above incremented the iterator - this will grab the data only
+            data: dict = {}
+            for line in f:
+                data_line = line.strip().split( " " )
+                data[ int( data_line[1] ) ] = {}
+
+                data[ int( data_line[1] ) ][ keys[0] ] = data_line[0]
+                data[ int( data_line[1] ) ][ keys[1] ] = data_line[1]
+
+                for i, key in enumerate( keys[2:] ):
+                    cols = []
+                    for col in range( SE3_COLS ):
+                        cols.append( data_line[ 2 + i * SE3_SIZE + col * SE3_ROWS : 2 + i * SE3_SIZE + ( col + 1 ) * SE3_ROWS ] )
+                    data[ int( data_line[1] ) ][ key ] = np.array( cols, dtype = np.float64 ).T
+                
+                if( 'Sensor Pose' in keys and 'Tanker Pose' in keys ):
+                    so3 = data[ int( data_line[1] ) ]['Sensor Pose'][:3, :3].T @ data[ int( data_line[1] ) ]['Tanker Pose'][:3, :3]
+                    t_t_s = data[ int( data_line[1] ) ]['Sensor Pose'][:3, :3].T @ ( data[ int( data_line[1] ) ]['Tanker Pose'][:3, 3:] - data[ int( data_line[1] ) ]['Sensor Pose'][:3, 3:] )
+                    data[ int( data_line[1] ) ]['tanker_in_sensor_frame'] = np.concatenate( [so3, t_t_s], axis = 1 )
+        
+        return data
+
 ### FREE HELPER FUNCTIONS ###
 def get_dir_contents(dir_path: str) -> list:
 
