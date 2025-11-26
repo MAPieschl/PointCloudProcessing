@@ -41,7 +41,7 @@ class PointCloudSet:
         self._part_labels = part_labels
         self._network_input_width = network_input_width
         self._jitter_stdev_m: np.ndarray = jitter_stdev_m
-        self._print = print_func
+        self._print = self._print_func
 
         if(type(rand_seed) == int):
             np.random.default_rng(seed = rand_seed)
@@ -57,7 +57,7 @@ class PointCloudSet:
             self._train_amt = 0.75
             self._val_amt = 0.15
             self._test_amt = 0.10
-            print('PointCloudSet:  train_val_test_split incorrect format - set to default 75% / 15% / 10%')
+            self._print('PointCloudSet:  train_val_test_split incorrect format - set to default 75% / 15% / 10%')
 
         self._train = {'frame_id': [], 'observations': [], 'class_labels': [], 'part_labels': [], 'rotation': []}
         self._val = {'frame_id': [], 'observations': [], 'class_labels': [], 'part_labels': [], 'rotation': []}
@@ -96,7 +96,7 @@ class PointCloudSet:
         collect_contents: list = get_dir_contents( dir_path )
         lidar_contents = get_dir_contents( f'{dir_path}/Virtual Flash Lidar' )
 
-        print( f'Parsing frames in {dir_path}...' )
+        self._print( f'Parsing frames in {dir_path}...' )
         for i in tqdm( range( len( lidar_contents ) ) ):
             try:
                 with open( f'{dir_path}/Virtual Flash Lidar/frame_{i}.txt', 'r' ) as f:
@@ -119,18 +119,38 @@ class PointCloudSet:
                         labels = line[pos_end_idx + 1:].split( " " )
 
                         # determine if dataset has class labels and part labels on first iteration
-                        if( j == 1 ):
+                        if( j == 0 ):
                             if( len( labels ) > 0 ):
                                 if( labels[0] in self._class_labels ):  has_class_labels = True
                             else:
-                                print(  )
+                                self._print( f"The first class label identified ({labels[0]}) is not in PointCloudSet._class_labels. Ignoring class labels for this set." )
                             if( len( labels ) > 1 ):
-                                if( labels )
+                                if( labels[1] in self._part_labels ): has_part_labels = True
+                            else:
+                                self._print( f"The first class label identified ({labels[0]}) is not in PointCloudSet._class_labels. Ignoring class labels for this set." )
 
+                        # check for non-numeric values
                         if( np.isfinite( np.array( pos ) ).all() ):
-                            obs.append( np.array( pos ) )
-                            if( len( labels ) > 0 ): cl.append( labels[0] )
-                            if( len( labels ) > 1 ): pl.append( labels[1] )
+
+                            # add data here if a valid class label exists, but no part label
+                            if( len( labels ) > 0 and has_class_labels and not has_part_labels ):
+
+                                # check for valid class label
+                                if( labels[0] in self._class_labels ):
+                                    obs.append( np.array( pos ) )
+                                    cl.append( labels[0] )
+
+                            # add data here if both a valid class and part label exist
+                            elif( len( labels ) > 1 and has_class_labels and has_part_labels ):
+
+                                # check for valid class and part labels
+                                if( labels[0] in self._class_labels and labels[1] in self._part_labels ):
+                                    obs.append( np.array( pos ) )
+                                    cl.append( labels[0] )
+                                    pl.append( labels[1] )
+
+                            else:
+                                self._print( f'No valid class or part label found for frameID {dir_path}_frame_{i}, line {j}' )
                         else:
                             non_num_found += 1
 
@@ -138,7 +158,7 @@ class PointCloudSet:
                         obs, cl, pl, rot = self._adjust_to_input_width( np.array( obs ), np.array( cl ), np.array( pl ), np.array( rot ) )
 
                         if( np.isfinite( obs ).all() ):
-                            frame_id.append(i)
+                            frame_id.append( f"{dir_path}_frame_{i}" )
                             observations.append( obs )
                             class_labels.append( cl )
                             part_labels.append( pl )
@@ -146,14 +166,14 @@ class PointCloudSet:
 
 
                         else:
-                            print( f'Per-line check failed - frame_{i} discarded after detecting non-finite value.' )
+                            self._print( f'Per-line check failed - frame_{i} discarded after detecting non-finite value.' )
 
             except:
                 if(frames_searched == 0): frames_searched = i
 
         self.add_data(np.array(frame_id), np.array(observations), np.array(class_labels), np.array(part_labels), shuffle_points)
             
-        print(f'{dir_path} parsed:  found {len(frame_id)} valid frames out of {frames_searched} total. {non_num_found} total lines discarded for non-numeric values.')
+        self._print(f'{dir_path} parsed:  found {len(frame_id)} valid frames out of {frames_searched} total. {non_num_found} total lines discarded for non-numeric values.')
 
         return True
 
@@ -187,7 +207,7 @@ class PointCloudSet:
         part_labels = part_labels[indices]
         
         if(not (frame_id.shape[0] == observations.shape[0] and frame_id.shape[0] == class_labels.shape[0] and frame_id.shape[0] == part_labels.shape[0])):
-            print(f"Number of observations must be equal to the number of labels and number of view_points. Point clouds discarded.")
+            self._print(f"Number of observations must be equal to the number of labels and number of view_points. Point clouds discarded.")
             return
         
         splits = [(0, int(np.ceil(observations.shape[0] * self._test_amt))),
@@ -218,7 +238,7 @@ class PointCloudSet:
     
     def get_train_seg_set(self):
         labels = np.array(self._train['part_labels']) if not self._one_hot else self._one_hot_encode_part_labels(self._train['part_labels'])
-        print(f"Training data size:  obs = {np.array(self._train['observations']).shape} | labels = {np.array(self._train['part_labels']).shape} ")
+        self._print(f"Training data size:  obs = {np.array(self._train['observations']).shape} | labels = {np.array(self._train['part_labels']).shape} ")
         return tf.data.Dataset.from_tensor_slices((np.array(self._train['observations']), labels)).batch(batch_size = self._batch_size)
 
     def get_train_tnet_set(self):
@@ -230,7 +250,7 @@ class PointCloudSet:
     
     def get_val_seg_set(self):
         labels = np.array(self._val['part_labels']) if not self._one_hot else self._one_hot_encode_part_labels(self._val['part_labels'])
-        print(f"Validation data size:  obs = {np.array(self._val['observations']).shape} | labels = {np.array(self._val['part_labels']).shape} ")
+        self._print(f"Validation data size:  obs = {np.array(self._val['observations']).shape} | labels = {np.array(self._val['part_labels']).shape} ")
         return tf.data.Dataset.from_tensor_slices((np.array(self._val['observations']), labels)).batch(batch_size = self._batch_size)
     
     def get_val_tnet_set(self):
@@ -409,13 +429,13 @@ def get_dir_contents(dir_path: str) -> list:
         else:               return contents
 
     except FileNotFoundError:
-        print(f"Error: The directory '{dir_path}' was not found.", file = sys.stderr)
+        self._print(f"Error: The directory '{dir_path}' was not found.", file = sys.stderr)
     except NotADirectoryError:
-        print(f"Error: The path '{dir_path}' is not a directory.", file = sys.stderr)
+        self._print(f"Error: The path '{dir_path}' is not a directory.", file = sys.stderr)
     except PermissionError:
-        print(f"Error: Permission denied to read '{dir_path}'.", file = sys.stderr)
+        self._print(f"Error: Permission denied to read '{dir_path}'.", file = sys.stderr)
     except Exception as e:
-        print(f"An error occurred: {e}", file = sys.stderr)
+        self._print(f"An error occurred: {e}", file = sys.stderr)
 
     return []
 
