@@ -9,21 +9,9 @@ By:     Mike Pieschl
 Date:   31 July 2025
 '''
 
-### For interactive mode, use the run commands below; this will prevent lengthy imports every time
-### the program runs (such as Tensorflow) -- recommend running from the terminal once fully tested
-### to avoid issues/limitations with the Jupyter environment
-###
-### The autoreload modes are:
-### - 0: no reloads
-### - 1: whitelisted reloads only (using %aimport module_name)
-### - 2: reload any module that has changed since the last import
-
-# %%
-%load_ext autoreload
-%autoreload 2
-
 import os
 import sys
+sys.path.append('')
 
 import numpy as np
 import pandas as pd
@@ -95,9 +83,9 @@ class PointCloudSet:
         @return True if parsing is successful / False otherwise
         '''
 
-        has_class_labels: bool = False
-        has_part_labels: bool = False
-        has_state_info: bool = False
+        has_class_labels = None
+        has_part_labels = None
+        has_state_info = None
 
         frame_id: list[str] = []
         observations: list[np.ndarray] = []
@@ -118,6 +106,7 @@ class PointCloudSet:
             has_state_info = True
         else:
             state_info: dict = {}
+            has_state_info = False
             self._print( f"No pose information file (which must contain the substring '_palindrome_state') was found. No pose information will be recorded from data collect." )
 
         self._print( f'Parsing frames in {dir_path}...' )
@@ -143,16 +132,23 @@ class PointCloudSet:
                         # parse labels
                         labels = line[pos_end_idx + 1:].split( " " )
 
+                        # removes unnecessary '' characters
+                        labels = [ l for l in labels if len( l ) > 1 ]
+
                         # determine if dataset has class labels and part labels on first iteration
-                        if( j == 0 ):
+                        if( type( has_class_labels ) == type( None ) and type( has_part_labels ) == type( None ) ):
+
                             if( len( labels ) > 0 ):
                                 if( labels[0] in self._class_labels ):  has_class_labels = True
                             else:
-                                self._print( f"The first class label identified ({labels[0]}) is not in PointCloudSet._class_labels. Ignoring class labels for this set." )
+                                has_class_labels = False
+                                self._print( f"No class labels found in {dir_path}. Ignoring class labels for this set." )
+                            
                             if( len( labels ) > 1 ):
                                 if( labels[1] in self._part_labels ): has_part_labels = True
                             else:
-                                self._print( f"The first class label identified ({labels[0]}) is not in PointCloudSet._class_labels. Ignoring class labels for this set." )
+                                has_part_labels = False
+                                self._print( f"No part labels found in {dir_path}. Ignoring part labels for this set." )
 
                         # check for non-numeric values
                         if( np.isfinite( np.array( pos ) ).all() ):
@@ -200,6 +196,7 @@ class PointCloudSet:
 
             except:
                 if( frames_searched == 0 ): frames_searched = i
+                self._print( f"Failed to add file {dir_path}/Virtual Flash Lidar/frame_{i}.txt" )
 
         self.add_data( np.array( frame_id ), np.array( observations ), np.array( class_labels ), np.array( part_labels ), np.array( se3 ), shuffle_points )
             
@@ -213,7 +210,7 @@ class PointCloudSet:
         set during object instantiation. Optional shuffle parameter shuffles only the newly input data and ensures alignment of
         parallel input arrays.
 
-        @param frame_id         (np.ndarray[str])   (num_pc, n)
+        @param frame_id         (np.ndarray[str])   (num_pc,)
         @param observations     (np.ndarray)        (num_pc, n, 3)
         @param class_labels     (np.ndarray[str])   (num_pc, n)
         @param part_labels      (np.ndarray[str])   (num_pc, n)
@@ -222,13 +219,7 @@ class PointCloudSet:
 
         @return None
         '''
-
-        error_string = f'One or more of the inputs has incorrect shape:\n\tframe_id.shape = {frame_id.shape}\n\tobservations.shape = {observations.shape}\n\tclass_labels.shape = {class_labels.shape}\n\tpart_labels.shape = {part_labels.shape}'
-        assert frame_id.shape == observations.shape, error_string
-        assert frame_id.shape == class_labels.shape, error_string
-        assert frame_id.shape[0] == part_labels.shape[0], error_string
-        assert frame_id.shape[0] == se3.shape[0], error_string
-
+        
         # Jitter points
         observations = self._jitter_observation( observations )
 
@@ -280,7 +271,8 @@ class PointCloudSet:
     def get_train_set( self ):
         class_labels = np.array( self._train['class_labels'] ) if not self._one_hot else self._one_hot_encode_class_labels( self._train['class_labels'] )
         part_labels = np.array( self._train['part_labels'] ) if not self._one_hot else self._one_hot_encode_class_labels( self._train['part_labels'] )
-        return tf.data.Dataset.from_tensor_slices( ( np.array( self._train['observations'] ), class_labels, part_labels, np.array( self._train['se3'] ) ) ).batch( batch_size = self._batch_size )
+        self._print( ".get_train_set() is only emitting the upper-left 3x3 of the SE3 matrix" )
+        return tf.data.Dataset.from_tensor_slices( ( np.array( self._train['observations'] ), class_labels, part_labels, np.array( self._train['se3'][:3, :3] ) ) ).batch( batch_size = self._batch_size )
 
     def get_train_class_set( self ):
         labels = np.array( self._train['class_labels'] ) if not self._one_hot else self._one_hot_encode_class_labels( self._train['class_labels'] )
@@ -296,7 +288,8 @@ class PointCloudSet:
     def get_val_set( self ):
         class_labels = np.array( self._val['class_labels'] ) if not self._one_hot else self._one_hot_encode_class_labels( self._val['class_labels'] )
         part_labels = np.array( self._val['part_labels'] ) if not self._one_hot else self._one_hot_encode_class_labels( self._val['part_labels'] )
-        return tf.data.Dataset.from_tensor_slices( ( np.array( self._val['observations'] ), class_labels, part_labels, np.array( self._val['se3'] ) ) ).batch( batch_size = self._batch_size )
+        self._print( ".get_val_set() is only emitting the upper-left 3x3 of the SE3 matrix" )        
+        return tf.data.Dataset.from_tensor_slices( ( np.array( self._val['observations'] ), class_labels, part_labels, np.array( self._val['se3'][:3, :3] ) ) ).batch( batch_size = self._batch_size )
 
     def get_val_class_set( self ):
         labels = np.array( self._val['class_labels'] ) if not self._one_hot else self._one_hot_encode_class_labels( self._val['class_labels'] )
@@ -327,7 +320,8 @@ class PointCloudSet:
     def get_test_set( self ):
         class_labels = np.array( self._test['class_labels'] ) if not self._one_hot else self._one_hot_encode_class_labels( self._test['class_labels'] )
         part_labels = np.array( self._test['part_labels'] ) if not self._one_hot else self._one_hot_encode_class_labels( self._test['part_labels'] )
-        return tf.data.Dataset.from_tensor_slices( ( np.array( self._test['observations'] ), class_labels, part_labels, np.array( self._test['se3'] ) ) ).batch( batch_size = self._batch_size )
+        self._print( ".get_test_set() is only emitting the upper-left 3x3 of the SE3 matrix" )
+        return tf.data.Dataset.from_tensor_slices( ( np.array( self._test['observations'] ), class_labels, part_labels, np.array( self._test['se3'][:3, :3] ) ) ).batch( batch_size = self._batch_size )
 
     def get_test_class_set( self ):
         labels = np.array( self._test['class_labels'] ) if not self._one_hot else self._one_hot_encode_class_labels( self._test['class_labels'] )
@@ -441,25 +435,19 @@ class PointCloudSet:
 
         return np.array(labels_out)
     
-    def _adjust_to_input_width( self, frame_id: np.ndarray, observations: np.ndarray, class_labels: np.ndarray, part_labels: np.ndarray, se3: np.ndarray ) -> tuple:
+    def _adjust_to_input_width( self, observations: np.ndarray, class_labels: np.ndarray, part_labels: np.ndarray, se3: np.ndarray ) -> tuple:
         '''
         Adjusts the input parameters to a uniform arrays of length _network_input_width by either splicing the first 
         _network_input_width samples from the oversized array, or appending a uniform sampling of exiting points. This
         method ensures that points remain aligned with their label when duplicated
 
-        @param frame_id     (np.ndarray) (n,)
         @param observations (np.ndarray) (n,3)
         @param class_labels (np.ndarray) (n,)
         @param part_labels  (np.ndarray) (n,)
         @param rotation     (np.ndarray) (n,3,3)
 
-        @return (observations (np.ndarray), part_labels(np.ndarray))
+        @return (observations (np.ndarray), class_labels(np.ndarray), part_labels(np.ndarray), se3(np.ndarray))
         '''
-
-        assert frame_id.shape[0] == observations.shape[0],f'The input arrays, observations and class_labels, must have equal length. Currently they are {frame_id.shape} and {observations.shape}, respectively'
-        assert frame_id.shape[0] == class_labels.shape[0], f'The input arrays, observations and class_labels, must have equal length. Currently they are {frame_id.shape} and {class_labels.shape}, respectively'
-        assert frame_id.shape[0] == part_labels.shape[0], f'The input arrays, observations and part_labels, must have equal length. Currently they are {frame_id.shape} and {part_labels.shape}, respectively'
-        assert frame_id.shape[0] == se3.shape[0], f'The input arrays, observations and se3, must have equal length. Currently they are {frame_id.shape} and {se3.shape}, respectively'
 
         if( observations.shape[0] > self._network_input_width ):
             return observations[:self._network_input_width], class_labels[:self._network_input_width], part_labels[:self._network_input_width], se3[:self._network_input_width]
@@ -468,23 +456,24 @@ class PointCloudSet:
             repeated_indices = np.random.uniform( 0, observations.shape[0], self._network_input_width - observations.shape[0] )
             repeated_indices = repeated_indices.astype(np.int_)
 
-            additional_frm = deepcopy( frame_id[repeated_indices] )
             additional_obs = deepcopy( observations[repeated_indices] )
-            additional_cl = deepcopy( class_labels[repeated_indices] )
-            additional_pl = deepcopy( part_labels[repeated_indices] )
-            additional_se3 = deepcopy( se3[repeated_indices] )
-
-            frame_id = np.concatenate( ( frame_id, additional_frm ), axis = 0 )
             observations = np.concatenate( ( observations, additional_obs ), axis = 0 )
-            class_labels = np.concatenate( ( class_labels, additional_cl ), axis = 0 )
-            part_labels = np.concatenate( ( part_labels, additional_pl ), axis = 0 )
-            se3 = np.concatenate( ( se3, additional_se3 ), axis = 0 )
+            assert observations.shape[0] == self._network_input_width, f'Failed to adjust observations to the network input width - should be {self._network_input_width}, not {observations.shape[0]}'
 
-        assert frame_id.shape[0] == self._network_input_width, f'Failed to adjust frame_id to the network input width - should be {self._network_input_width}, not {frame_id.shape[0]}'
-        assert observations.shape[0] == self._network_input_width, f'Failed to adjust observations to the network input width - should be {self._network_input_width}, not {observations.shape[0]}'
-        assert class_labels.shape[0] == self._network_input_width, f'Failed to adjust class_labels to the network input width - should be {self._network_input_width}, not {class_labels.shape[0]}'
-        assert part_labels.shape[0] == self._network_input_width, f'Failed to adjust part_labels to the network input width - should be {self._network_input_width}, not {part_labels.shape[0]}'
-        assert se3.shape[0] == self._network_input_width, f'Failed to adjust rotations to the network input width - should be {self._network_input_width}, not {se3.shape[0]}'
+            if( len( class_labels ) > 0 ):
+                additional_cl = deepcopy( class_labels[repeated_indices] )
+                class_labels = np.concatenate( ( class_labels, additional_cl ), axis = 0 )
+                assert class_labels.shape[0] == self._network_input_width, f'Failed to adjust class_labels to the network input width - should be {self._network_input_width}, not {class_labels.shape[0]}'
+
+            if( len( part_labels ) > 0 ):
+                additional_pl = deepcopy( part_labels[repeated_indices] )
+                part_labels = np.concatenate( ( part_labels, additional_pl ), axis = 0 )
+                assert part_labels.shape[0] == self._network_input_width, f'Failed to adjust part_labels to the network input width - should be {self._network_input_width}, not {part_labels.shape[0]}'
+
+            if( len( se3 ) > 0 ):
+                additional_se3 = deepcopy( se3[repeated_indices] )
+                se3 = np.concatenate( ( se3, additional_se3 ), axis = 0 )
+                assert se3.shape[0] == self._network_input_width, f'Failed to adjust rotations to the network input width - should be {self._network_input_width}, not {se3.shape[0]}'
 
         return observations, class_labels, part_labels, se3
     
@@ -540,7 +529,8 @@ class PointCloudSet:
                 if( 'Sensor Pose' in keys and 'Tanker Pose' in keys ):
                     so3 = data[ int( data_line[1] ) ]['Sensor Pose'][:3, :3].T @ data[ int( data_line[1] ) ]['Tanker Pose'][:3, :3]
                     t_t_s = data[ int( data_line[1] ) ]['Sensor Pose'][:3, :3].T @ ( data[ int( data_line[1] ) ]['Tanker Pose'][:3, 3:] - data[ int( data_line[1] ) ]['Sensor Pose'][:3, 3:] )
-                    data[ int( data_line[1] ) ]['tanker_in_sensor_frame'] = np.concatenate( [so3, t_t_s], axis = 1 )
+                    se3_partial = np.concatenate( [so3, t_t_s], axis = 1 )
+                    data[ int( data_line[1] ) ]['tanker_in_sensor_frame'] = np.concatenate( [se3_partial, np.array( [[0, 0, 0, 1]] )], axis = 0 )
         
         return data
 
@@ -584,7 +574,9 @@ if __name__ == "__main__":
                        rand_seed = RANDOM_SEED, 
                        jitter_stdev_m = np.array( [ 0.1, 0.1, 0.1 ] ))
     
-    pc.add_from_aftr_output(f'{PALINDROME_DATA_PATH}collect_2025.Nov.24_18.52.46.7947129.UTC', 'kc46')
+    pc.add_from_aftr_output(f'{DATA_PATH}collect_2025.Nov.24_15.47.57.5524625.UTC')
     pc.get_info()
-    pc.add_from_aftr_output(f'{PALINDROME_DATA_PATH}collect_2025.Nov.24_19.16.10.8395925.UTC', 'kc46')
+    pc.add_from_aftr_output(f'{DATA_PATH}collect_2025.Nov.24_15.55.18.9256538.UTC')
+    pc.get_info()
+    pc.add_from_aftr_output(f'{DATA_PATH}collect_2025.Nov.25_13.12.04.1835786.UTC')
     pc.get_info()

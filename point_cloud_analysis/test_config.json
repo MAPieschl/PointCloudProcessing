@@ -48,7 +48,8 @@
             "tnet_train": {
                 "datasets": {
                     "0": "collect_2025.Nov.24_15.47.57.5524625.UTC",
-                    "1": "collect_2025.Nov.24_15.55.18.9256538.UTC"
+                    "1": "collect_2025.Nov.24_15.55.18.9256538.UTC",
+                    "2": "collect_2025.Nov.25_13.12.04.1835786.UTC"
                 },
                 "noise": {
                     "x_stdev_m": 0.1,
@@ -70,7 +71,8 @@
             "class_train": {
                 "datasets": {
                     "0": "collect_2025.Nov.24_15.47.57.5524625.UTC",
-                    "1": "collect_2025.Nov.24_15.55.18.9256538.UTC"
+                    "1": "collect_2025.Nov.24_15.55.18.9256538.UTC",
+                    "2": "collect_2025.Nov.25_13.12.04.1835786.UTC"
                 },
                 "noise": {
                     "x_stdev_m": 0.1,

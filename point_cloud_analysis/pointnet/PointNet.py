@@ -346,40 +346,6 @@ class PointNet(Model):
         return self.input_transform.get_last_predicted_transformation()
 
 @saving.register_keras_serializable(package="Project")
-class TNetRegressor(Model):
-    def __init__(self, 
-                 add_regularization: bool = False, 
-                 bn_momentum: float = 0.99, 
-                 tnet_layer_widths: list = [64, 128, 1024, 512, 256], 
-                 random_seed = None,
-                 **kwargs):
-        '''
-        This model can be used to pretrain the TNet layer of the PointNet to correctly predict the rotation of the object prior to training
-        the classification network.
-
-        @param name                 (str) network name used to label layers; ex. 'input_transform' results in 'input_transform_conv_layer_1', etc.
-        @param add_regularization   (bool) apply an orthogonalizing regularization, which punishes the network for a non-orthogonality
-        @param bn_momentum          (float) add momentum to the batch normalization - bn is only applied to the dense layers
-        '''
-        super(TNetRegressor, self).__init__(**kwargs)
-
-        self.input_transform = TNet(name = 'input_transform', add_regularization = add_regularization, bn_momentum = bn_momentum, layer_widths = tnet_layer_widths, random_seed = random_seed)
-
-    def build(self, input_shape):
-        super(TNetRegressor, self).build(input_shape)
-
-        self.input_transform.build(input_shape)
-
-    def call(self, X, training = False):
-
-        X = self.input_transform(X, training = training)
-
-        return X
-    
-    def get_last_predicted_dcm(self):
-        return self.input_transform.get_last_predicted_transformation()
-
-@saving.register_keras_serializable(package="Project")
 class TNet(Model):
     def __init__(self, 
                  name: str, 
@@ -582,9 +548,11 @@ class ConvLayer(Layer):
     
     def freeze(self):
         self.trainable = False
+        self.bn.trainable = False
 
     def thaw(self):
         self.trainable = True
+        self.bn.trainable = False
 
     def is_trainable(self):
         return self.trainable
@@ -667,9 +635,11 @@ class DenseLayer(Layer):
     
     def freeze(self):
         self.trainable = False
+        self.bn.trainable = False
 
     def thaw(self):
         self.trainable = True
+        self.bn.trainable = False
 
     def is_trainable(self):
         return self.trainable

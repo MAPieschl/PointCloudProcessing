@@ -8,8 +8,8 @@
 ### - 2: reload any module that has changed since the last import
 
 # %%
-%load_ext autoreload
-%autoreload 2
+# %load_ext autoreload
+# %autoreload 2
 
 print( "Importing packages..." )
 
@@ -152,17 +152,17 @@ class TrainProfile:
 
             model = self._build_pointnet( prof )
 
-            train = self._training_profiles[prof]['pc'].get_train_seg_set()
-            val = self._training_profiles[prof]['pc'].get_val_seg_set()
+            train = self._training_profiles[prof]['pc'].get_train_set()
+            val = self._training_profiles[prof]['pc'].get_val_set()
 
             # train model
             history = model.fit( x = train, epochs = self._epochs, verbose = 1, validation_data = val, callbacks = self._training_callbacks )
 
             # save Keras model
-            model.save(f"{self._training_profiles[prof]['path']}{self._name}.keras")
+            model.save(f"{self._training_profiles[prof]['path']}{self._name}_{prof}.keras")
 
             # output training history
-            with open(f"{self._training_profiles[prof]['path']}{self._name}_history.json", 'w') as j:
+            with open(f"{self._training_profiles[prof]['path']}{self._name}_{prof}_history.json", 'w') as j:
                 json.dump({
                     'loss': history.history['loss'],
                     'val_loss': history.history['val_loss'],
@@ -181,7 +181,7 @@ class TrainProfile:
                 opset = 13
             )
 
-            onnx.save(onnx_model, f"{self._training_profiles[prof]['path']}{self._name}.onnx")
+            onnx.save(onnx_model, f"{self._training_profiles[prof]['path']}{self._name}_{prof}.onnx")
 
             # copy config file into specific model directory
             shutil.copy( self._config_file, self._training_profiles[prof]['path'] )
@@ -189,12 +189,12 @@ class TrainProfile:
             # copy pretrained model into current directory
             shutil.copy( f'{self._model_path}{self._pretrained_model}', self._training_profiles[prof]['path'] )
 
-            self._pretrained_model = self._training_profiles[prof]['path']
+            self._pretrained_model = f'{self._training_profiles[prof]['path']}{self._name}_{prof}.keras'
         
     def _profile_datasets( self, profile ) -> None:
         for ds, set_name in enumerate( list( self._training_profiles[profile]['datasets'].values() ) ):
             self._log.info( f"Adding data set {ds + 1} of {len( self._training_profiles[profile]['datasets'] )}" )
-            self._training_profiles[profile]['pc'].add_from_aftr_output( dir_path = f"{self._input_path}{set_name}", class_label = self._class_labels[0], shuffle_points = True )
+            self._training_profiles[profile]['pc'].add_from_aftr_output( dir_path = f"{self._input_path}{set_name}", shuffle_points = True )
 
         self._log.info( '\nDataset added successfully:\n' )
         self._log.info( self._training_profiles[profile]['pc'].get_info() )
@@ -213,7 +213,7 @@ class TrainProfile:
             }
 
             model = tf.keras.models.load_model(
-                f'{self._model_path}{self._pretrained_model}.keras',
+                self._pretrained_model,
                 custom_objects = custom_objects
             )
 
@@ -239,11 +239,26 @@ class TrainProfile:
             global_clipnorm = 1.0
         )
 
-        def debug_loss(y_true, y_pred):
-            y_true = tf.debugging.check_numerics(y_true, "Labels (y_true) contain NaNs or Infs")
-            loss = keras.losses.categorical_crossentropy(y_true, y_pred, from_logits=True)
-            loss = tf.debugging.check_numerics(loss, "Loss calculation produced NaN")
-            return loss
+        '''
+                "trainable": {
+                    "shared_network": true,
+                    "input_transform": false,
+                    "classification_head": false,
+                    "segmentation_head": true
+                },
+        '''
+        # Freeze / thaw specified layers
+        if( self._training_profiles[profile]['trainable']['shared_network'] ):  model.thaw_shared_network()
+        else:                                                                   model.freeze_shared_network()
+        
+        if( self._training_profiles[profile]['trainable']['input_transform'] ): model.thaw_input_transform()
+        else:                                                                   model.freeze_input_transform()
+        
+        if( self._training_profiles[profile]['trainable']['classification_head'] ): model.thaw_classification_head()
+        else:                                                                       model.freeze_classification_head()
+        
+        if( self._training_profiles[profile]['trainable']['segmentation_head'] ):   model.thaw_segmentation_head()
+        else:                                                                       model.freeze_segmentation_head()
 
         model.compile(
             optimizer = optimizer,
