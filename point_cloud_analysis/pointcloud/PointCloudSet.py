@@ -9,6 +9,19 @@ By:     Mike Pieschl
 Date:   31 July 2025
 '''
 
+### For interactive mode, use the run commands below; this will prevent lengthy imports every time
+### the program runs (such as Tensorflow) -- recommend running from the terminal once fully tested
+### to avoid issues/limitations with the Jupyter environment
+###
+### The autoreload modes are:
+### - 0: no reloads
+### - 1: whitelisted reloads only (using %aimport module_name)
+### - 2: reload any module that has changed since the last import
+
+# %%
+%load_ext autoreload
+%autoreload 2
+
 import os
 import sys
 
@@ -95,8 +108,8 @@ class PointCloudSet:
         frames_searched: int = 0
         non_num_found: int = 0
         
-        collect_contents: list[str] = get_dir_contents( dir_path )
-        lidar_contents: list[str] = get_dir_contents( f'{dir_path}/Virtual Flash Lidar' )
+        collect_contents: list[str] = get_dir_contents( dir_path, self._print )
+        lidar_contents: list[str] = get_dir_contents( f'{dir_path}/Virtual Flash Lidar', self._print )
 
         # treat the log file (containing pose information) as a csv and import into a pandas dataframe
         pose_log: list[str] = [ i for i in collect_contents if '_palindrome_state' in i ]
@@ -105,7 +118,7 @@ class PointCloudSet:
             has_state_info = True
         else:
             state_info: dict = {}
-            self._print( f"No pose information file (which must contain the substring '_palindrome_state') was found. No rotation information will be recorded from data collect." )
+            self._print( f"No pose information file (which must contain the substring '_palindrome_state') was found. No pose information will be recorded from data collect." )
 
         self._print( f'Parsing frames in {dir_path}...' )
         for i in tqdm( range( len( lidar_contents ) ) ):
@@ -172,7 +185,7 @@ class PointCloudSet:
                         else:
                             non_num_found += 1
 
-                    if(len(obs) != 0):
+                    if( len(obs) != 0 ):
                         obs, cl, pl, se = self._adjust_to_input_width( np.array( obs ), np.array( cl ), np.array( pl ), np.array( se ) )
 
                         if( np.isfinite( obs ).all() ):
@@ -182,142 +195,177 @@ class PointCloudSet:
                             part_labels.append( pl )
                             se3.append( se )
 
-
                         else:
                             self._print( f'Per-line check failed - frame_{i} discarded after detecting non-finite value.' )
 
             except:
-                if(frames_searched == 0): frames_searched = i
+                if( frames_searched == 0 ): frames_searched = i
 
-        self.add_data(np.array(frame_id), np.array(observations), np.array(class_labels), np.array(part_labels), shuffle_points)
+        self.add_data( np.array( frame_id ), np.array( observations ), np.array( class_labels ), np.array( part_labels ), np.array( se3 ), shuffle_points )
             
-        self._print(f'{dir_path} parsed:  found {len(frame_id)} valid frames out of {frames_searched} total. {non_num_found} total lines discarded for non-numeric values.')
+        self._print( f'{dir_path} parsed:  found {len( frame_id )} valid frames out of {frames_searched} total. {non_num_found} total lines discarded for non-numeric values.' )
 
         return True
 
-    def add_data(self, frame_id: np.ndarray, observations: np.ndarray, class_labels: np.ndarray, part_labels: np.ndarray, shuffle_points: bool = True):
+    def add_data( self, frame_id: np.ndarray, observations: np.ndarray, class_labels: np.ndarray, part_labels: np.ndarray, se3: np.ndarray, shuffle_points: bool = True ) -> None:
+        '''
+        Adds data to the PointCloud set and automatically separates the data into train, validate, and test sets per the ratio
+        set during object instantiation. Optional shuffle parameter shuffles only the newly input data and ensures alignment of
+        parallel input arrays.
+
+        @param frame_id         (np.ndarray[str])   (num_pc, n)
+        @param observations     (np.ndarray)        (num_pc, n, 3)
+        @param class_labels     (np.ndarray[str])   (num_pc, n)
+        @param part_labels      (np.ndarray[str])   (num_pc, n)
+        @param se3              (np.ndarray)        (num_pc, n, 3, 3)
+        @param shuffle_points   (bool)              (default = True) shuffle points using the random seed provided during instantiation          
+
+        @return None
+        '''
 
         error_string = f'One or more of the inputs has incorrect shape:\n\tframe_id.shape = {frame_id.shape}\n\tobservations.shape = {observations.shape}\n\tclass_labels.shape = {class_labels.shape}\n\tpart_labels.shape = {part_labels.shape}'
+        assert frame_id.shape == observations.shape, error_string
         assert frame_id.shape == class_labels.shape, error_string
-        assert observations.shape[1] == part_labels.shape[1], error_string
-        assert frame_id.shape[0] == observations.shape[0], error_string
-        assert frame_id.shape[0] == class_labels.shape[0], error_string
         assert frame_id.shape[0] == part_labels.shape[0], error_string
+        assert frame_id.shape[0] == se3.shape[0], error_string
 
         # Jitter points
         observations = self._jitter_observation( observations )
 
         # Shuffle points in point cloud
-        if(shuffle_points):
-            indices = np.arange(0, observations.shape[1])
+        if( shuffle_points ):
+            indices = np.arange( 0, observations.shape[1] )
             # Loop through to randomly shuffle each point cloud separately
-            for i in range(observations.shape[0]):
-                np.random.shuffle(indices)
+            for i in range( observations.shape[0] ):
+                np.random.shuffle( indices )
                 observations[i] = observations[i][indices]
-                part_labels[i] = part_labels[i][indices]
+                class_labels[i] = class_labels[i][indices]
+                if( len( part_labels[i] ) > 0 ): part_labels[i] = part_labels[i][indices]
+                if( len( se3[i] ) > 0 ): se3[i] = se3[i][indices]
 
         # Shuffle frames
-        indices = np.arange(0, observations.shape[0])
-        np.random.shuffle(indices)
+        indices = np.arange( 0, observations.shape[0] )
+        np.random.shuffle( indices )
         frame_id = frame_id[indices]
         observations = observations[indices]
         class_labels = class_labels[indices]
         part_labels = part_labels[indices]
+        se3 = se3[indices]
         
-        if(not (frame_id.shape[0] == observations.shape[0] and frame_id.shape[0] == class_labels.shape[0] and frame_id.shape[0] == part_labels.shape[0])):
-            self._print(f"Number of observations must be equal to the number of labels and number of view_points. Point clouds discarded.")
-            return
-        
-        splits = [(0, int(np.ceil(observations.shape[0] * self._test_amt))),
-                  (int(np.ceil(observations.shape[0] * self._test_amt)), int(np.ceil(observations.shape[0] * self._test_amt)) + int(np.ceil(observations.shape[0] * self._val_amt))),
-                  (int(np.ceil(observations.shape[0] * self._test_amt)) + int(np.ceil(observations.shape[0] * self._val_amt)), observations.shape[0])]
+        splits = [( 0, int( np.ceil( observations.shape[0] * self._test_amt ) ) ),
+                  ( int( np.ceil(observations.shape[0] * self._test_amt ) ), int( np.ceil( observations.shape[0] * self._test_amt ) ) + int( np.ceil( observations.shape[0] * self._val_amt ) ) ),
+                  ( int( np.ceil(observations.shape[0] * self._test_amt ) ) + int( np.ceil( observations.shape[0] * self._val_amt ) ), observations.shape[0] )]
 
-        for i in range(splits[0][0], splits[0][1]):
-            self._test['frame_id'].append(frame_id[i])
-            self._test['observations'].append(observations[i])
-            self._test['class_labels'].append(class_labels[i])
-            self._test['part_labels'].append(part_labels[i])
+        for i in range( splits[0][0], splits[0][1] ):
+            self._test['frame_id'].append( frame_id[i] )
+            self._test['observations'].append( observations[i] )
+            self._test['class_labels'].append( class_labels[i] )
+            self._test['part_labels'].append( part_labels[i] )
+            self._test['se3'].append( se3[i] )
 
-        for i in range(splits[1][0], splits[1][1]):
-            self._val['frame_id'].append(frame_id[i])
-            self._val['observations'].append(observations[i])
-            self._val['class_labels'].append(class_labels[i])
-            self._val['part_labels'].append(part_labels[i])
+        for i in range( splits[1][0], splits[1][1] ):
+            self._val['frame_id'].append( frame_id[i] )
+            self._val['observations'].append( observations[i] )
+            self._val['class_labels'].append( class_labels[i] )
+            self._val['part_labels'].append( part_labels[i] )
+            self._val['se3'].append( se3[i] )
 
-        for i in range(splits[2][0], splits[2][1]):
-            self._train['frame_id'].append(frame_id[i])
-            self._train['observations'].append(observations[i])
-            self._train['class_labels'].append(class_labels[i])
-            self._train['part_labels'].append(part_labels[i])
-    
-    def get_train_class_set(self):
-        labels = np.array(self._train['class_labels']) if not self._one_hot else self._one_hot_encode_class_labels(self._train['class_labels'])
-        return tf.data.Dataset.from_tensor_slices((np.array(self._train['observations']), labels)).batch(batch_size = self._batch_size)
-    
-    def get_train_seg_set(self):
-        labels = np.array(self._train['part_labels']) if not self._one_hot else self._one_hot_encode_part_labels(self._train['part_labels'])
-        self._print(f"Training data size:  obs = {np.array(self._train['observations']).shape} | labels = {np.array(self._train['part_labels']).shape} ")
-        return tf.data.Dataset.from_tensor_slices((np.array(self._train['observations']), labels)).batch(batch_size = self._batch_size)
+        for i in range( splits[2][0], splits[2][1] ):
+            self._train['frame_id'].append( frame_id[i] )
+            self._train['observations'].append( observations[i] )
+            self._train['class_labels'].append( class_labels[i] )
+            self._train['part_labels'].append( part_labels[i] )
+            self._train['se3'].append( se3[i] )
 
-    def get_train_tnet_set(self):
-        return tf.data.Dataset.from_tensor_slices((np.array(self._train['observations']), np.array(self._train['dcm']))).batch(batch_size = self._batch_size)
+    def get_train_set( self ):
+        class_labels = np.array( self._train['class_labels'] ) if not self._one_hot else self._one_hot_encode_class_labels( self._train['class_labels'] )
+        part_labels = np.array( self._train['part_labels'] ) if not self._one_hot else self._one_hot_encode_class_labels( self._train['part_labels'] )
+        return tf.data.Dataset.from_tensor_slices( ( np.array( self._train['observations'] ), class_labels, part_labels, np.array( self._train['se3'] ) ) ).batch( batch_size = self._batch_size )
+
+    def get_train_class_set( self ):
+        labels = np.array( self._train['class_labels'] ) if not self._one_hot else self._one_hot_encode_class_labels( self._train['class_labels'] )
+        return tf.data.Dataset.from_tensor_slices( ( np.array( self._train['observations'] ), labels ) ).batch( batch_size = self._batch_size )
     
-    def get_val_class_set(self):
-        labels = np.array(self._val['class_labels']) if not self._one_hot else self._one_hot_encode_class_labels(self._val['class_labels'])
-        return tf.data.Dataset.from_tensor_slices((np.array(self._val['observations']), labels)).batch(batch_size = self._batch_size)
+    def get_train_seg_set( self ):
+        labels = np.array( self._train['part_labels'] ) if not self._one_hot else self._one_hot_encode_part_labels( self._train['part_labels'] )
+        return tf.data.Dataset.from_tensor_slices( ( np.array( self._train['observations'] ), labels ) ).batch( batch_size = self._batch_size )
+
+    def get_train_tnet_set( self ):
+        return tf.data.Dataset.from_tensor_slices( ( np.array( self._train['observations'] ), np.array( self._train['se3'] ) ) ).batch( batch_size = self._batch_size )
     
-    def get_val_seg_set(self):
-        labels = np.array(self._val['part_labels']) if not self._one_hot else self._one_hot_encode_part_labels(self._val['part_labels'])
-        self._print(f"Validation data size:  obs = {np.array(self._val['observations']).shape} | labels = {np.array(self._val['part_labels']).shape} ")
-        return tf.data.Dataset.from_tensor_slices((np.array(self._val['observations']), labels)).batch(batch_size = self._batch_size)
+    def get_val_set( self ):
+        class_labels = np.array( self._val['class_labels'] ) if not self._one_hot else self._one_hot_encode_class_labels( self._val['class_labels'] )
+        part_labels = np.array( self._val['part_labels'] ) if not self._one_hot else self._one_hot_encode_class_labels( self._val['part_labels'] )
+        return tf.data.Dataset.from_tensor_slices( ( np.array( self._val['observations'] ), class_labels, part_labels, np.array( self._val['se3'] ) ) ).batch( batch_size = self._batch_size )
+
+    def get_val_class_set( self ):
+        labels = np.array( self._val['class_labels'] ) if not self._one_hot else self._one_hot_encode_class_labels( self._val['class_labels'] )
+        return tf.data.Dataset.from_tensor_slices( ( np.array( self._val['observations'] ), labels ) ).batch( batch_size = self._batch_size )
     
-    def get_val_tnet_set(self):
-        return tf.data.Dataset.from_tensor_slices((np.array(self._val['observations']), np.array(self._val['dcm']))).batch(batch_size = self._batch_size)
+    def get_val_seg_set( self ):
+        labels = np.array( self._val['part_labels'] ) if not self._one_hot else self._one_hot_encode_part_labels( self._val['part_labels'] )
+        return tf.data.Dataset.from_tensor_slices( ( np.array( self._val['observations'] ), labels ) ).batch( batch_size = self._batch_size )
     
-    def get_random_val_sample(self):
-        sample_i = int(len(self._val['observations']) * np.random.uniform())
-        sample_obs = self._val['observations'][sample_i]
+    def get_val_tnet_set( self ):
+        return tf.data.Dataset.from_tensor_slices( ( np.array( self._val['observations'] ), np.array( self._val['se3'] ) ) ).batch( batch_size = self._batch_size )
+    
+    def get_random_val_sample( self ):
+
+        sample_i = int( len( self._test['observations'] ) * np.random.uniform() )
 
         return {
-            'observation': np.expand_dims(sample_obs, axis = 0), 
-            'label': self._val['labels'][sample_i],
-            'position': self._val['positions'][sample_i],
-            'dcm': self._val['dcm'][sample_i]
+            'frame': self._test['frame_id'][sample_i],
+            'observation': self._test['observations'][sample_i], 
+            'class_label': self._test['class_label'][sample_i],
+            'part_label': self._test['part_label'][sample_i],
+            'se3': self._test['se3'][sample_i]
         }
     
-    def get_raw_val_set(self):
+    def get_raw_val_set( self ):
         return self._val
     
-    def get_test_class_set(self):
-        labels = np.array(self._test['class_labels']) if not self._one_hot else self._one_hot_encode_class_labels(self._test['class_labels'])
-        return tf.data.Dataset.from_tensor_slices((np.array(self._test['observations']), labels)).batch(batch_size = self._batch_size)
-    
-    def get_test_seg_set(self):
-        labels = np.array(self._test['part_labels']) if not self._one_hot else self._one_hot_encode_part_labels(self._test['part_labels'])
-        return tf.data.Dataset.from_tensor_slices((np.array(self._test['observations']), labels)).batch(batch_size = self._batch_size)
-    
-    def get_test_tnet_set(self):
-        return tf.data.Dataset.from_tensor_slices((np.array(self._test['observations']), np.array(self._test['dcm']))).batch(batch_size = self._batch_size)
+    def get_test_set( self ):
+        class_labels = np.array( self._test['class_labels'] ) if not self._one_hot else self._one_hot_encode_class_labels( self._test['class_labels'] )
+        part_labels = np.array( self._test['part_labels'] ) if not self._one_hot else self._one_hot_encode_class_labels( self._test['part_labels'] )
+        return tf.data.Dataset.from_tensor_slices( ( np.array( self._test['observations'] ), class_labels, part_labels, np.array( self._test['se3'] ) ) ).batch( batch_size = self._batch_size )
 
-    def get_random_test_sample(self):
+    def get_test_class_set( self ):
+        labels = np.array( self._test['class_labels'] ) if not self._one_hot else self._one_hot_encode_class_labels( self._test['class_labels'] )
+        return tf.data.Dataset.from_tensor_slices( ( np.array( self._test['observations']), labels ) ).batch( batch_size = self._batch_size )
+    
+    def get_test_seg_set( self ):
+        labels = np.array( self._test['part_labels'] ) if not self._one_hot else self._one_hot_encode_part_labels( self._test['part_labels'] )
+        return tf.data.Dataset.from_tensor_slices( ( np.array( self._test['observations'] ), labels ) ).batch( batch_size = self._batch_size )
+    
+    def get_test_tnet_set( self ):
+        return tf.data.Dataset.from_tensor_slices( ( np.array( self._test['observations'] ), np.array( self._test['se3'] ) ) ).batch(batch_size = self._batch_size )
 
-        sample_i = int(len(self._test['observations']) * np.random.uniform())
-        sample_obs = self._test['observations'][sample_i]
+    def get_random_test_sample( self ):
+
+        sample_i = int( len( self._test['observations'] ) * np.random.uniform() )
 
         return {
-            'observation': np.expand_dims(sample_obs, axis = 0), 
-            'label': self._test['labels'][sample_i],
-            'position': self._test['positions'][sample_i],
-            'dcm': self._test['dcm'][sample_i]
+            'frame': self._test['frame_id'][sample_i],
+            'observation': self._test['observations'][sample_i], 
+            'class_label': self._test['class_label'][sample_i],
+            'part_label': self._test['part_label'][sample_i],
+            'se3': self._test['se3'][sample_i]
         }
     
-    def get_raw_test_set(self):
+    def get_raw_test_set( self ):
         return self._test
     
-    def get_labels_with_confidence(self, one_hot_vector: np.ndarray):
+    def get_class_label_with_confidence( self, one_hot_vector: np.ndarray ):
         labels = []
         for y_pred in one_hot_vector:
-            labels.append((self._class_labels[np.argmax(y_pred)], y_pred[np.argmax(y_pred)]))
+            labels.append( ( self._class_labels[np.argmax( y_pred )], y_pred[np.argmax( y_pred )]))
+
+        return labels
+    
+    def get_part_label_with_confidence( self, one_hot_vector: np.ndarray ):
+        labels = []
+        for y_pred in one_hot_vector:
+            labels.append( ( self._part_labels[np.argmax( y_pred )], y_pred[np.argmax( y_pred )]))
 
         return labels
 
@@ -367,6 +415,11 @@ class PointCloudSet:
         return out
     
     def _one_hot_encode_class_labels(self, labels: list):
+        '''
+        @param labels   (list) shape (samples, input width)
+
+        @return (np.ndarray) shape (samples, input_width, num_labels)
+        '''
         labels_out = []
         for label in self._class_labels:
             labels_out.append(np.array(labels) == label)
@@ -388,12 +441,13 @@ class PointCloudSet:
 
         return np.array(labels_out)
     
-    def _adjust_to_input_width( self,observations: np.ndarray, class_labels: np.ndarray, part_labels: np.ndarray, rotations: np.ndarray ) -> tuple:
+    def _adjust_to_input_width( self, frame_id: np.ndarray, observations: np.ndarray, class_labels: np.ndarray, part_labels: np.ndarray, se3: np.ndarray ) -> tuple:
         '''
         Adjusts the input parameters to a uniform arrays of length _network_input_width by either splicing the first 
         _network_input_width samples from the oversized array, or appending a uniform sampling of exiting points. This
         method ensures that points remain aligned with their label when duplicated
 
+        @param frame_id     (np.ndarray) (n,)
         @param observations (np.ndarray) (n,3)
         @param class_labels (np.ndarray) (n,)
         @param part_labels  (np.ndarray) (n,)
@@ -402,35 +456,49 @@ class PointCloudSet:
         @return (observations (np.ndarray), part_labels(np.ndarray))
         '''
 
-        assert observations.shape[0] == class_labels.shape[0], f'The input arrays, observations and class_labels, must have equal length. Currently they are {observations.shape} and {class_labels.shape}, respectively'
-        assert observations.shape[0] == part_labels.shape[0], f'The input arrays, observations and part_labels, must have equal length. Currently they are {observations.shape} and {part_labels.shape}, respectively'
-        assert observations.shape[0] == rotations.shape[0], f'The input arrays, observations and rotations, must have equal length. Currently they are {observations.shape} and {rotations.shape}, respectively'
+        assert frame_id.shape[0] == observations.shape[0],f'The input arrays, observations and class_labels, must have equal length. Currently they are {frame_id.shape} and {observations.shape}, respectively'
+        assert frame_id.shape[0] == class_labels.shape[0], f'The input arrays, observations and class_labels, must have equal length. Currently they are {frame_id.shape} and {class_labels.shape}, respectively'
+        assert frame_id.shape[0] == part_labels.shape[0], f'The input arrays, observations and part_labels, must have equal length. Currently they are {frame_id.shape} and {part_labels.shape}, respectively'
+        assert frame_id.shape[0] == se3.shape[0], f'The input arrays, observations and se3, must have equal length. Currently they are {frame_id.shape} and {se3.shape}, respectively'
 
-        if(observations.shape[0] > self._network_input_width):
-            return observations[:self._network_input_width], class_labels[:self._network_input_width], part_labels[:self._network_input_width], rotations[:self._network_input_width]
+        if( observations.shape[0] > self._network_input_width ):
+            return observations[:self._network_input_width], class_labels[:self._network_input_width], part_labels[:self._network_input_width], se3[:self._network_input_width]
         
         else:
-            repeated_indices = np.random.uniform(0, observations.shape[0], self._network_input_width - observations.shape[0])
+            repeated_indices = np.random.uniform( 0, observations.shape[0], self._network_input_width - observations.shape[0] )
             repeated_indices = repeated_indices.astype(np.int_)
 
-            additional_obs = deepcopy(observations[repeated_indices])
-            additional_cl = deepcopy(class_labels[repeated_indices])
-            additional_pl = deepcopy(part_labels[repeated_indices])
-            additional_rot = deepcopy(rotations[repeated_indices])
+            additional_frm = deepcopy( frame_id[repeated_indices] )
+            additional_obs = deepcopy( observations[repeated_indices] )
+            additional_cl = deepcopy( class_labels[repeated_indices] )
+            additional_pl = deepcopy( part_labels[repeated_indices] )
+            additional_se3 = deepcopy( se3[repeated_indices] )
 
-            observations = np.concatenate((observations, additional_obs), axis = 0)
-            class_labels = np.concatenate((class_labels, additional_cl), axis = 0)
-            part_labels = np.concatenate((part_labels, additional_pl), axis = 0)
-            rotations = np.concatenate((rotations, additional_rot), axis = 0)
+            frame_id = np.concatenate( ( frame_id, additional_frm ), axis = 0 )
+            observations = np.concatenate( ( observations, additional_obs ), axis = 0 )
+            class_labels = np.concatenate( ( class_labels, additional_cl ), axis = 0 )
+            part_labels = np.concatenate( ( part_labels, additional_pl ), axis = 0 )
+            se3 = np.concatenate( ( se3, additional_se3 ), axis = 0 )
 
-        assert observations.shape[0] == self._network_input_width, f'Failed to adjust observations to the network input width - should be {self._network_input_width}, not {observations.shape}'
-        assert class_labels.shape[0] == self._network_input_width, f'Failed to adjust class_labels to the network input width - should be {self._network_input_width}, not {class_labels.shape}'
-        assert part_labels.shape[0] == self._network_input_width, f'Failed to adjust part_labels to the network input width - should be {self._network_input_width}, not {part_labels.shape}'
-        assert rotations.shape[0] == self._network_input_width, f'Failed to adjust rotations to the network input width - should be {self._network_input_width}, not {rotations.shape}'
+        assert frame_id.shape[0] == self._network_input_width, f'Failed to adjust frame_id to the network input width - should be {self._network_input_width}, not {frame_id.shape[0]}'
+        assert observations.shape[0] == self._network_input_width, f'Failed to adjust observations to the network input width - should be {self._network_input_width}, not {observations.shape[0]}'
+        assert class_labels.shape[0] == self._network_input_width, f'Failed to adjust class_labels to the network input width - should be {self._network_input_width}, not {class_labels.shape[0]}'
+        assert part_labels.shape[0] == self._network_input_width, f'Failed to adjust part_labels to the network input width - should be {self._network_input_width}, not {part_labels.shape[0]}'
+        assert se3.shape[0] == self._network_input_width, f'Failed to adjust rotations to the network input width - should be {self._network_input_width}, not {se3.shape[0]}'
 
-        return observations, class_labels, part_labels, rotations
+        return observations, class_labels, part_labels, se3
     
     def _jitter_observation( self, obs: np.ndarray ) -> np.ndarray:
+        '''
+        Apply Gaussian noise to the points in obs. The distribution can be uniquely defined in each axis via
+        the initialization parameter jitter_stdev_m, which defines the standard deviation (in meters) along
+        each axis.
+
+        @param obs      (np.ndarray) (num_pc, n, 3)
+
+        @return obs + noise (np.ndarray) (num_pc, n, 3)
+        '''
+
         rng = np.random.default_rng()
         x_noise = rng.normal( loc = 0, scale = self._jitter_stdev_m[0], size = (obs.shape[0], obs.shape[1], 1) )
         y_noise = rng.normal( loc = 0, scale = self._jitter_stdev_m[1], size = (obs.shape[0], obs.shape[1], 1) )
@@ -439,13 +507,14 @@ class PointCloudSet:
         return obs + noise
     
     def _parse_state_info( self, filepath: str ) -> dict:
+        '''
+        Parses the _palindrom_state_... file in the AftrBurner data collection. The output dictionary
+        contains the time information of each frame, the frame number, and all SE3 matrices defined in
+        the file as an np.ndarray with shape = (4, 4). One additional SE3 matrix, tanker_in_sensor_frame,
+        is included in the dictionary for direct reading of the tanker pose in the sensor frame.
+        '''
 
         with open( filepath, 'r' ) as f:
-
-            # SE3 matrix constants
-            SE3_ROWS = 4
-            SE3_COLS = 4
-            SE3_SIZE = SE3_ROWS * SE3_COLS
 
             # get the descriptor line
             keys = f.readline().strip().split( "   " )
@@ -464,8 +533,8 @@ class PointCloudSet:
 
                 for i, key in enumerate( keys[2:] ):
                     cols = []
-                    for col in range( SE3_COLS ):
-                        cols.append( data_line[ 2 + i * SE3_SIZE + col * SE3_ROWS : 2 + i * SE3_SIZE + ( col + 1 ) * SE3_ROWS ] )
+                    for col in range( gc.SE3_COLS ):
+                        cols.append( data_line[ 2 + i * gc.SE3_SIZE + col * gc.SE3_ROWS : 2 + i * gc.SE3_SIZE + ( col + 1 ) * gc.SE3_ROWS ] )
                     data[ int( data_line[1] ) ][ key ] = np.array( cols, dtype = np.float64 ).T
                 
                 if( 'Sensor Pose' in keys and 'Tanker Pose' in keys ):
@@ -476,7 +545,7 @@ class PointCloudSet:
         return data
 
 ### FREE HELPER FUNCTIONS ###
-def get_dir_contents(dir_path: str) -> list:
+def get_dir_contents(dir_path: str, _print: Callable[[str], None] = print) -> list:
 
     try:
         contents = os.listdir(dir_path)
@@ -484,18 +553,17 @@ def get_dir_contents(dir_path: str) -> list:
         else:               return contents
 
     except FileNotFoundError:
-        self._print(f"Error: The directory '{dir_path}' was not found.", file = sys.stderr)
+        _print(f"Error: The directory '{dir_path}' was not found.", file = sys.stderr)
     except NotADirectoryError:
-        self._print(f"Error: The path '{dir_path}' is not a directory.", file = sys.stderr)
+        _print(f"Error: The path '{dir_path}' is not a directory.", file = sys.stderr)
     except PermissionError:
-        self._print(f"Error: Permission denied to read '{dir_path}'.", file = sys.stderr)
+        _print(f"Error: Permission denied to read '{dir_path}'.", file = sys.stderr)
     except Exception as e:
-        self._print(f"An error occurred: {e}", file = sys.stderr)
+        _print(f"An error occurred: {e}", file = sys.stderr)
 
     return []
 
 if __name__ == "__main__":
-    import pickle 
 
     MODEL_PATH = 'models/'
     MESH_PATH = 'mesh/'
