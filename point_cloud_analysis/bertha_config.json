@@ -1,8 +1,33 @@
 {
     "info": {
-        "name": "_bertha_test_1",
+        "name": "_bertha_test",
         "class_labels": {
-            "0": "kc46"
+            "0": "a-10",
+            "1": "airship",
+            "2": "b-1b",
+            "3": "b-2",
+            "4": "c-5",
+            "5": "c-12",
+            "6": "c-17a",
+            "7": "c-32",
+            "8": "c-130j",
+            "9": "drogue",
+            "10": "e-3",
+            "11": "f-15e",
+            "12": "f-16",
+            "13": "f-18e",
+            "14": "f-22",
+            "15": "g-iii",
+            "16": "kc-46",
+            "17": "kc-135",
+            "18": "lj-25",
+            "19": "lj-25_nosecone",
+            "20": "mig-29",
+            "21": "mq-20",
+            "22": "sr-71",
+            "23": "su-27",
+            "24": "vc-25a",
+            "25": "x-47b" 
         },
         "part_labels": {
             "0": "fuselage", 
@@ -19,8 +44,28 @@
             "11": "boom_hull", 
             "12": "boom_hose"
         },
-        "datasets": {
-            "0": "collect_2025.Nov.19_00.33.24.3472488.UTC/"
+        "training_profiles": {
+            "tnet_train": {
+                "datasets": {
+                    "0": "collect_2025.Nov.24_15.47.57.5524625.UTC"
+                },
+                "noise": {
+                    "x_stdev_m": 0.1,
+                    "y_stdev_m": 0.1,
+                    "z_stdev_m": 0.1
+                },
+                "trainable": {
+                    "shared_network": false,
+                    "input_transform": true,
+                    "classification_head": false,
+                    "segmentation_head": false
+                },
+                "loss_weights": {
+                    "classification": 0.0,
+                    "segmentation": 0.0,
+                    "rotation": 1.0
+                }
+            }
         },
         "continue_training_model": ""
     },
@@ -28,15 +73,14 @@
         "input_width": 4096,
         "epochs": 1000,
         "patience": 100,
-        "batch_size": 32,
+        "batch_size": 16,
         "learning": {
             "rate": 0.0001,
             "decay_steps": 7000,
             "decay_rate": 0.7
         },
         "random_seed": 42,
-        "debugging": false,
-        "jitter_stdev_m": 0.1
+        "debugging": false
     },
     "file_system": {
         "model_path": "models/",

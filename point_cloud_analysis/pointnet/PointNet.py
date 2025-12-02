@@ -267,7 +267,7 @@ class PointNet(Model):
         self.input_transform.freeze()
 
     def thaw_input_transform(self) -> None:
-        self.input_transform.unfreeze()
+        self.input_transform.thaw()
 
     def freeze_shared_network(self) -> None:
         self.input_transform.freeze()
@@ -487,6 +487,7 @@ class ConvLayer(Layer):
         self.activation = activation
         self.apply_bn = apply_bn
         self.bn_momentum = bn_momentum
+        self.bn = BatchNormalization(momentum = bn_momentum) if apply_bn else None
         self.name = f"{name}_convolution_layer"
         self.seed = random_seed
 
@@ -501,9 +502,6 @@ class ConvLayer(Layer):
                            use_bias = not apply_bn,
                            name = self.name,
                            kernel_initializer = self.initializer)
-        
-        if(apply_bn):
-            self.bn = BatchNormalization(momentum = bn_momentum)
 
     def build(self, input_shape):
 
@@ -548,11 +546,11 @@ class ConvLayer(Layer):
     
     def freeze(self):
         self.trainable = False
-        self.bn.trainable = False
+        if( self.apply_bn ): self.bn.trainable = False
 
     def thaw(self):
         self.trainable = True
-        self.bn.trainable = False
+        if( self.apply_bn ): self.bn.trainable = True
 
     def is_trainable(self):
         return self.trainable
@@ -584,6 +582,7 @@ class DenseLayer(Layer):
         self.activation = activation
         self.apply_bn = apply_bn
         self.bn_momentum = bn_momentum
+        self.bn = BatchNormalization(momentum = bn_momentum) if apply_bn else None
         self.name = f"{name}_dense_layer"
         self.seed = random_seed
 
@@ -591,9 +590,6 @@ class DenseLayer(Layer):
 
         # The activation function is added after a batch normalization layer
         self.dense = Dense( units = units, activation = None, use_bias = not apply_bn, name = self.name, kernel_initializer = self.initializer )
-
-        if(apply_bn):
-            self.bn = BatchNormalization(momentum = bn_momentum)
 
     def build(self, input_shape):
 
@@ -635,11 +631,11 @@ class DenseLayer(Layer):
     
     def freeze(self):
         self.trainable = False
-        self.bn.trainable = False
+        if( self.apply_bn ): self.bn.trainable = False
 
     def thaw(self):
         self.trainable = True
-        self.bn.trainable = False
+        if( self.apply_bn ): self.bn.trainable = True
 
     def is_trainable(self):
         return self.trainable

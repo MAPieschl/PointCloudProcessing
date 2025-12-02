@@ -90,9 +90,9 @@ class TrainProfile:
         if( not os.path.isdir( self._input_path ) ): return self._advise_and_abort( f"{self._input_path} does not exists" )
         for prof in list(self._training_profiles.keys()):
             for ds in list(self._training_profiles[prof]['datasets'].values()):
-                if( not os.path.isdir( f'{self._input_path}{ds}' ) ): return self._advise_and_abort( f"{self._input_path}{ds} does not exists" )
+                if( not os.path.isdir( f"{self._input_path}{ds}" ) ): return self._advise_and_abort( f"{self._input_path}{ds} does not exists" )
         if( self._pretrained_model != "" ):
-            if( not os.path.isfile( f'{self._model_path}{self._pretrained_model}' ) ): return self._advise_and_abort( f"{self._model_path}{self._pretrained_model} does not exists" )
+            if( not os.path.isfile( f"{self._model_path}{self._pretrained_model}" ) ): return self._advise_and_abort( f"{self._model_path}{self._pretrained_model} does not exists" )
 
         # create model training data directory
         self._specific_model_path = f"{self._model_path}{self._name}/"
@@ -105,7 +105,7 @@ class TrainProfile:
         self._log.setLevel( logging.DEBUG )
 
         console_handler = logging.StreamHandler()
-        file_handler = logging.FileHandler( f'{self._specific_model_path}log_{dt.strftime( "%Y%m%d_%H:%M%S" )}.log' )
+        file_handler = logging.FileHandler( f"{self._specific_model_path}log_{dt.strftime( '%Y%m%d_%H:%M%S' )}.log" )
 
         console_handler.setFormatter( logging.Formatter('%(name)s - %(levelname)s - %(message)s') )
         file_handler.setFormatter( logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s') )
@@ -187,9 +187,9 @@ class TrainProfile:
             shutil.copy( self._config_file, self._training_profiles[prof]['path'] )
 
             # copy pretrained model into current directory
-            shutil.copy( f'{self._model_path}{self._pretrained_model}', self._training_profiles[prof]['path'] )
+            shutil.copy( f"{self._model_path}{self._pretrained_model}", self._training_profiles[prof]['path'] )
 
-            self._pretrained_model = f'{self._training_profiles[prof]['path']}{self._name}_{prof}.keras'
+            self._pretrained_model = f"{self._training_profiles[prof]['path']}{self._name}_{prof}.keras"
         
     def _profile_datasets( self, profile ) -> None:
         for ds, set_name in enumerate( list( self._training_profiles[profile]['datasets'].values() ) ):
@@ -239,14 +239,6 @@ class TrainProfile:
             global_clipnorm = 1.0
         )
 
-        '''
-                "trainable": {
-                    "shared_network": true,
-                    "input_transform": false,
-                    "classification_head": false,
-                    "segmentation_head": true
-                },
-        '''
         # Freeze / thaw specified layers
         if( self._training_profiles[profile]['trainable']['shared_network'] ):  model.thaw_shared_network()
         else:                                                                   model.freeze_shared_network()
@@ -297,7 +289,7 @@ class TrainProfile:
 
         return None
 
-def train_pointnet_seg( *args, **kwargs ) -> bool:
+def train_pointnet( *args, **kwargs ) -> bool:
     configs = [ i for i in args[0] if i.split( '.' )[-1] == 'json' ]
 
     if( len(configs) == 0 ):
@@ -332,7 +324,6 @@ def train_pointnet_seg( *args, **kwargs ) -> bool:
     for cf in configs:
         tp = TrainProfile( cf )
         if( type(tp) != None ):
-
             tp.train()
         else:   return False
 
@@ -381,10 +372,10 @@ def print_help():
 
 if __name__=='__main__':
     if( not any([ i.split('_')[-1] == 'config.json' for i in sys.argv ]) ):
-        sys.argv = ['test_config.json']
+        sys.argv = ['bertha_config.json']
         print( f"No config file found. Defaulting to: {sys.argv}" )
 
-    if( train_pointnet_seg( sys.argv ) ):
+    if( train_pointnet( sys.argv ) ):
         print( "Model training completed successfully." )
     else:
         print( "Model training failed." )

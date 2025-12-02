@@ -219,7 +219,7 @@ class PointCloudSet:
 
         @return None
         '''
-        
+
         # Jitter points
         observations = self._jitter_observation( observations )
 
@@ -272,7 +272,10 @@ class PointCloudSet:
         class_labels = np.array( self._train['class_labels'] ) if not self._one_hot else self._one_hot_encode_class_labels( self._train['class_labels'] )
         part_labels = np.array( self._train['part_labels'] ) if not self._one_hot else self._one_hot_encode_class_labels( self._train['part_labels'] )
         self._print( ".get_train_set() is only emitting the upper-left 3x3 of the SE3 matrix" )
-        return tf.data.Dataset.from_tensor_slices( ( np.array( self._train['observations'] ), class_labels, part_labels, np.array( self._train['se3'][:3, :3] ) ) ).batch( batch_size = self._batch_size )
+        print( f"{np.array( self._train['class_labels'] ).shape} -> {class_labels.shape}" )
+        print( f"{np.array( self._train['part_labels'] ).shape} -> {part_labels.shape}" )
+        print( np.array( self._train['se3'] )[:, :, :3, :3].shape )
+        return tf.data.Dataset.from_tensor_slices( ( np.array( self._train['observations'] ), class_labels, part_labels, np.array( self._train['se3'] )[:, :, :3, :3] ) ).batch( batch_size = self._batch_size )
 
     def get_train_class_set( self ):
         labels = np.array( self._train['class_labels'] ) if not self._one_hot else self._one_hot_encode_class_labels( self._train['class_labels'] )
@@ -289,7 +292,7 @@ class PointCloudSet:
         class_labels = np.array( self._val['class_labels'] ) if not self._one_hot else self._one_hot_encode_class_labels( self._val['class_labels'] )
         part_labels = np.array( self._val['part_labels'] ) if not self._one_hot else self._one_hot_encode_class_labels( self._val['part_labels'] )
         self._print( ".get_val_set() is only emitting the upper-left 3x3 of the SE3 matrix" )        
-        return tf.data.Dataset.from_tensor_slices( ( np.array( self._val['observations'] ), class_labels, part_labels, np.array( self._val['se3'][:3, :3] ) ) ).batch( batch_size = self._batch_size )
+        return tf.data.Dataset.from_tensor_slices( ( np.array( self._val['observations'] ), class_labels, part_labels, np.array( self._val['se3'] )[:, :, :3, :3] ) ).batch( batch_size = self._batch_size )
 
     def get_val_class_set( self ):
         labels = np.array( self._val['class_labels'] ) if not self._one_hot else self._one_hot_encode_class_labels( self._val['class_labels'] )
@@ -321,7 +324,7 @@ class PointCloudSet:
         class_labels = np.array( self._test['class_labels'] ) if not self._one_hot else self._one_hot_encode_class_labels( self._test['class_labels'] )
         part_labels = np.array( self._test['part_labels'] ) if not self._one_hot else self._one_hot_encode_class_labels( self._test['part_labels'] )
         self._print( ".get_test_set() is only emitting the upper-left 3x3 of the SE3 matrix" )
-        return tf.data.Dataset.from_tensor_slices( ( np.array( self._test['observations'] ), class_labels, part_labels, np.array( self._test['se3'][:3, :3] ) ) ).batch( batch_size = self._batch_size )
+        return tf.data.Dataset.from_tensor_slices( ( np.array( self._test['observations'] ), class_labels, part_labels, np.array( self._test['se3'] )[:, :, :3, :3] ) ).batch( batch_size = self._batch_size )
 
     def get_test_class_set( self ):
         labels = np.array( self._test['class_labels'] ) if not self._one_hot else self._one_hot_encode_class_labels( self._test['class_labels'] )
@@ -414,11 +417,14 @@ class PointCloudSet:
 
         @return (np.ndarray) shape (samples, input_width, num_labels)
         '''
-        labels_out = []
-        for label in self._class_labels:
-            labels_out.append(np.array(labels) == label)
+        samples = []
+        for sample in labels:
+            labels = []
+            for pt in sample:
+                labels.append(np.array( pt ) == np.array( self._class_labels ))
+            samples.append( labels )
 
-        return np.array(labels_out).T
+        return np.array( samples )
     
     def _one_hot_encode_part_labels(self, labels: list):
         '''
@@ -426,14 +432,14 @@ class PointCloudSet:
 
         @return (np.ndarray) shape (samples, input_width, num_labels)
         '''
-        labels_out = []
-        for pc in labels:
-            curr_pc = []
-            for label in pc:
-                curr_pc.append(np.array(self._part_labels) == label)
-            labels_out.append(curr_pc)
+        samples = []
+        for sample in labels:
+            labels = []
+            for pt in sample:
+                labels.append(np.array( pt ) == np.array( self._part_labels ))
+            samples.append( labels )
 
-        return np.array(labels_out)
+        return np.array( samples )
     
     def _adjust_to_input_width( self, observations: np.ndarray, class_labels: np.ndarray, part_labels: np.ndarray, se3: np.ndarray ) -> tuple:
         '''
