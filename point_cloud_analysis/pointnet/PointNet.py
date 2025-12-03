@@ -98,7 +98,7 @@ class PointNet(Model):
         self._debugging = debugging
         self._layers = []
         self.input_names = ['pointnet_seg_input']
-        self.output_names = ['classification_output', 'segmentation_output', 'rotation_matrix']
+        self.output_names = ['classification_output', 'segmentation_output', 'se3']
 
         self.input_transform = TNet(name = 'input_transform', add_regularization = True, random_seed = self._random_seed)
 
@@ -123,7 +123,7 @@ class PointNet(Model):
         self.mlp_seg_2 = ConvLayer(filters = 256, name = 'seg_l2_256', activation = tf.nn.relu, apply_bn = True, random_seed = self._random_seed)
         self.mlp_seg_3 = ConvLayer(filters = 128, name = 'seg_l3_128', activation = tf.nn.relu, apply_bn = True, random_seed = self._random_seed)
         self.mlp_seg_4 = ConvLayer(filters = 128, name = 'seg_l4_128', activation = tf.nn.relu, apply_bn = True, random_seed = self._random_seed)
-        self.mlp_seg_5 = ConvLayer(filters = self._segmentation_output_width, name = 'seg_l5_output', activation = None, apply_bn = False, random_seed = self._random_seed)
+        self.mlp_seg_5 = ConvLayer(filters = self._segmentation_output_width, name = 'seg_l5_output', activation = tf.nn.softmax, apply_bn = False, random_seed = self._random_seed)
 
         # Save layers in iterable format
         self.layers.append(self.input_transform)
@@ -199,8 +199,8 @@ class PointNet(Model):
         X = tf.squeeze(X, axis = 2)                                 # (b x n x 64)
 
         # Feature Transform
-        R = self.feature_transform(X, training = training)          # (b x 64 x 64)
-        X_64 = tf.matmul(X, R)                                      # (b x n x 64)
+        R_64 = self.feature_transform(X, training = training)       # (b x 64 x 64)
+        X_64 = tf.matmul(X, R_64)                                   # (b x n x 64)
 
         # MLP (64, 128, 1024)
         X = tf.expand_dims(X_64, axis = 2)                          # (b x n x 1 x 64)

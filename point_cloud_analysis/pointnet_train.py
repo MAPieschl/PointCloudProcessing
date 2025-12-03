@@ -255,19 +255,19 @@ class TrainProfile:
         model.compile(
             optimizer = optimizer,
             loss = {
-                'classification_output': keras.losses.CategoricalCrossentropy( from_logits = True ),
-                'segmentation_output': keras.losses.CategoricalCrossentropy( from_logits = True ),
-                'rotation_matrix': keras.losses.MeanSquaredError()
+                'classification_output': keras.losses.CategoricalCrossentropy(),
+                'segmentation_output': keras.losses.CategoricalCrossentropy(),
+                'se3': keras.losses.MeanSquaredError()
             },
             loss_weights = {
                 'classification_output': self._training_profiles[profile]['loss_weights']['classification'],
                 'segmentation_output': self._training_profiles[profile]['loss_weights']['segmentation'],
-                'rotation_matrix': self._training_profiles[profile]['loss_weights']['rotation']
+                'se3': self._training_profiles[profile]['loss_weights']['rotation']
             },
             metrics = {
                 'classification_output': [keras.metrics.CategoricalAccuracy()],
                 'segmentation_output': [keras.metrics.CategoricalAccuracy()],
-                'rotation_matrix': [keras.metrics.RootMeanSquaredError()]
+                'se3': [keras.metrics.RootMeanSquaredError()]
             }
         )
 
@@ -372,7 +372,7 @@ def print_help():
 
 if __name__=='__main__':
     if( not any([ i.split('_')[-1] == 'config.json' for i in sys.argv ]) ):
-        sys.argv = ['bertha_config.json']
+        sys.argv = ['vizzer_config.json']
         print( f"No config file found. Defaulting to: {sys.argv}" )
 
     if( train_pointnet( sys.argv ) ):

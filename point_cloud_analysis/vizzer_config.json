@@ -3,73 +3,50 @@
         "name": "_vizzer_test",
         "class_labels": {
             "0": "a-10",
-            "1": "airship",
-            "2": "b-1b",
-            "3": "b-2",
-            "4": "c-5",
-            "5": "c-12",
-            "6": "c-17a",
-            "7": "c-32",
-            "8": "c-130j",
-            "9": "drogue",
-            "10": "e-3",
-            "11": "f-15e",
-            "12": "f-16",
-            "13": "f-18e",
-            "14": "f-22",
-            "15": "g-iii",
-            "16": "kc-46",
-            "17": "kc-135",
-            "18": "lj-25",
-            "19": "lj-25_nosecone",
-            "20": "mig-29",
-            "21": "mq-20",
-            "22": "sr-71",
-            "23": "su-27",
-            "24": "vc-25a",
-            "25": "x-47b" 
+            "1": "b-1b",
+            "2": "b-2",
+            "3": "c-5",
+            "4": "c-12",
+            "5": "c-17a",
+            "6": "c-32",
+            "7": "c-130j",
+            "8": "e-3",
+            "9": "f-15e",
+            "10": "f-16",
+            "11": "f-18e",
+            "12": "f-22",
+            "13": "g-iii",
+            "14": "kc-46",
+            "15": "kc-135",
+            "16": "lj-25",
+            "17": "mig-29",
+            "18": "mq-20",
+            "19": "sr-71",
+            "20": "su-27",
+            "21": "vc-25a",
+            "22": "x-47b" 
         },
         "part_labels": {
-            "0": "fuselage", 
-            "1": "left_engine", 
-            "2": "right_engine", 
-            "3": "left_wing", 
-            "4": "right_wing", 
-            "5": "left_hstab", 
-            "6": "right_hstab", 
-            "7": "vstab", 
-            "8": "left_boom_stab", 
-            "9": "right_boom_stab", 
-            "10": "boom_wing", 
-            "11": "boom_hull", 
-            "12": "boom_hose"
+            "0":  "wing",
+            "1":  "fuselage",
+            "2":  "engine",
+            "3":  "hstab",
+            "4":  "vstab",
+            "5":  "landing_gear",
+            "6":  "armament",
+            "7":  "boom_wing",
+            "8":  "boom_hull",
+            "9":  "boom_hose",
+            "10": "dish"
         },
         "training_profiles": {
             "tnet_train": {
                 "datasets": {
-                    "0": "collect_2025.Nov.24_15.47.57.5524625.UTC",
-                    "1": "collect_2025.Nov.24_15.55.18.9256538.UTC",
-                    "2": "collect_2025.Nov.24_15.59.40.1348138.UTC",
-                    "3": "collect_2025.Nov.24_16.48.26.1897129.UTC",
-                    "4": "collect_2025.Nov.24_16.52.44.6435795.UTC",
-                    "5": "collect_2025.Nov.24_17.27.47.1515305.UTC",
-                    "6": "collect_2025.Nov.24_17.49.21.5883738.UTC",
-                    "7": "collect_2025.Nov.24_18.30.49.8439054.UTC",
-                    "8": "collect_2025.Nov.24_18.52.46.7947129.UTC",
-                    "9": "collect_2025.Nov.24_19.10.16.2125631.UTC",
-                    "10": "collect_2025.Nov.24_19.16.10.8395925.UTC",
-                    "11": "collect_2025.Nov.24_19.34.08.0974513.UTC",
-                    "12": "collect_2025.Nov.24_19.47.10.8025460.UTC",
-                    "13": "collect_2025.Nov.24_19.53.20.0352006.UTC",
-                    "14": "collect_2025.Nov.24_20.54.56.2390619.UTC",
-                    "15": "collect_2025.Nov.24_21.02.27.3469410.UTC",
-                    "16": "collect_2025.Nov.24_21.08.29.9771635.UTC",
-                    "17": "collect_2025.Nov.24_21.14.36.7288392.UTC",
-                    "18": "collect_2025.Nov.24_21.20.26.6812324.UTC",
-                    "19": "collect_2025.Nov.24_21.40.00.9439030.UTC",
-                    "20": "collect_2025.Nov.25_12.44.30.1940838.UTC",
-                    "21": "collect_2025.Nov.25_13.05.44.5925888.UTC",
-                    "22": "collect_2025.Nov.25_13.12.04.1835786.UTC"
+                    "0": "collect_2025.Dec.02_18.31.53.5706279.UTC",
+                    "1": "collect_2025.Dec.02_18.37.25.1269574.UTC",
+                    "2": "collect_2025.Dec.02_18.38.57.4681778.UTC",
+                    "3": "collect_2025.Dec.02_18.42.17.6290737.UTC",
+                    "4": "collect_2025.Dec.02_18.47.39.2497886.UTC"
                 },
                 "noise": {
                     "x_stdev_m": 0.1,
@@ -88,9 +65,13 @@
                     "rotation": 1.0
                 }
             },
-            "class_train": {
+            "classification_train": {
                 "datasets": {
-                    "0": ""
+                    "0": "collect_2025.Dec.02_18.31.53.5706279.UTC",
+                    "1": "collect_2025.Dec.02_18.37.25.1269574.UTC",
+                    "2": "collect_2025.Dec.02_18.38.57.4681778.UTC",
+                    "3": "collect_2025.Dec.02_18.42.17.6290737.UTC",
+                    "4": "collect_2025.Dec.02_18.47.39.2497886.UTC"
                 },
                 "noise": {
                     "x_stdev_m": 0.1,
@@ -109,9 +90,13 @@
                     "rotation": 0.0
                 }
             },
-            "seg_train": {
+            "segmentation_train": {
                 "datasets": {
-                    "0": ""
+                    "0": "collect_2025.Dec.02_18.31.53.5706279.UTC",
+                    "1": "collect_2025.Dec.02_18.37.25.1269574.UTC",
+                    "2": "collect_2025.Dec.02_18.38.57.4681778.UTC",
+                    "3": "collect_2025.Dec.02_18.42.17.6290737.UTC",
+                    "4": "collect_2025.Dec.02_18.47.39.2497886.UTC"
                 },
                 "noise": {
                     "x_stdev_m": 0.1,

@@ -1,6 +1,16 @@
 '''
 Organizes point cloud data for training.
 
+This is a robust utility class for handling large qpiont clouds. The general flow for use:
+
+1. Instantiate the object.
+2. If using AftrBurner Palindrome data, call add_from_aftr_output( dir_path ) for each dataset
+   (should be the specific folder inside of DataCollect)
+3. Use get_train_set(), get_val_set(), and get_test_set() as required
+
+The class automatically manages memory usage, organizes the data into train/val/test sets, and 
+jitters the points as needed.
+
 --------------------
 
 PointNet.py
@@ -268,14 +278,51 @@ class PointCloudSet:
             self._train['part_labels'].append( part_labels[i] )
             self._train['se3'].append( se3[i] )
 
+    # def get_train_set( self ):
+    #     class_labels = np.array( self._train['class_labels'] ) if not self._one_hot else self._one_hot_encode_class_labels( self._train['class_labels'] )
+    #     part_labels = np.array( self._train['part_labels'] ) if not self._one_hot else self._one_hot_encode_class_labels( self._train['part_labels'] )
+    #     self._print( ".get_train_set() is only emitting the upper-left 3x3 of the SE3 matrix" )
+    #     return tf.data.Dataset.from_tensor_slices( ( np.array( self._train['observations'] ), class_labels, part_labels, np.array( self._train['se3'] )[:, :, :3, :3] ) ).batch( batch_size = self._batch_size )
+
     def get_train_set( self ):
-        class_labels = np.array( self._train['class_labels'] ) if not self._one_hot else self._one_hot_encode_class_labels( self._train['class_labels'] )
-        part_labels = np.array( self._train['part_labels'] ) if not self._one_hot else self._one_hot_encode_class_labels( self._train['part_labels'] )
-        self._print( ".get_train_set() is only emitting the upper-left 3x3 of the SE3 matrix" )
-        print( f"{np.array( self._train['class_labels'] ).shape} -> {class_labels.shape}" )
-        print( f"{np.array( self._train['part_labels'] ).shape} -> {part_labels.shape}" )
-        print( np.array( self._train['se3'] )[:, :, :3, :3].shape )
-        return tf.data.Dataset.from_tensor_slices( ( np.array( self._train['observations'] ), class_labels, part_labels, np.array( self._train['se3'] )[:, :, :3, :3] ) ).batch( batch_size = self._batch_size )
+
+        def generator( ):
+            for i in range( len( self._train['observations'] ) ):
+                x = np.array( self._train['observations'][i] )
+                cls = self._train['class_labels'][i][0] == np.array( self._class_labels ) if self._one_hot else self._train['class_labels'][i][0]
+                prt = np.array( [ i == np.array( self._part_labels ) for i in self._train['part_labels'][i] ] ) if self._one_hot else self._train['part_labels'][i]
+                so3 = np.array( self._train['se3'][i][0] )[:3, :3]
+
+                y = {
+                    'classification_output': cls,
+                    'segmentation_output': prt,
+                    'se3': so3
+                }
+
+                yield x, y
+
+        if( self._one_hot ):
+            cls_spec = tf.TensorSpec( shape = ( len( self._class_labels ) ), dtype = tf.float32 )
+            seg_spec = tf.TensorSpec( shape = ( self._network_input_width, len( self._part_labels ) ), dtype = tf.float32 )
+        else:
+            cls_spec = tf.TensorSpec( shape = ( ), dtype = tf.int32 )      # Scalar integer
+            seg_spec = tf.TensorSpec( shape = ( self._network_input_width, ), dtype = tf.int32 ) # Vector of integers (points,)
+
+        output_signature = (
+            tf.TensorSpec( shape = ( self._network_input_width, 3 ), dtype = tf.float32 ),
+            {
+                'classification_output':    cls_spec,
+                'segmentation_output':      seg_spec,
+                'se3':                      tf.TensorSpec( shape = ( 3, 3 ), dtype = tf.float32 )
+            }
+        )
+
+        dataset = tf.data.Dataset.from_generator(
+            generator,
+            output_signature = output_signature
+        )
+
+        return dataset.batch( self._batch_size ).prefetch( tf.data.AUTOTUNE )
 
     def get_train_class_set( self ):
         labels = np.array( self._train['class_labels'] ) if not self._one_hot else self._one_hot_encode_class_labels( self._train['class_labels'] )
@@ -289,11 +336,45 @@ class PointCloudSet:
         return tf.data.Dataset.from_tensor_slices( ( np.array( self._train['observations'] ), np.array( self._train['se3'] ) ) ).batch( batch_size = self._batch_size )
     
     def get_val_set( self ):
-        class_labels = np.array( self._val['class_labels'] ) if not self._one_hot else self._one_hot_encode_class_labels( self._val['class_labels'] )
-        part_labels = np.array( self._val['part_labels'] ) if not self._one_hot else self._one_hot_encode_class_labels( self._val['part_labels'] )
-        self._print( ".get_val_set() is only emitting the upper-left 3x3 of the SE3 matrix" )        
-        return tf.data.Dataset.from_tensor_slices( ( np.array( self._val['observations'] ), class_labels, part_labels, np.array( self._val['se3'] )[:, :, :3, :3] ) ).batch( batch_size = self._batch_size )
 
+        def generator( ):
+            for i in range( len( self._val['observations'] ) ):
+                x = np.array( self._val['observations'][i] )
+                cls = self._val['class_labels'][i][0] == np.array( self._class_labels ) if self._one_hot else self._val['class_labels'][i][0]
+                prt = np.array( [ i == np.array( self._part_labels ) for i in self._val['part_labels'][i] ] ) if self._one_hot else self._val['part_labels'][i]
+                so3 = np.array( self._val['se3'][i][0] )[:3, :3]
+
+                y = {
+                    'classification_output': cls,
+                    'segmentation_output': prt,
+                    'se3': so3
+                }
+
+                yield x, y
+
+        if( self._one_hot ):
+            cls_spec = tf.TensorSpec( shape = ( len( self._class_labels ) ), dtype = tf.float32 )
+            seg_spec = tf.TensorSpec( shape = ( self._network_input_width, len( self._part_labels ) ), dtype = tf.float32 )
+        else:
+            cls_spec = tf.TensorSpec( shape = ( ), dtype = tf.int32 )      # Scalar integer
+            seg_spec = tf.TensorSpec( shape = ( self._network_input_width, ), dtype = tf.int32 ) # Vector of integers (points,)
+
+        output_signature = (
+            tf.TensorSpec( shape = ( self._network_input_width, 3 ), dtype = tf.float32 ),
+            {
+                'classification_output':    cls_spec,
+                'segmentation_output':      seg_spec,
+                'se3':                      tf.TensorSpec( shape = ( 3, 3 ), dtype = tf.float32 )
+            }
+        )
+
+        dataset = tf.data.Dataset.from_generator(
+            generator,
+            output_signature = output_signature
+        )
+
+        return dataset.batch( self._batch_size ).prefetch( tf.data.AUTOTUNE )
+    
     def get_val_class_set( self ):
         labels = np.array( self._val['class_labels'] ) if not self._one_hot else self._one_hot_encode_class_labels( self._val['class_labels'] )
         return tf.data.Dataset.from_tensor_slices( ( np.array( self._val['observations'] ), labels ) ).batch( batch_size = self._batch_size )
@@ -321,11 +402,45 @@ class PointCloudSet:
         return self._val
     
     def get_test_set( self ):
-        class_labels = np.array( self._test['class_labels'] ) if not self._one_hot else self._one_hot_encode_class_labels( self._test['class_labels'] )
-        part_labels = np.array( self._test['part_labels'] ) if not self._one_hot else self._one_hot_encode_class_labels( self._test['part_labels'] )
-        self._print( ".get_test_set() is only emitting the upper-left 3x3 of the SE3 matrix" )
-        return tf.data.Dataset.from_tensor_slices( ( np.array( self._test['observations'] ), class_labels, part_labels, np.array( self._test['se3'] )[:, :, :3, :3] ) ).batch( batch_size = self._batch_size )
 
+        def generator( ):
+            for i in range( len( self._test['observations'] ) ):
+                x = np.array( self._test['observations'][i] )
+                cls = self._test['class_labels'][i][0] == np.array( self._class_labels ) if self._one_hot else self._test['class_labels'][i][0]
+                prt = np.array( [ i == np.array( self._part_labels ) for i in self._test['part_labels'][i] ] ) if self._one_hot else self._test['part_labels'][i]
+                so3 = np.array( self._train['se3'][i][0] )[:3, :3]
+
+                y = {
+                    'classification_output': cls,
+                    'segmentation_output': prt,
+                    'se3': so3
+                }
+
+                yield x, y
+
+        if( self._one_hot ):
+            cls_spec = tf.TensorSpec( shape = ( len( self._class_labels ) ), dtype = tf.float32 )
+            seg_spec = tf.TensorSpec( shape = ( self._network_input_width, len( self._part_labels ) ), dtype = tf.float32 )
+        else:
+            cls_spec = tf.TensorSpec( shape = ( ), dtype = tf.int32 )      # Scalar integer
+            seg_spec = tf.TensorSpec( shape = ( self._network_input_width, ), dtype = tf.int32 ) # Vector of integers (points,)
+
+        output_signature = (
+            tf.TensorSpec( shape = ( self._network_input_width, 3 ), dtype = tf.float32 ),
+            {
+                'classification_output':    cls_spec,
+                'segmentation_output':      seg_spec,
+                'se3':                      tf.TensorSpec( shape = ( 3, 3 ), dtype = tf.float32 )
+            }
+        )
+
+        dataset = tf.data.Dataset.from_generator(
+            generator,
+            output_signature = output_signature
+        )
+
+        return dataset.batch( self._batch_size ).prefetch( tf.data.AUTOTUNE )
+    
     def get_test_class_set( self ):
         labels = np.array( self._test['class_labels'] ) if not self._one_hot else self._one_hot_encode_class_labels( self._test['class_labels'] )
         return tf.data.Dataset.from_tensor_slices( ( np.array( self._test['observations']), labels ) ).batch( batch_size = self._batch_size )
