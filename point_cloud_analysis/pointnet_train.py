@@ -127,7 +127,8 @@ class TrainProfile:
                                                                  batch_size = 2,
                                                                  rand_seed = 42,
                                                                  description = prof,
-                                                                 print_func = self._log.info )
+                                                                 print_func = self._log.info,
+                                                                 save_to_filename = f"{prof}_pc" )
             
             self._profile_datasets( prof )
 

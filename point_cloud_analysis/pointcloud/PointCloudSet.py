@@ -26,15 +26,16 @@ Date:   31 July 2025
 import os
 import sys
 import pickle
-import datetime
+import time
 import psutil
-import atexit
+import uuid
+import gc
 sys.path.append('')
 
 import numpy as np
 import pandas as pd
 import tensorflow as tf
-import utils.global_constants as gc
+import utils.global_constants as constants
 
 from tqdm import tqdm
 from copy import deepcopy
@@ -64,10 +65,10 @@ class PointCloudSet:
         self._jitter_stdev_m: np.ndarray = jitter_stdev_m
         self._print: Callable[[str], None] = print_func
         self._save_to_filename: str = save_to_filename
+        self.uid = uuid.uuid4()
 
         # Memory management tools
         self._cached_set_paths: list[str] = []
-        self._mem = psutil.virtual_memory()
 
         if(type(rand_seed) == int):
             np.random.default_rng(seed = rand_seed)
@@ -85,9 +86,7 @@ class PointCloudSet:
             self._test_amt = 0.10
             self._print('PointCloudSet:  train_val_test_split incorrect format - set to default 75% / 15% / 10%')
 
-        self._train = {'frame_id': [], 'observations': [], 'class_labels': [], 'part_labels': [], 'se3': []}
-        self._val = {'frame_id': [], 'observations': [], 'class_labels': [], 'part_labels': [], 'se3': []}
-        self._test = {'frame_id': [], 'observations': [], 'class_labels': [], 'part_labels': [], 'se3': []}
+        self._data_size = {'train': 0, 'val': 0, 'test': 0}
 
         self.save()
 
@@ -113,7 +112,7 @@ class PointCloudSet:
 
             try:
                 with open( self._save_to_filename, 'wb' ) as pf:
-                    pickle.dump( self._save_to_filename, pf )
+                    pickle.dump( self, pf )
 
             except Exception as e:
                 self._print( f'Failed to save PointCloudSet to {self._save_to_filename}:\n{type(e).__name__}: {e}' )
@@ -162,7 +161,15 @@ class PointCloudSet:
             has_state_info = False
             self._print( f"No pose information file (which must contain the substring '_palindrome_state') was found. No pose information will be recorded from data collect." )
 
-        self._print( f'Parsing frames in {dir_path}...' )
+        # Memory check
+        mem_available_GB = psutil.virtual_memory().available / (1024 ** 3)
+        mem_required_GB = ( len( lidar_contents ) / 1000 ) * constants.GB_PER_1000_SAMPLES
+        if( mem_available_GB < mem_required_GB ):
+            self._print( f"Unable to add dataset. Please reduce size (< {1000 * ((mem_required_GB - mem_available_GB) / constants.GB_PER_1000_SAMPLES)}) or open up at least {mem_required_GB - mem_available_GB} GB of memory." )
+            return False
+
+        # Parse frames
+        self._print( f"Parsing frames in {dir_path}..." )
         for i in tqdm( range( len( lidar_contents ) ) ):
             try:
                 with open( f'{dir_path}/Virtual Flash Lidar/frame_{i}.txt', 'r' ) as f:
@@ -299,41 +306,45 @@ class PointCloudSet:
         se3 = se3[indices]
         
         splits = [( 0, int( np.ceil( observations.shape[0] * self._test_amt ) ) ),
-                  ( int( np.ceil(observations.shape[0] * self._test_amt ) ), int( np.ceil( observations.shape[0] * self._test_amt ) ) + int( np.ceil( observations.shape[0] * self._val_amt ) ) ),
-                  ( int( np.ceil(observations.shape[0] * self._test_amt ) ) + int( np.ceil( observations.shape[0] * self._val_amt ) ), observations.shape[0] )]
+                  ( int( np.ceil( observations.shape[0] * self._test_amt ) ), int( np.ceil( observations.shape[0] * self._test_amt ) ) + int( np.ceil( observations.shape[0] * self._val_amt ) ) ),
+                  ( int( np.ceil( observations.shape[0] * self._test_amt ) ) + int( np.ceil( observations.shape[0] * self._val_amt ) ), observations.shape[0] )]
+
+        self._data_size['train'] += splits[2][1] - splits[2][0]
+        self._data_size['val'] += splits[1][1] - splits[1][0]
+        self._data_size['test'] += splits[0][1] - splits[0][0]
+
+        train = self._get_new_subset()
+        val = self._get_new_subset()
+        test = self._get_new_subset()
 
         for i in range( splits[0][0], splits[0][1] ):
-            self._test['frame_id'].append( frame_id[i] )
-            self._test['observations'].append( observations[i] )
-            self._test['class_labels'].append( class_labels[i] )
-            self._test['part_labels'].append( part_labels[i] )
-            self._test['se3'].append( se3[i] )
+            test['frame_id'].append( frame_id[i] )
+            test['observations'].append( observations[i] )
+            test['class_labels'].append( class_labels[i] )
+            test['part_labels'].append( part_labels[i] )
+            test['se3'].append( se3[i] )
 
         for i in range( splits[1][0], splits[1][1] ):
-            self._val['frame_id'].append( frame_id[i] )
-            self._val['observations'].append( observations[i] )
-            self._val['class_labels'].append( class_labels[i] )
-            self._val['part_labels'].append( part_labels[i] )
-            self._val['se3'].append( se3[i] )
+            val['frame_id'].append( frame_id[i] )
+            val['observations'].append( observations[i] )
+            val['class_labels'].append( class_labels[i] )
+            val['part_labels'].append( part_labels[i] )
+            val['se3'].append( se3[i] )
 
         for i in range( splits[2][0], splits[2][1] ):
-            self._train['frame_id'].append( frame_id[i] )
-            self._train['observations'].append( observations[i] )
-            self._train['class_labels'].append( class_labels[i] )
-            self._train['part_labels'].append( part_labels[i] )
-            self._train['se3'].append( se3[i] )
+            train['frame_id'].append( frame_id[i] )
+            train['observations'].append( observations[i] )
+            train['class_labels'].append( class_labels[i] )
+            train['part_labels'].append( part_labels[i] )
+            train['se3'].append( se3[i] )
+
+        self._cache_data( train, val, test )
 
         self.save()
 
-    # def get_train_set( self ):
-    #     class_labels = np.array( self._train['class_labels'] ) if not self._one_hot else self._one_hot_encode_class_labels( self._train['class_labels'] )
-    #     part_labels = np.array( self._train['part_labels'] ) if not self._one_hot else self._one_hot_encode_class_labels( self._train['part_labels'] )
-    #     self._print( ".get_train_set() is only emitting the upper-left 3x3 of the SE3 matrix" )
-    #     return tf.data.Dataset.from_tensor_slices( ( np.array( self._train['observations'] ), class_labels, part_labels, np.array( self._train['se3'] )[:, :, :3, :3] ) ).batch( batch_size = self._batch_size )
-
     def get_train_set( self ):
 
-        def generator( ):
+        def generator():
             for i in range( len( self._train['observations'] ) ):
                 x = np.array( self._train['observations'][i] )
                 cls = self._train['class_labels'][i][0] == np.array( self._class_labels ) if self._one_hot else self._train['class_labels'][i][0]
@@ -371,17 +382,6 @@ class PointCloudSet:
 
         return dataset.batch( self._batch_size ).prefetch( tf.data.AUTOTUNE )
 
-    def get_train_class_set( self ):
-        labels = np.array( self._train['class_labels'] ) if not self._one_hot else self._one_hot_encode_class_labels( self._train['class_labels'] )
-        return tf.data.Dataset.from_tensor_slices( ( np.array( self._train['observations'] ), labels ) ).batch( batch_size = self._batch_size )
-    
-    def get_train_seg_set( self ):
-        labels = np.array( self._train['part_labels'] ) if not self._one_hot else self._one_hot_encode_part_labels( self._train['part_labels'] )
-        return tf.data.Dataset.from_tensor_slices( ( np.array( self._train['observations'] ), labels ) ).batch( batch_size = self._batch_size )
-
-    def get_train_tnet_set( self ):
-        return tf.data.Dataset.from_tensor_slices( ( np.array( self._train['observations'] ), np.array( self._train['se3'] ) ) ).batch( batch_size = self._batch_size )
-    
     def get_val_set( self ):
 
         def generator( ):
@@ -421,32 +421,6 @@ class PointCloudSet:
         )
 
         return dataset.batch( self._batch_size ).prefetch( tf.data.AUTOTUNE )
-    
-    def get_val_class_set( self ):
-        labels = np.array( self._val['class_labels'] ) if not self._one_hot else self._one_hot_encode_class_labels( self._val['class_labels'] )
-        return tf.data.Dataset.from_tensor_slices( ( np.array( self._val['observations'] ), labels ) ).batch( batch_size = self._batch_size )
-    
-    def get_val_seg_set( self ):
-        labels = np.array( self._val['part_labels'] ) if not self._one_hot else self._one_hot_encode_part_labels( self._val['part_labels'] )
-        return tf.data.Dataset.from_tensor_slices( ( np.array( self._val['observations'] ), labels ) ).batch( batch_size = self._batch_size )
-    
-    def get_val_tnet_set( self ):
-        return tf.data.Dataset.from_tensor_slices( ( np.array( self._val['observations'] ), np.array( self._val['se3'] ) ) ).batch( batch_size = self._batch_size )
-    
-    def get_random_val_sample( self ):
-
-        sample_i = int( len( self._test['observations'] ) * np.random.uniform() )
-
-        return {
-            'frame': self._test['frame_id'][sample_i],
-            'observation': self._test['observations'][sample_i], 
-            'class_label': self._test['class_label'][sample_i],
-            'part_label': self._test['part_label'][sample_i],
-            'se3': self._test['se3'][sample_i]
-        }
-    
-    def get_raw_val_set( self ):
-        return self._val
     
     def get_test_set( self ):
 
@@ -488,32 +462,6 @@ class PointCloudSet:
 
         return dataset.batch( self._batch_size ).prefetch( tf.data.AUTOTUNE )
     
-    def get_test_class_set( self ):
-        labels = np.array( self._test['class_labels'] ) if not self._one_hot else self._one_hot_encode_class_labels( self._test['class_labels'] )
-        return tf.data.Dataset.from_tensor_slices( ( np.array( self._test['observations']), labels ) ).batch( batch_size = self._batch_size )
-    
-    def get_test_seg_set( self ):
-        labels = np.array( self._test['part_labels'] ) if not self._one_hot else self._one_hot_encode_part_labels( self._test['part_labels'] )
-        return tf.data.Dataset.from_tensor_slices( ( np.array( self._test['observations'] ), labels ) ).batch( batch_size = self._batch_size )
-    
-    def get_test_tnet_set( self ):
-        return tf.data.Dataset.from_tensor_slices( ( np.array( self._test['observations'] ), np.array( self._test['se3'] ) ) ).batch(batch_size = self._batch_size )
-
-    def get_random_test_sample( self ):
-
-        sample_i = int( len( self._test['observations'] ) * np.random.uniform() )
-
-        return {
-            'frame': self._test['frame_id'][sample_i],
-            'observation': self._test['observations'][sample_i], 
-            'class_label': self._test['class_label'][sample_i],
-            'part_label': self._test['part_label'][sample_i],
-            'se3': self._test['se3'][sample_i]
-        }
-    
-    def get_raw_test_set( self ):
-        return self._test
-    
     def get_class_label_with_confidence( self, one_hot_vector: np.ndarray ):
         labels = []
         for y_pred in one_hot_vector:
@@ -540,38 +488,60 @@ class PointCloudSet:
 
         out += f'\n--- Train Set ---\n'
         out += f'Specified proportion:  {self._train_amt}\n'
-        out += f"Actual proportion: {len(self._train['observations']) / (len(self._train['observations']) + len(self._val['observations']) + len(self._test['observations']))}\n"
-        out += f"Total count: {len(self._train['observations'])}\n"
+        out += f"Actual proportion: {self._data_size['train'] / (self._data_size['train'] + self._data_size['val'] + self._data_size['test'])}\n"
+        out += f"Total count: {self._data_size['train']}\n"
         out += f'Class count:\n'
-        for label in self._class_labels:
-            out += f"\t{label}: {np.count_nonzero(np.array(self._train['class_labels']) == label)}\n"
+        # for label in self._class_labels:
+        #     out += f"\t{label}: {np.count_nonzero(np.array(self._train['class_labels']) == label)}\n"
         out += f'Part count:\n'
-        for label in self._part_labels:
-            out += f"\t{label}: {np.count_nonzero(np.array(self._train['part_labels']) == label)}\n"
+        # for label in self._part_labels:
+        #     out += f"\t{label}: {np.count_nonzero(np.array(self._train['part_labels']) == label)}\n"
 
         out += f'\n--- Validation Set ---\n'
         out += f'Specified proportion:  {self._val_amt}\n'
-        out += f"Actual proportion: {len(self._val['observations']) / (len(self._train['observations']) + len(self._val['observations']) + len(self._test['observations']))}\n"
-        out += f"Total count: {len(self._val['observations'])}\n"
+        out += f"Actual proportion: {self._data_size['val'] / (self._data_size['train'] + self._data_size['val'] + self._data_size['test'])}\n"
+        out += f"Total count: {self._data_size['val']}\n"
         out += f'Class count:\n'
-        for label in self._class_labels:
-            out += f"\t{label}: {np.count_nonzero(np.array(self._val['class_labels']) == label)}\n"
+        # for label in self._class_labels:
+        #     out += f"\t{label}: {np.count_nonzero(np.array(self._val['class_labels']) == label)}\n"
         out += f'Part count:\n'
-        for label in self._part_labels:
-            out += f"\t{label}: {np.count_nonzero(np.array(self._val['part_labels']) == label)}\n"
+        # for label in self._part_labels:
+        #     out += f"\t{label}: {np.count_nonzero(np.array(self._val['part_labels']) == label)}\n"
 
         out += f'\n--- Test Set ---\n'
         out += f'Specified proportion:  {self._test_amt}\n'
-        out += f"Actual proportion: {len(self._test['observations']) / (len(self._train['observations']) + len(self._val['observations']) + len(self._test['observations']))}\n"
-        out += f"Total count: {len(self._test['observations'])}\n"
+        out += f"Actual proportion: {self._data_size['test'] / (self._data_size['train'] + self._data_size['val'] + self._data_size['test'])}\n"
+        out += f"Total count: {self._data_size['test']}\n"
         out += f'Class count:\n'
-        for label in self._class_labels:
-            out += f"\t{label}: {np.count_nonzero(np.array(self._test['class_labels']) == label)}\n"
+        # for label in self._class_labels:
+        #     out += f"\t{label}: {np.count_nonzero(np.array(self._test['class_labels']) == label)}\n"
         out += f'Part count:\n'
-        for label in self._part_labels:
-            out += f"\t{label}: {np.count_nonzero(np.array(self._test['part_labels']) == label)}\n"
+        # for label in self._part_labels:
+        #     out += f"\t{label}: {np.count_nonzero(np.array(self._test['part_labels']) == label)}\n"
 
         return out
+    
+    def _cache_data( self, train, val, test ) -> None:
+
+        if( len( train['observations'] ) > 0 ):
+            cache_path = f"pointcloud/cache/pc_subset_{time.strftime('%Y_%m_%D_%H:%M:%S')}"
+
+            while( os.path.exists( cache_path ) ):
+                cache_path = f'_{cache_path}'
+
+            try:
+                with open( cache_path, 'wr' ) as pf:
+                    ss = PointCloudSubset( self.uid, train, val, test )
+                    pickle.dump( ss, pf )
+
+                    del ss
+                    gc.collect()
+
+            except Exception as e:
+                self._print( f'Unable to cache dataset:\n{type(e).__name__}:  {e}' )
+    
+    def _get_new_subset( self ):
+        return {'frame_id': [], 'observations': [], 'class_labels': [], 'part_labels': [], 'se3': []}
     
     def _one_hot_encode_class_labels(self, labels: list):
         '''
@@ -690,8 +660,8 @@ class PointCloudSet:
 
                 for i, key in enumerate( keys[2:] ):
                     cols = []
-                    for col in range( gc.SE3_COLS ):
-                        cols.append( data_line[ 2 + i * gc.SE3_SIZE + col * gc.SE3_ROWS : 2 + i * gc.SE3_SIZE + ( col + 1 ) * gc.SE3_ROWS ] )
+                    for col in range( constants.SE3_COLS ):
+                        cols.append( data_line[ 2 + i * constants.SE3_SIZE + col * constants.SE3_ROWS : 2 + i * constants.SE3_SIZE + ( col + 1 ) * constants.SE3_ROWS ] )
                     data[ int( data_line[1] ) ][ key ] = np.array( cols, dtype = np.float64 ).T
                 
                 if( 'Sensor Pose' in keys and 'Tanker Pose' in keys ):
@@ -701,6 +671,46 @@ class PointCloudSet:
                     data[ int( data_line[1] ) ]['tanker_in_sensor_frame'] = np.concatenate( [se3_partial, np.array( [[0, 0, 0, 1]] )], axis = 0 )
         
         return data
+    
+class PointCloudSubset:
+    def __init__( self, belongs_to:  uuid.UUID, train: dict, val: dict, test: dict ):
+
+        self._belongs_to = belongs_to
+
+        self._ss = {'train': train, 'val': val, 'test': test}
+        self._idx = {'train': 0, 'val': 0, 'test': 0}
+
+    def load_full( self, belongs_to: uuid.UUID, print_func: Callable[[str], None] = print ):
+
+        if( belongs_to == self._belongs_to ):   return self._ss
+        else:
+            print_func( f"PointCloudSubset requested does not belong to this PointCloudSet." )
+            return None
+        
+    def load_amount( self, belongs_to: uuid.UUID, num_samples: int, subsubset: str, print_func: Callable[[str], None] = print ):
+        '''
+        Load specified number of samples from a specific sub-subset ('train', 'val', or 'test')
+        '''
+
+        if( subsubset not in list( self._ss.keys() ) ):
+            print_func( f"subsubset must be either 'train', 'val', or 'test', not {subsubset}" )
+            return None
+
+        if( belongs_to != self._belongs_to ):
+            print_func( f"PointCloudSubset requested does not belong to this PointCloudSet." )
+            return None
+
+        if( len( self._ss[subsubset] ) - self._idx[subsubset] < num_samples ):
+            out = self._ss[subsubset][self._idx[subsubset] : self._idx[subsubset] + num_samples]
+            self._idx[subsubset] += num_samples
+            return out
+        
+        else:
+            print_func( f"num_samples exceeds the number of samples left in PointCloudSubset, returning {len( self._ss[subsubset] ) - self._idx[subsubset]} samples." )
+            
+            out = self._ss[subsubset][self._idx :]
+            self._idx[subsubset] = 0
+            return out
 
 ### FREE HELPER FUNCTIONS ###
 def load_from_file( pickle_file: str ) -> PointCloudSet:
