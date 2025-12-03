@@ -11,6 +11,10 @@ This is a robust utility class for handling large qpiont clouds. The general flo
 The class automatically manages memory usage, organizes the data into train/val/test sets, and 
 jitters the points as needed.
 
+If reloading a saved model, call:
+
+pc = PointCloudSet.load_from_file( pickle_file.pkl )
+
 --------------------
 
 PointNet.py
@@ -21,6 +25,10 @@ Date:   31 July 2025
 
 import os
 import sys
+import pickle
+import datetime
+import psutil
+import atexit
 sys.path.append('')
 
 import numpy as np
@@ -44,16 +52,22 @@ class PointCloudSet:
                  batch_size: int = 32,
                  rand_seed = None,
                  description: str = '',
-                 print_func: Callable[[str], None] = print ):
+                 print_func: Callable[[str], None] = print,
+                 save_to_filename: str = '' ):
         
-        self._description = description
-        self._batch_size = batch_size
-        self._one_hot = one_hot
-        self._class_labels = class_labels
-        self._part_labels = part_labels
-        self._network_input_width = network_input_width
+        self._description: str = description
+        self._batch_size: int = batch_size
+        self._one_hot: bool = one_hot
+        self._class_labels: list[str] = class_labels
+        self._part_labels: list[str] = part_labels
+        self._network_input_width: int = network_input_width
         self._jitter_stdev_m: np.ndarray = jitter_stdev_m
-        self._print = print_func
+        self._print: Callable[[str], None] = print_func
+        self._save_to_filename: str = save_to_filename
+
+        # Memory management tools
+        self._cached_set_paths: list[str] = []
+        self._mem = psutil.virtual_memory()
 
         if(type(rand_seed) == int):
             np.random.default_rng(seed = rand_seed)
@@ -74,6 +88,35 @@ class PointCloudSet:
         self._train = {'frame_id': [], 'observations': [], 'class_labels': [], 'part_labels': [], 'se3': []}
         self._val = {'frame_id': [], 'observations': [], 'class_labels': [], 'part_labels': [], 'se3': []}
         self._test = {'frame_id': [], 'observations': [], 'class_labels': [], 'part_labels': [], 'se3': []}
+
+        self.save()
+
+    def __del__( self ):
+
+        # Delete cached datasets if the PointCloudSet is saved
+        if( self._save_to_filename == '' ):
+            for cached_pc in self._cached_set_paths:
+                if( os.path.exists( cached_pc ) ):
+                    os.remove( cached_pc )
+                else:
+                    # Python does not garuantee that the object underlying
+                    # self._print will exist beyond this class; if it does
+                    # not, print to console
+                    try:
+                        self._print( f"Failed to remove {cached_pc}" )
+                    except Exception as e:
+                        print( f"Failed to remove {cached_pc}:\n{type(e).__name__}: {e}'" )
+
+    def save( self ):
+
+        if( self._save_to_filename != '' ):
+
+            try:
+                with open( self._save_to_filename, 'wb' ) as pf:
+                    pickle.dump( self._save_to_filename, pf )
+
+            except Exception as e:
+                self._print( f'Failed to save PointCloudSet to {self._save_to_filename}:\n{type(e).__name__}: {e}' )
 
     def add_from_aftr_output( self, dir_path: str, shuffle_points: bool = True ) -> bool:
         '''
@@ -212,6 +255,8 @@ class PointCloudSet:
             
         self._print( f'{dir_path} parsed:  found {len( frame_id )} valid frames out of {frames_searched} total. {non_num_found} total lines discarded for non-numeric values.' )
 
+        self.save()
+
         return True
 
     def add_data( self, frame_id: np.ndarray, observations: np.ndarray, class_labels: np.ndarray, part_labels: np.ndarray, se3: np.ndarray, shuffle_points: bool = True ) -> None:
@@ -277,6 +322,8 @@ class PointCloudSet:
             self._train['class_labels'].append( class_labels[i] )
             self._train['part_labels'].append( part_labels[i] )
             self._train['se3'].append( se3[i] )
+
+        self.save()
 
     # def get_train_set( self ):
     #     class_labels = np.array( self._train['class_labels'] ) if not self._one_hot else self._one_hot_encode_class_labels( self._train['class_labels'] )
@@ -656,6 +703,17 @@ class PointCloudSet:
         return data
 
 ### FREE HELPER FUNCTIONS ###
+def load_from_file( pickle_file: str ) -> PointCloudSet:
+    
+    # Add file extension if not present
+    if( pickle_file.split(".")[-1] != '.pkl' ):
+        pickle_file += '.pkl'
+
+    with open( pickle_file, 'rb' ) as pf:
+        pc_set: PointCloudSet = pickle.load( pf )
+
+    return pc_set
+
 def get_dir_contents(dir_path: str, _print: Callable[[str], None] = print) -> list:
 
     try:
