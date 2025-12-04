@@ -65,6 +65,8 @@ class PointCloudSet:
         self._jitter_stdev_m: np.ndarray = jitter_stdev_m
         self._print: Callable[[str], None] = print_func
         self._save_to_filename: str = save_to_filename
+        self._max_samples_in_memory = 1000 * (( psutil.virtual_memory().available / ( 1024 ** 3 ) ) / constants.GB_PER_1000_SAMPLES )
+        self._cache_ptr = ['train': 0, 'val': 0, 'test': 0]
         self.uid = uuid.uuid4()
 
         # Memory management tools
@@ -352,6 +354,7 @@ class PointCloudSet:
             for i in range( self._data_size['train'] ):
 
                 if( i - data_offset >= len( data['observations'] ) ):
+                    print( "Requesting from cache..." )
                     data_offset = i
                     data = self._from_cache( 'train' )
 
@@ -389,7 +392,7 @@ class PointCloudSet:
             output_signature = output_signature
         )
 
-        return dataset.batch( self._batch_size ).prefetch( tf.data.AUTOTUNE )
+        return dataset.batch( self._batch_size ).repeat().prefetch( tf.data.AUTOTUNE )
 
     def get_val_set( self ):
 
@@ -438,7 +441,7 @@ class PointCloudSet:
             output_signature = output_signature
         )
 
-        return dataset.batch( self._batch_size ).prefetch( tf.data.AUTOTUNE )
+        return dataset.batch( self._batch_size ).repeat().prefetch( tf.data.AUTOTUNE )
     
     def get_test_set( self ):
 
@@ -487,7 +490,7 @@ class PointCloudSet:
             output_signature = output_signature
         )
 
-        return dataset.batch( self._batch_size ).prefetch( tf.data.AUTOTUNE )
+        return dataset.batch( self._batch_size ).repeat().prefetch( tf.data.AUTOTUNE )
     
     def get_class_label_with_confidence( self, one_hot_vector: np.ndarray ):
         labels = []
@@ -584,8 +587,7 @@ class PointCloudSet:
             case _:
                 portion = 0.0
         
-        num_samples = portion * 1000 * ( ( psutil.virtual_memory().available / (1024 ** 3) ) / constants.GB_PER_1000_SAMPLES )
-        samples_per = int( num_samples / len( self._cached_set_paths ) )
+        samples_per = int( portion * int( self._max_samples_in_memory / len( self._cached_set_paths ) ) )
 
         out: dict = self._get_new_subset()
         for ss in self._cached_set_paths:
@@ -604,6 +606,8 @@ class PointCloudSet:
             else:
                 self._print( f"{ss} does not exist." )
                 return {}
+
+        return out
     
     def _get_new_subset( self ):
         return {'frame_id': [], 'observations': [], 'class_labels': [], 'part_labels': [], 'se3': []}
@@ -743,7 +747,6 @@ class PointCloudSubset:
         self._belongs_to = belongs_to
 
         self._ss = {'train': train, 'val': val, 'test': test}
-        self._idx = {'train': 0, 'val': 0, 'test': 0}
 
     def load_full( self, belongs_to: uuid.UUID, print_func: Callable[[str], None] = print ):
 
@@ -752,12 +755,10 @@ class PointCloudSubset:
             print_func( f"PointCloudSubset requested does not belong to this PointCloudSet." )
             return None
         
-    def load_amount( self, belongs_to: uuid.UUID, num_samples: int, subsubset: str, print_func: Callable[[str], None] = print ):
+    def load_amount( self, belongs_to: uuid.UUID, num_samples: int, subsubset: str, start_idx: int, print_func: Callable[[str], None] = print ):
         '''
         Load specified number of samples from a specific sub-subset ('train', 'val', or 'test')
         '''
-
-        print( f"load_amount called -> ss:  {subsubset} | idx: {self._idx} | num_samples: {num_samples}" )
 
         if( subsubset not in list( self._ss.keys() ) ):
             print_func( f"subsubset must be either 'train', 'val', or 'test', not {subsubset}" )
@@ -766,19 +767,40 @@ class PointCloudSubset:
         if( belongs_to != self._belongs_to ):
             print_func( f"PointCloudSubset requested does not belong to this PointCloudSet." )
             return None
-
-        if( len( self._ss[subsubset] ) - self._idx[subsubset] < num_samples ):
+        
+        # If the number of samples requested is more than available, just send the set
+        if( len( self._ss[subsubset] ) < num_samples ):
             out = {}
+
             for key in self._ss[subsubset]:
-                out[key] = self._ss[subsubset][key][self._idx[subsubset] : self._idx[subsubset] + num_samples]
-            self._idx[subsubset] += num_samples
+                out[key] = self._ss[subsubset][key]
+            out['start_idx'] = 0
+            out['end_idx'] = len( self._ss[subsubset] )
+
+            return out
+
+        # If the number of samples requested are available, send them
+        if( len( self._ss[subsubset] ) - start_idx < num_samples ):
+            out = {}
+
+            for key in self._ss[subsubset]:
+                out[key] = self._ss[subsubset][key][start_idx : start_idx + num_samples]
+            out['start_idx'] = start_idx
+            out['end_idx'] = start_idx + num_samples
+
             return out
         
+        # If the number of samples requested are not available, send what is
         else:
-            print_func( f"num_samples exceeds the number of samples left in PointCloudSubset, returning {len( self._ss[subsubset] ) - self._idx[subsubset]} samples." )
+            print_func( f"num_samples exceeds the number of samples left in PointCloudSubset[{subsubset}], returning {len( self._ss[subsubset] ) - self._idx[subsubset]} samples." )
             
-            out = self._ss[subsubset][self._idx :]
-            self._idx[subsubset] = 0
+            out = {}
+            
+            for key in self._ss[subsubset]:
+                out[key] = self._ss[subsubset][key][start_idx :]
+            out['start_idx'] = start_idx
+            out['end_idx'] = len( self._ss[subsubset] )
+
             return out
 
 ### FREE HELPER FUNCTIONS ###
@@ -810,31 +832,3 @@ def get_dir_contents(dir_path: str, _print: Callable[[str], None] = print) -> li
         _print(f"An error occurred: {e}", file = sys.stderr)
 
     return []
-
-if __name__ == "__main__":
-
-    MODEL_PATH = 'models/'
-    MESH_PATH = 'mesh/'
-    FIGURE_PATH = 'figures/'
-    DATA_PATH = 'data/'
-    PALINDROME_DATA_PATH = '/mnt/d/repos/aburn/usr/hub/palindrome_playground/DataCollect/'
-    INPUT_SIZE = 4096
-    RANDOM_SEED = 42
-
-    class_labels = ["a-10", "airship", "b-1b", "b-2", "c-5", "c-12", "c-17a", "c-32", "c-130j", "drogue", "e-3", "f-15e", "f-16", "f-18e", "f-22", "g-iii", "kc-46",
-                    "kc-135", "lj-25", "lj-25_nosecone", "mig-29", "mq-20", "sr-71", "su-27", "vc-25a", "x-47b" ]
-    part_labels = ['fuselage', 'left_engine', 'right_engine', 'left_wing', 'right_wing', 'left_hstab', 'right_hstab', 'vstab', 'left_boom_stab', 'right_boom_stab', 
-                   'boom_wing', 'boom_hull', 'boom_hose']
-    pc = PointCloudSet(one_hot = True, 
-                       class_labels = class_labels, 
-                       part_labels = part_labels, 
-                       network_input_width = INPUT_SIZE, 
-                       rand_seed = RANDOM_SEED, 
-                       jitter_stdev_m = np.array( [ 0.1, 0.1, 0.1 ] ))
-    
-    pc.add_from_aftr_output(f'{DATA_PATH}collect_2025.Nov.24_15.47.57.5524625.UTC')
-    pc.get_info()
-    pc.add_from_aftr_output(f'{DATA_PATH}collect_2025.Nov.24_15.55.18.9256538.UTC')
-    pc.get_info()
-    pc.add_from_aftr_output(f'{DATA_PATH}collect_2025.Nov.25_13.12.04.1835786.UTC')
-    pc.get_info()

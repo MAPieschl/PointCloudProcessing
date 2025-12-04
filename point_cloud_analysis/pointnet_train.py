@@ -128,7 +128,7 @@ class TrainProfile:
                                                                  rand_seed = 42,
                                                                  description = prof,
                                                                  print_func = self._log.info,
-                                                                 save_to_filename = f"{prof}_pc" )
+                                                                 save_to_filename = f"pointcloud/{prof}_pc" )
             
             self._profile_datasets( prof )
 
@@ -153,11 +153,15 @@ class TrainProfile:
 
             model = self._build_pointnet( prof )
 
-            train = self._training_profiles[prof]['pc'].get_train_set()
-            val = self._training_profiles[prof]['pc'].get_val_set()
-
             # train model
-            history = model.fit( x = train, epochs = self._epochs, verbose = 1, validation_data = val, callbacks = self._training_callbacks )
+            history = model.fit( x = self._training_profiles[prof]['pc'].get_train_set(), 
+                                 validation_data = self._training_profiles[prof]['pc'].get_val_set(),
+                                 epochs = self._epochs, 
+                                 verbose = 1,  
+                                 callbacks = self._training_callbacks,
+                                 steps_per_epoch = int( self._training_profiles[prof]['pc']._data_size['train'] / self._batch_size ),
+                                 validation_steps = int( self._training_profiles[prof]['pc']._data_size['val'] / self._batch_size )
+            )
 
             # save Keras model
             model.save(f"{self._training_profiles[prof]['path']}{self._name}_{prof}.keras")
