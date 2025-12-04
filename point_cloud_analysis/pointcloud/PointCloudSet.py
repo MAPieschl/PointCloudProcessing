@@ -13,7 +13,7 @@ jitters the points as needed.
 
 If reloading a saved model, call:
 
-pc = PointCloudSet.load_from_file( pickle_file.pkl )
+pc = PointCloudSet.load_from_file( joblib_file.pkl )
 
 --------------------
 
@@ -25,7 +25,7 @@ Date:   31 July 2025
 
 import os
 import sys
-import pickle
+import joblib
 import time
 import psutil
 import uuid
@@ -104,7 +104,7 @@ class PointCloudSet:
                     try:
                         self._print( f"Failed to remove {cached_pc}" )
                     except Exception as e:
-                        print( f"Failed to remove {cached_pc}:\n{type(e).__name__}: {e}'" )
+                        print( f"Failed to remove {cached_pc}:\n\t{type(e).__name__}: {e}'" )
 
     def save( self ):
 
@@ -112,10 +112,10 @@ class PointCloudSet:
 
             try:
                 with open( self._save_to_filename, 'wb' ) as pf:
-                    pickle.dump( self, pf )
+                    joblib.dump( self, pf )
 
             except Exception as e:
-                self._print( f'Failed to save PointCloudSet to {self._save_to_filename}:\n{type(e).__name__}: {e}' )
+                self._print( f'Failed to save PointCloudSet to {self._save_to_filename}:\n\t{type(e).__name__}: {e}' )
 
     def add_from_aftr_output( self, dir_path: str, shuffle_points: bool = True ) -> bool:
         '''
@@ -345,11 +345,20 @@ class PointCloudSet:
     def get_train_set( self ):
 
         def generator():
-            for i in range( len( self._train['observations'] ) ):
-                x = np.array( self._train['observations'][i] )
-                cls = self._train['class_labels'][i][0] == np.array( self._class_labels ) if self._one_hot else self._train['class_labels'][i][0]
-                prt = np.array( [ i == np.array( self._part_labels ) for i in self._train['part_labels'][i] ] ) if self._one_hot else self._train['part_labels'][i]
-                so3 = np.array( self._train['se3'][i][0] )[:3, :3]
+            
+            data = self._from_cache( 'train' )
+            data_offset = 0
+
+            for i in range( self._data_size['train'] ):
+
+                if( i - data_offset >= len( data['observations'] ) ):
+                    data_offset = i
+                    data = self._from_cache( 'train' )
+
+                x = np.array( data['observations'][i - data_offset] )
+                cls = data['class_labels'][i - data_offset][0] == np.array( self._class_labels ) if self._one_hot else data['class_labels'][i - data_offset][0]
+                prt = np.array( [ j == np.array( self._part_labels ) for j in data['part_labels'][i - data_offset] ] ) if self._one_hot else data['part_labels'][i]
+                so3 = np.array( data['se3'][i - data_offset][0] )[:3, :3]
 
                 y = {
                     'classification_output': cls,
@@ -384,12 +393,21 @@ class PointCloudSet:
 
     def get_val_set( self ):
 
-        def generator( ):
-            for i in range( len( self._val['observations'] ) ):
-                x = np.array( self._val['observations'][i] )
-                cls = self._val['class_labels'][i][0] == np.array( self._class_labels ) if self._one_hot else self._val['class_labels'][i][0]
-                prt = np.array( [ i == np.array( self._part_labels ) for i in self._val['part_labels'][i] ] ) if self._one_hot else self._val['part_labels'][i]
-                so3 = np.array( self._val['se3'][i][0] )[:3, :3]
+        def generator():
+            
+            data = self._from_cache( 'val' )
+            data_offset = 0
+
+            for i in range( self._data_size['val'] ):
+
+                if( i - data_offset >= len( data['observations'] ) ):
+                    data_offset = i
+                    data = self._from_cache( 'val' )
+
+                x = np.array( data['observations'][i - data_offset] )
+                cls = data['class_labels'][i - data_offset][0] == np.array( self._class_labels ) if self._one_hot else data['class_labels'][i - data_offset][0]
+                prt = np.array( [ j == np.array( self._part_labels ) for j in data['part_labels'][i - data_offset] ] ) if self._one_hot else data['part_labels'][i]
+                so3 = np.array( data['se3'][i - data_offset][0] )[:3, :3]
 
                 y = {
                     'classification_output': cls,
@@ -424,12 +442,21 @@ class PointCloudSet:
     
     def get_test_set( self ):
 
-        def generator( ):
-            for i in range( len( self._test['observations'] ) ):
-                x = np.array( self._test['observations'][i] )
-                cls = self._test['class_labels'][i][0] == np.array( self._class_labels ) if self._one_hot else self._test['class_labels'][i][0]
-                prt = np.array( [ i == np.array( self._part_labels ) for i in self._test['part_labels'][i] ] ) if self._one_hot else self._test['part_labels'][i]
-                so3 = np.array( self._train['se3'][i][0] )[:3, :3]
+        def generator():
+            
+            data = self._from_cache( 'test' )
+            data_offset = 0
+
+            for i in range( self._data_size['test'] ):
+
+                if( i - data_offset >= len( data['observations'] ) ):
+                    data_offset = i
+                    data = self._from_cache( 'test' )
+
+                x = np.array( data['observations'][i - data_offset] )
+                cls = data['class_labels'][i - data_offset][0] == np.array( self._class_labels ) if self._one_hot else data['class_labels'][i - data_offset][0]
+                prt = np.array( [ j == np.array( self._part_labels ) for j in data['part_labels'][i - data_offset] ] ) if self._one_hot else data['part_labels'][i]
+                so3 = np.array( data['se3'][i - data_offset][0] )[:3, :3]
 
                 y = {
                     'classification_output': cls,
@@ -524,21 +551,59 @@ class PointCloudSet:
     def _cache_data( self, train, val, test ) -> None:
 
         if( len( train['observations'] ) > 0 ):
-            cache_path = f"pointcloud/cache/pc_subset_{time.strftime('%Y_%m_%D_%H:%M:%S')}"
+            cache_path = f"pointcloud/cache/pc_subset_{time.strftime('%Y_%m_%d_%H:%M:%S')}"
 
             while( os.path.exists( cache_path ) ):
                 cache_path = f'_{cache_path}'
 
             try:
-                with open( cache_path, 'wr' ) as pf:
+                with open( cache_path, 'wb' ) as pf:
                     ss = PointCloudSubset( self.uid, train, val, test )
-                    pickle.dump( ss, pf )
+                    joblib.dump( ss, pf )
+                    self._cached_set_paths.append( cache_path )
 
                     del ss
                     gc.collect()
 
             except Exception as e:
-                self._print( f'Unable to cache dataset:\n{type(e).__name__}:  {e}' )
+                self._print( f'Unable to cache dataset:\n\t{type(e).__name__}:  {e}' )
+
+    def _from_cache( self, subsubset: str ) -> dict:
+
+        if( subsubset not in list( self._data_size.keys() ) ):
+            self._print( f"subsubset must be either 'train', 'val', or 'test', not {subsubset}" )
+            return {}
+        
+        match subsubset:
+            case 'train':
+                portion = self._train_amt
+            case 'val':
+                portion = self._val_amt
+            case 'test':
+                portion = self._test_amt
+            case _:
+                portion = 0.0
+        
+        num_samples = portion * 1000 * ( ( psutil.virtual_memory().available / (1024 ** 3) ) / constants.GB_PER_1000_SAMPLES )
+        samples_per = int( num_samples / len( self._cached_set_paths ) )
+
+        out: dict = self._get_new_subset()
+        for ss in self._cached_set_paths:
+            if( os.path.exists( ss ) ):
+                with open( ss, 'rb' ) as pf:
+                    pc_ss: PointCloudSubset = joblib.load( pf )
+                    ss_data = pc_ss.load_amount( self.uid, samples_per, subsubset, self._print )
+
+                with open( ss, 'wb' ) as pf:
+                    joblib.dump( pc_ss, pf )
+
+                if( type( ss_data ) == dict ):
+                    for key in list( out.keys() ):
+                        out[key].extend( ss_data[key] )
+
+            else:
+                self._print( f"{ss} does not exist." )
+                return {}
     
     def _get_new_subset( self ):
         return {'frame_id': [], 'observations': [], 'class_labels': [], 'part_labels': [], 'se3': []}
@@ -692,6 +757,8 @@ class PointCloudSubset:
         Load specified number of samples from a specific sub-subset ('train', 'val', or 'test')
         '''
 
+        print( f"load_amount called -> ss:  {subsubset} | idx: {self._idx} | num_samples: {num_samples}" )
+
         if( subsubset not in list( self._ss.keys() ) ):
             print_func( f"subsubset must be either 'train', 'val', or 'test', not {subsubset}" )
             return None
@@ -701,7 +768,9 @@ class PointCloudSubset:
             return None
 
         if( len( self._ss[subsubset] ) - self._idx[subsubset] < num_samples ):
-            out = self._ss[subsubset][self._idx[subsubset] : self._idx[subsubset] + num_samples]
+            out = {}
+            for key in self._ss[subsubset]:
+                out[key] = self._ss[subsubset][key][self._idx[subsubset] : self._idx[subsubset] + num_samples]
             self._idx[subsubset] += num_samples
             return out
         
@@ -713,14 +782,14 @@ class PointCloudSubset:
             return out
 
 ### FREE HELPER FUNCTIONS ###
-def load_from_file( pickle_file: str ) -> PointCloudSet:
+def load_from_file( joblib_file: str ) -> PointCloudSet:
     
     # Add file extension if not present
-    if( pickle_file.split(".")[-1] != '.pkl' ):
-        pickle_file += '.pkl'
+    if( joblib_file.split(".")[-1] != '.pkl' ):
+        joblib_file += '.pkl'
 
-    with open( pickle_file, 'rb' ) as pf:
-        pc_set: PointCloudSet = pickle.load( pf )
+    with open( joblib_file, 'rb' ) as pf:
+        pc_set: PointCloudSet = joblib.load( pf )
 
     return pc_set
 
