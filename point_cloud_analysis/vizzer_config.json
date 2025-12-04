@@ -80,6 +80,7 @@
     },
     "file_system": {
         "model_path": "models/",
-        "input_path": "/mnt/d/repos/aburn/usr/hub/palindrome_playground/DataCollect/"
+        "input_path": "/mnt/d/repos/aburn/usr/hub/palindrome_playground/DataCollect/",
+        "data_path":  "data/"
     }
 }

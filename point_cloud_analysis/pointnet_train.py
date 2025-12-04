@@ -78,6 +78,7 @@ class TrainProfile:
         # filesystem information (relative paths)
         self._model_path                        : str = config['file_system']['model_path']  
         self._input_path                        : str = config['file_system']['input_path']
+        self._data_path                         : str = config['file_system']['data_path']
 
         # leave empty callback list (appended in _build_pointnet)
         self._training_callbacks = []
@@ -88,6 +89,7 @@ class TrainProfile:
         # verify all paths
         if( not os.path.isdir( self._model_path ) ): return self._advise_and_abort( f"{self._model_path} does not exists" )
         if( not os.path.isdir( self._input_path ) ): return self._advise_and_abort( f"{self._input_path} does not exists" )
+        if( not os.path.isdir( self._data_path ) ):  return self._advise_and_abort( f"{self._data_path} does not exist" )
         for prof in list(self._training_profiles.keys()):
             for ds in list(self._training_profiles[prof]['datasets'].values()):
                 if( not os.path.isdir( f"{self._input_path}{ds}" ) ): return self._advise_and_abort( f"{self._input_path}{ds} does not exists" )
@@ -128,7 +130,7 @@ class TrainProfile:
                                                                  rand_seed = 42,
                                                                  description = prof,
                                                                  print_func = self._log.info,
-                                                                 save_to_filename = f"pointcloud/{prof}_pc" )
+                                                                 data_path = self._data_path )
             
             self._profile_datasets( prof )
 
