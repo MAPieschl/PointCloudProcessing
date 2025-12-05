@@ -97,7 +97,7 @@ class PointNet(Model):
         self._random_seed = random_seed
         self._debugging = debugging
         self._layers = []
-        self.input_names = ['pointnet_seg_input']
+        self.input_names = ['pointnet_input']
         self.output_names = ['classification_output', 'segmentation_output', 'se3']
 
         self.input_transform = TNet(name = 'input_transform', add_regularization = True, random_seed = self._random_seed)
@@ -261,7 +261,11 @@ class PointNet(Model):
 
         X_seg = tf.squeeze(X_seg, axis = 2)
 
-        return [ X_cls, X_seg, R ]
+        return { 
+            'classification_output':    X_cls, 
+            'segmentation_output':      X_seg, 
+            'se3':                      R 
+                }
     
     def freeze_input_transform(self) -> None:
         self.input_transform.freeze()

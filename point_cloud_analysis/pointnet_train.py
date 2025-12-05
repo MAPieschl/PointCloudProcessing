@@ -161,8 +161,8 @@ class TrainProfile:
                                  epochs = self._epochs, 
                                  verbose = 1,  
                                  callbacks = self._training_callbacks,
-                                 steps_per_epoch = int( self._training_profiles[prof]['pc']._data_size['train'] / self._batch_size ),
-                                 validation_steps = int( self._training_profiles[prof]['pc']._data_size['val'] / self._batch_size )
+                                 steps_per_epoch = int( self._training_profiles[prof]['pc']._data_size['train']['count'] / self._batch_size ),
+                                 validation_steps = int( self._training_profiles[prof]['pc']._data_size['val']['count'] / self._batch_size )
             )
 
             # save Keras model
@@ -272,8 +272,8 @@ class TrainProfile:
                 'se3': self._training_profiles[profile]['loss_weights']['rotation']
             },
             metrics = {
-                'classification_output': [keras.metrics.CategoricalAccuracy()],
-                'segmentation_output': [keras.metrics.CategoricalAccuracy()],
+                'classification_output': [keras.metrics.SparseCategoricalAccuracy()],
+                'segmentation_output': [keras.metrics.SparseCategoricalAccuracy()],
                 'se3': [keras.metrics.RootMeanSquaredError()]
             }
         )

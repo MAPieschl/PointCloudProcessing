@@ -59,7 +59,23 @@ class PointCloudSet:
         self._print: Callable[[str], None] = print_func
         self._data_path = data_path
         self._sets_added = 0
-        self._data_size = {'train': 0, 'val': 0, 'test': 0}
+        self._data_size = {
+            'train': {
+                'count': 0,
+                'class_count': {},
+                'part_count': {}
+            }, 
+            'val': {
+                'count': 0,
+                'class_count': {},
+                'part_count': {}
+            }, 
+            'test': {
+                'count': 0,
+                'class_count': {},
+                'part_count': {}
+            }
+            }
 
         if(type(rand_seed) == int):
             np.random.default_rng(seed = rand_seed)
@@ -170,9 +186,9 @@ class PointCloudSet:
                             # check for valid class and part labels
                             if( labels[0] in self._class_labels and labels[1] in self._part_labels ):
                                 obs.append( np.array( pos ) )
-                                if( type( cl ) == type( None ) ):   cl = self._class_labels.get( labels[0], -1 )
+                                cl = self._class_labels.get( labels[0], -1 )
                                 pl.append( self._part_labels.get( labels[1], -1 ) )
-                                if( type( se ) == type( None ) ) : se = state_info[i]['tanker_in_sensor_frame']
+                                se = state_info[i]['tanker_in_sensor_frame'][:3, :3]
 
                         else:
                             non_num_found += 1
@@ -222,17 +238,17 @@ class PointCloudSet:
         with tf.io.TFRecordWriter( f"{self._data_path}{self._name}/{set_name}/test_{self._sets_added}.tfrecord" ) as writer:
             for i in range( splits[0][0], splits[0][1] ):
                 writer.write( self._serialize_sample( observations[i], class_labels[i], part_labels[i], se3[i] ) )
-                self._data_size['test'] += 1
+                self._data_size['test']['count'] += 1
 
         with tf.io.TFRecordWriter( f"{self._data_path}{self._name}/{set_name}/val_{self._sets_added}.tfrecord" ) as writer:
             for i in range( splits[1][0], splits[1][1] ):
                 writer.write( self._serialize_sample( observations[i], class_labels[i], part_labels[i], se3[i] ) )
-                self._data_size['val'] += 1
-
+                self._data_size['val']['count'] += 1
+                
         with tf.io.TFRecordWriter( f"{self._data_path}{self._name}/{set_name}/train_{self._sets_added}.tfrecord" ) as writer:
             for i in range( splits[2][0], splits[2][1] ):
                 writer.write( self._serialize_sample( observations[i], class_labels[i], part_labels[i], se3[i] ) )
-                self._data_size['train'] += 1
+                self._data_size['train']['count'] += 1
 
         self._sets_added += 1
 
@@ -286,7 +302,7 @@ class PointCloudSet:
         return x, {
             'classification_output': y_cls,
             'segmentation_output':   y_seg,
-            'rotation_matrix':       y_se3 
+            'se3':       y_se3 
         }
 
     def get_train_set( self ):
