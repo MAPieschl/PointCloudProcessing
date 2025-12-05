@@ -251,6 +251,8 @@ class PointCloudSet:
                 self._data_size['train']['count'] += 1
 
         self._sets_added += 1
+        
+        self.save()
 
     def _float_feature( self, value ):
         """Returns a float_list from a float / double."""
@@ -350,47 +352,46 @@ class PointCloudSet:
     def get_description(self):
         return self._description
     
-    # def get_info(self):
-    #     out = f'{self._description}\n'
-    #     out += f'Is one-hot encoded: {self._one_hot}\n'
-    #     out += f'Random seed: {self._random_seed}\n' if (type(self._random_seed) == int) else f'Is not seeded\n'
-    #     out += f'Class labels: {self._class_labels}\n'
-    #     out += f'Part labels: {self._part_labels}\n'
+    def get_info(self):
+        out = f'{self._description}\n'
+        out += f'Random seed: {self._random_seed}\n' if (type(self._random_seed) == int) else f'Is not seeded\n'
+        out += f'Class labels: {self._class_labels.keys()}\n'
+        out += f'Part labels: {self._part_labels.keys()}\n'
 
-    #     out += f'\n--- Train Set ---\n'
-    #     out += f'Specified proportion:  {self._train_amt}\n'
-    #     out += f"Actual proportion: {self._data_size['train'] / (self._data_size['train'] + self._data_size['val'] + self._data_size['test'])}\n"
-    #     out += f"Total count: {self._data_size['train']}\n"
-    #     out += f'Class count:\n'
-    #     # for label in self._class_labels:
-    #     #     out += f"\t{label}: {np.count_nonzero(np.array(self._train['class_labels']) == label)}\n"
-    #     out += f'Part count:\n'
-    #     # for label in self._part_labels:
-    #     #     out += f"\t{label}: {np.count_nonzero(np.array(self._train['part_labels']) == label)}\n"
+        out += f'\n--- Train Set ---\n'
+        out += f'Specified proportion:  {self._train_amt}\n'
+        out += f"Actual proportion: {self._data_size['train']['count'] / (self._data_size['train']['count'] + self._data_size['val']['count'] + self._data_size['test']['count'])}\n"
+        out += f"Total count: {self._data_size['train']['count']}\n"
+        out += f'Class count:\n'
+        # for label in self._class_labels:
+        #     out += f"\t{label}: {np.count_nonzero(np.array(self._train['class_labels']) == label)}\n"
+        out += f'Part count:\n'
+        # for label in self._part_labels:
+        #     out += f"\t{label}: {np.count_nonzero(np.array(self._train['part_labels']) == label)}\n"
 
-    #     out += f'\n--- Validation Set ---\n'
-    #     out += f'Specified proportion:  {self._val_amt}\n'
-    #     out += f"Actual proportion: {self._data_size['val'] / (self._data_size['train'] + self._data_size['val'] + self._data_size['test'])}\n"
-    #     out += f"Total count: {self._data_size['val']}\n"
-    #     out += f'Class count:\n'
-    #     # for label in self._class_labels:
-    #     #     out += f"\t{label}: {np.count_nonzero(np.array(self._val['class_labels']) == label)}\n"
-    #     out += f'Part count:\n'
-    #     # for label in self._part_labels:
-    #     #     out += f"\t{label}: {np.count_nonzero(np.array(self._val['part_labels']) == label)}\n"
+        out += f'\n--- Validation Set ---\n'
+        out += f'Specified proportion:  {self._val_amt}\n'
+        out += f"Actual proportion: {self._data_size['val']['count'] / (self._data_size['train']['count'] + self._data_size['val']['count'] + self._data_size['test']['count'])}\n"
+        out += f"Total count: {self._data_size['val']['count']}\n"
+        out += f'Class count:\n'
+        # for label in self._class_labels:
+        #     out += f"\t{label}: {np.count_nonzero(np.array(self._val['class_labels']) == label)}\n"
+        out += f'Part count:\n'
+        # for label in self._part_labels:
+        #     out += f"\t{label}: {np.count_nonzero(np.array(self._val['part_labels']) == label)}\n"
 
-    #     out += f'\n--- Test Set ---\n'
-    #     out += f'Specified proportion:  {self._test_amt}\n'
-    #     out += f"Actual proportion: {self._data_size['test'] / (self._data_size['train'] + self._data_size['val'] + self._data_size['test'])}\n"
-    #     out += f"Total count: {self._data_size['test']}\n"
-    #     out += f'Class count:\n'
-    #     # for label in self._class_labels:
-    #     #     out += f"\t{label}: {np.count_nonzero(np.array(self._test['class_labels']) == label)}\n"
-    #     out += f'Part count:\n'
-    #     # for label in self._part_labels:
-    #     #     out += f"\t{label}: {np.count_nonzero(np.array(self._test['part_labels']) == label)}\n"
+        out += f'\n--- Test Set ---\n'
+        out += f'Specified proportion:  {self._test_amt}\n'
+        out += f"Actual proportion: {self._data_size['test'] / (self._data_size['train']['count'] + self._data_size['val']['count'] + self._data_size['test']['count'])}\n"
+        out += f"Total count: {self._data_size['test']['count']}\n"
+        out += f'Class count:\n'
+        # for label in self._class_labels:
+        #     out += f"\t{label}: {np.count_nonzero(np.array(self._test['class_labels']) == label)}\n"
+        out += f'Part count:\n'
+        # for label in self._part_labels:
+        #     out += f"\t{label}: {np.count_nonzero(np.array(self._test['part_labels']) == label)}\n"
 
-    #     return out
+        return out
     
     def _adjust_to_input_width( self, observations: np.ndarray, part_labels: np.ndarray ) -> tuple:
         '''

@@ -96,7 +96,7 @@ class PointNet(Model):
         self._segmentation_output_width = segmentation_output_width
         self._random_seed = random_seed
         self._debugging = debugging
-        self._layers = []
+        self._custom_layers = []
         self.input_names = ['pointnet_input']
         self.output_names = ['classification_output', 'segmentation_output', 'se3']
 
@@ -321,7 +321,7 @@ class PointNet(Model):
 
     def get_layer_trainability(self) -> dict:
         trainability_dict = {}
-        for layer_ in self._layers:
+        for layer_ in self._custom_layers:
             trainability_dict[layer_.name] = layer_.is_trainable()
 
         return trainability_dict
@@ -435,6 +435,7 @@ class TNet(Model):
         })
 
     def freeze(self):
+        self.trainable = False
         self.conv_layer_1.freeze()
         self.conv_layer_2.freeze()
         self.conv_layer_3.freeze()
@@ -442,6 +443,7 @@ class TNet(Model):
         self.dense_layer_2.freeze()
 
     def thaw(self):
+        self.trainable = True
         self.conv_layer_1.thaw()
         self.conv_layer_2.thaw()
         self.conv_layer_3.thaw()

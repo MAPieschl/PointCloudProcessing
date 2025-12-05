@@ -23,10 +23,9 @@ import numpy as np
 import tensorflow as tf
 import onnxruntime as ort
 import onnx
-import traceback
+import joblib
 import logging
 import datetime
-import importlib
 
 from tqdm import tqdm
 from tensorflow import keras
@@ -34,7 +33,7 @@ from tensorflow.keras import Model
 from tensorflow.keras.callbacks import EarlyStopping
 
 from pointnet.PointNet import PointNet
-from pointcloud.PointCloudSet import PointCloudSet
+from pointcloud.PointCloudSet import PointCloudSet, get_dir_contents
 
 print( "Package import complete." )
 
@@ -118,20 +117,27 @@ class TrainProfile:
         # create a pc set and training subdirectory for each training step
         for prof in list(self._training_profiles.keys()):
 
-            # create pc set
-            self._training_profiles[prof]['pc'] = PointCloudSet( name = f"{self._name}_{prof}",
-                                                                 class_labels = self._class_labels,
-                                                                 part_labels = self._part_labels,
-                                                                 network_input_width = self._input_width,
-                                                                 jitter_stdev_m = np.array( [ self._training_profiles[prof]['noise']['x_stdev_m'], \
-                                                                                              self._training_profiles[prof]['noise']['y_stdev_m'], \
-                                                                                              self._training_profiles[prof]['noise']['z_stdev_m'] ] ),
-                                                                 batch_size = 2,
-                                                                 rand_seed = 42,
-                                                                 description = prof,
-                                                                 print_func = self._log.info,
-                                                                 data_path = self._data_path )
-            
+            if( os.path.isdir( f"{self._data_path}{self._name}_{prof}" ) ):
+                self._log.info( f"Training profile {self._name}_{prof} already exists. Using existing profile..." )
+
+                with open( f"{self._data_path}{self._name}_{prof}/pc_set.joblib", "rb" ) as jl:
+                    self._training_profiles[prof]['pc'] = joblib.load( jl )
+
+            else:
+                # create pc set
+                self._training_profiles[prof]['pc'] = PointCloudSet( name = f"{self._name}_{prof}",
+                                                                    class_labels = self._class_labels,
+                                                                    part_labels = self._part_labels,
+                                                                    network_input_width = self._input_width,
+                                                                    jitter_stdev_m = np.array( [ self._training_profiles[prof]['noise']['x_stdev_m'], \
+                                                                                                self._training_profiles[prof]['noise']['y_stdev_m'], \
+                                                                                                self._training_profiles[prof]['noise']['z_stdev_m'] ] ),
+                                                                    batch_size = 2,
+                                                                    rand_seed = 42,
+                                                                    description = prof,
+                                                                    print_func = self._log.info,
+                                                                    data_path = self._data_path )
+                
             self._profile_datasets( prof )
 
             # create training subdirectory
@@ -154,6 +160,13 @@ class TrainProfile:
         for prof in list(self._training_profiles.keys()):
 
             model = self._build_pointnet( prof )
+
+            self._log.info( f"PointNet Build" )
+            self._log.info( f"\tTrainable Layers" )
+
+            trainability_summary = model.get_layer_trainability()
+            for l in list( trainability_summary.keys() ):
+                self._log.info( f"\t\t-> {l}: {trainability_summary[l]}" )
 
             # train model
             history = model.fit( x = self._training_profiles[prof]['pc'].get_train_set(), 
@@ -199,11 +212,20 @@ class TrainProfile:
             self._pretrained_model = f"{self._training_profiles[prof]['path']}{self._name}_{prof}.keras"
         
     def _profile_datasets( self, profile ) -> None:
-        for ds, set_name in enumerate( list( self._training_profiles[profile]['datasets'].values() ) ):
-            self._log.info( f"Adding data set {ds + 1} of {len( self._training_profiles[profile]['datasets'] )}" )
-            self._training_profiles[profile]['pc'].add_from_aftr_output( dir_path = f"{self._input_path}{set_name}", shuffle_points = True )
 
-        self._log.info( '\nDataset added successfully:\n' )
+        datasets = get_dir_contents( f"{self._data_path}{self._name}_{profile}", self._log.info )
+
+        if( len( datasets ) > 0 ):
+            self._log.info( f"The following datasets were found in {self._data_path}{self._name}_{profile}:" )
+            for ds in datasets:
+                self._log.info( f"\t-> {ds}\t{'(not requested, but will included in training profile)' if ds in list( self._training_profiles[profile]['datasets'].values() ) else ''}" )
+
+        for ds, set_name in enumerate( list( self._training_profiles[profile]['datasets'].values() ) ):
+            if( set_name not in datasets ):
+                self._log.info( f"Adding data set {ds + 1} of {len( self._training_profiles[profile]['datasets'] )}" )
+                self._training_profiles[profile]['pc'].add_from_aftr_output( dir_path = f"{self._input_path}{set_name}", shuffle_points = True )
+
+        self._log.info( '\nDatasets added successfully:\n' )
         # self._log.info( self._training_profiles[profile]['pc'].get_info() )
 
     def _build_pointnet( self, profile: str ):
