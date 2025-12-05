@@ -18,7 +18,7 @@ Date:   31 July 2025
 
 import os
 import sys
-import time
+import joblib
 sys.path.append('')
 
 import numpy as np
@@ -32,7 +32,7 @@ from collections.abc import Callable
 
 class PointCloudSet:
     def __init__(self,
-                 one_hot: bool,
+                 name: str,
                  class_labels: list,
                  part_labels: list,
                  network_input_width: int,
@@ -47,7 +47,7 @@ class PointCloudSet:
         
         self._description: str = description
         self._batch_size: int = batch_size
-        self._one_hot: bool = one_hot
+        self._name: str = name
         self._class_labels: dict[str, int] = {}
         for i, label in enumerate( class_labels ):
             self._class_labels[label] = i
@@ -59,6 +59,7 @@ class PointCloudSet:
         self._print: Callable[[str], None] = print_func
         self._data_path = data_path
         self._sets_added = 0
+        self._data_size = {'train': 0, 'val': 0, 'test': 0}
 
         if(type(rand_seed) == int):
             np.random.default_rng(seed = rand_seed)
@@ -82,6 +83,15 @@ class PointCloudSet:
             'part_labels':  tf.io.FixedLenFeature([self._network_input_width], tf.int64),
             'se3':          tf.io.FixedLenFeature([9], tf.float32),
         }
+        
+        if( not os.path.isdir( f"{self._data_path}{self._name}" ) ):  os.mkdir( f"{self._data_path}{self._name}" )
+
+        self.save()
+
+    def save( self ):
+
+        with open( f"{self._data_path}{self._name}/pc_set.joblib", "wb" ) as jl:
+            joblib.dump( self, jl )
         
     def add_from_aftr_output( self, dir_path: str, shuffle_points: bool = True ) -> bool:
         '''
@@ -122,68 +132,68 @@ class PointCloudSet:
         # Parse frames
         self._print( f"Parsing frames in {dir_path}..." )
         for i in tqdm( range( len( lidar_contents ) ) ):
-            # try:
-            with open( f'{dir_path}/Virtual Flash Lidar/frame_{i}.txt', 'r' ) as f:
-                obs = []
-                cl = None
-                pl = []
-                se = None
-                for j, line in enumerate( f ):
-                    line = line.strip()
+            try:
+                with open( f'{dir_path}/Virtual Flash Lidar/frame_{i}.txt', 'r' ) as f:
+                    obs = []
+                    cl = None
+                    pl = []
+                    se = None
+                    for j, line in enumerate( f ):
+                        line = line.strip()
 
-                    # parse position
-                    pos_start_idx = line.find( '(' )
-                    pos_end_idx = line.find( ')' )
+                        # parse position
+                        pos_start_idx = line.find( '(' )
+                        pos_end_idx = line.find( ')' )
 
-                    pos_str = line[pos_start_idx + 1:pos_end_idx].split( ',' )
-                    pos = []
-                    for val in pos_str:
-                        pos.append( float( val ) )
+                        pos_str = line[pos_start_idx + 1:pos_end_idx].split( ',' )
+                        pos = []
+                        for val in pos_str:
+                            pos.append( float( val ) )
 
-                    # parse labels
-                    labels = line[pos_end_idx + 1:].split( " " )
+                        # parse labels
+                        labels = line[pos_end_idx + 1:].split( " " )
 
-                    # removes unnecessary '' characters
-                    labels = [ l for l in labels if len( l ) > 1 ]
+                        # removes unnecessary '' characters
+                        labels = [ l for l in labels if len( l ) > 1 ]
 
-                    if( len( labels ) == 2 ):
-                        if( labels[0] not in self._class_labels ):
-                            raise Exception( f"Class label {labels[0]} not known" )
-                        if( labels[1] not in self._part_labels ):
-                            raise Exception( f"Part label {labels[1]} not known" )
-                    else:
-                        raise Exception( f"Dataset must contain both a class label and part label. {labels} is not correct." )
+                        if( len( labels ) == 2 ):
+                            if( labels[0] not in self._class_labels ):
+                                raise Exception( f"Class label {labels[0]} not known" )
+                            if( labels[1] not in self._part_labels ):
+                                raise Exception( f"Part label {labels[1]} not known" )
+                        else:
+                            raise Exception( f"Dataset must contain both a class label and part label. {labels} is not correct." )
 
-                    # check for non-numeric values
-                    if( np.isfinite( np.array( pos ) ).all() ):
+                        # check for non-numeric values
+                        if( np.isfinite( np.array( pos ) ).all() ):
 
-                        # check for valid class and part labels
-                        if( labels[0] in self._class_labels and labels[1] in self._part_labels ):
-                            obs.append( np.array( pos ) )
-                            if( type( cl ) == type( None ) ):   cl = self._class_labels.get( labels[0], -1 )
-                            pl.append( self._part_labels.get( labels[1], -1 ) )
-                            if( type( se ) == type( None ) ) : se = state_info[i]['tanker_in_sensor_frame']
+                            # check for valid class and part labels
+                            if( labels[0] in self._class_labels and labels[1] in self._part_labels ):
+                                obs.append( np.array( pos ) )
+                                if( type( cl ) == type( None ) ):   cl = self._class_labels.get( labels[0], -1 )
+                                pl.append( self._part_labels.get( labels[1], -1 ) )
+                                if( type( se ) == type( None ) ) : se = state_info[i]['tanker_in_sensor_frame']
 
-                    else:
-                        non_num_found += 1
+                        else:
+                            non_num_found += 1
 
-                if( len(obs) != 0 ):
-                    obs, pl = self._adjust_to_input_width( np.array( obs ), np.array( pl ) )
+                    if( len(obs) != 0 ):
+                        obs, pl = self._adjust_to_input_width( np.array( obs ), np.array( pl ) )
 
-                    if( np.isfinite( obs ).all() ):
-                        observations.append( obs )
-                        class_labels.append( cl )
-                        part_labels.append( pl )
-                        se3.append( se )
+                        if( np.isfinite( obs ).all() ):
+                            observations.append( obs )
+                            class_labels.append( cl )
+                            part_labels.append( pl )
+                            se3.append( se )
 
-                    else:
-                        self._print( f'Per-line check failed - frame_{i} discarded after detecting non-finite value.' )
+                        else:
+                            self._print( f'Per-line check failed - frame_{i} discarded after detecting non-finite value.' )
 
-            # except Exception as e:
-            #     if( frames_searched == 0 ): frames_searched = i
-            #     self._print( f"Failed to add file {dir_path}/Virtual Flash Lidar/frame_{i}.txt:\n\t{type( e ).__name__} : {e}" )
+            except Exception as e:
+                if( frames_searched == 0 ): frames_searched = i
+                self._print( f"Failed to add file {dir_path}/Virtual Flash Lidar/frame_{i}.txt:\n\t{type( e ).__name__} : {e}" )
 
-            self.add_data( dir_path.split("/")[-1], np.array( observations ), np.array( class_labels ), np.array( part_labels ), np.array( se3 ), shuffle_points )
+        self.add_data( dir_path.split("/")[-1], np.array( observations ), np.array( class_labels ), np.array( part_labels ), np.array( se3 ), shuffle_points )
 
         return True
 
@@ -207,27 +217,24 @@ class PointCloudSet:
                   ( int( np.ceil( observations.shape[0] * self._test_amt ) ), int( np.ceil( observations.shape[0] * self._test_amt ) ) + int( np.ceil( observations.shape[0] * self._val_amt ) ) ),
                   ( int( np.ceil( observations.shape[0] * self._test_amt ) ) + int( np.ceil( observations.shape[0] * self._val_amt ) ), observations.shape[0] )]
 
-        if( not os.path.isdir( f"{self._data_path}/{set_name}" ) ): os.mkdir( f"{self._data_path}/{set_name}" )
+        if( not os.path.isdir( f"{self._data_path}{self._name}/{set_name}" ) ): os.mkdir( f"{self._data_path}{self._name}/{set_name}" )
 
-        with tf.io.TFRecordWriter( f"{self._data_path}/{set_name}/test_{self._sets_added}" ) as writer:
+        with tf.io.TFRecordWriter( f"{self._data_path}{self._name}/{set_name}/test_{self._sets_added}.tfrecord" ) as writer:
             for i in range( splits[0][0], splits[0][1] ):
                 writer.write( self._serialize_sample( observations[i], class_labels[i], part_labels[i], se3[i] ) )
+                self._data_size['test'] += 1
 
-        with tf.io.TFRecordWriter( f"{self._data_path}/{set_name}/val_{self._sets_added}" ) as writer:
+        with tf.io.TFRecordWriter( f"{self._data_path}{self._name}/{set_name}/val_{self._sets_added}.tfrecord" ) as writer:
             for i in range( splits[1][0], splits[1][1] ):
                 writer.write( self._serialize_sample( observations[i], class_labels[i], part_labels[i], se3[i] ) )
+                self._data_size['val'] += 1
 
-        with tf.io.TFRecordWriter( f"{self._data_path}/{set_name}/train_{self._sets_added}" ) as writer:
+        with tf.io.TFRecordWriter( f"{self._data_path}{self._name}/{set_name}/train_{self._sets_added}.tfrecord" ) as writer:
             for i in range( splits[2][0], splits[2][1] ):
                 writer.write( self._serialize_sample( observations[i], class_labels[i], part_labels[i], se3[i] ) )
+                self._data_size['train'] += 1
 
         self._sets_added += 1
-
-    # def _bytes_feature( self, value ):
-    #     """Returns a bytes_list from a string / byte."""
-    #     if isinstance(value, type(tf.constant(0))):
-    #         value = value.numpy()
-    #     return tf.train.Feature(bytes_list=tf.train.BytesList(value=[value]))
 
     def _float_feature( self, value ):
         """Returns a float_list from a float / double."""
@@ -235,6 +242,10 @@ class PointCloudSet:
 
     def _int64_feature( self, value ):
         """Returns an int64_list from a bool / enum / int / uint."""
+
+        if( isinstance( value, ( list, np.ndarray ) ) ):
+            return tf.train.Feature(int64_list=tf.train.Int64List(value=value))
+
         return tf.train.Feature(int64_list=tf.train.Int64List(value=[value]))
     
     def _serialize_sample(self, obs: np.ndarray, cls: str, seg: np.ndarray, se3: np.ndarray):
@@ -280,7 +291,7 @@ class PointCloudSet:
 
     def get_train_set( self ):
 
-        files = tf.data.Dataset.list_files( f"{self._data_path}/*/train_*.tfrecord" )
+        files = tf.data.Dataset.list_files( f"{self._data_path}{self._name}/*/train_*.tfrecord" )
 
         dataset = files.interleave(
             tf.data.TFRecordDataset,
@@ -298,7 +309,7 @@ class PointCloudSet:
 
     def get_val_set( self ):
 
-        files = tf.data.Dataset.list_files( f"{self._data_path}/*/val_*.tfrecord" )
+        files = tf.data.Dataset.list_files( f"{self._data_path}{self._name}/*/val_*.tfrecord" )
 
         dataset = tf.data.TFRecordDataset( files )
 
@@ -310,7 +321,7 @@ class PointCloudSet:
     
     def get_test_set( self ):
 
-        files = tf.data.Dataset.list_files( f"{self._data_path}/*/test_*.tfrecord" )
+        files = tf.data.Dataset.list_files( f"{self._data_path}{self._name}/*/test_*.tfrecord" )
 
         dataset = tf.data.TFRecordDataset( files )
 
@@ -364,36 +375,6 @@ class PointCloudSet:
     #     #     out += f"\t{label}: {np.count_nonzero(np.array(self._test['part_labels']) == label)}\n"
 
     #     return out
-    
-    def _one_hot_encode_class_labels(self, labels: list):
-        '''
-        @param labels   (list) shape (samples, input width)
-
-        @return (np.ndarray) shape (samples, input_width, num_labels)
-        '''
-        samples = []
-        for sample in labels:
-            labels = []
-            for pt in sample:
-                labels.append(np.array( pt ) == np.array( self._class_labels ))
-            samples.append( labels )
-
-        return np.array( samples )
-    
-    def _one_hot_encode_part_labels(self, labels: list):
-        '''
-        @param labels   (list) shape (samples, input width)
-
-        @return (np.ndarray) shape (samples, input_width, num_labels)
-        '''
-        samples = []
-        for sample in labels:
-            labels = []
-            for pt in sample:
-                labels.append(np.array( pt ) == np.array( self._part_labels ))
-            samples.append( labels )
-
-        return np.array( samples )
     
     def _adjust_to_input_width( self, observations: np.ndarray, part_labels: np.ndarray ) -> tuple:
         '''

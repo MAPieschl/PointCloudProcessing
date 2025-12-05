@@ -119,7 +119,7 @@ class TrainProfile:
         for prof in list(self._training_profiles.keys()):
 
             # create pc set
-            self._training_profiles[prof]['pc'] = PointCloudSet( one_hot = True,
+            self._training_profiles[prof]['pc'] = PointCloudSet( name = f"{self._name}_{prof}",
                                                                  class_labels = self._class_labels,
                                                                  part_labels = self._part_labels,
                                                                  network_input_width = self._input_width,
@@ -204,7 +204,7 @@ class TrainProfile:
             self._training_profiles[profile]['pc'].add_from_aftr_output( dir_path = f"{self._input_path}{set_name}", shuffle_points = True )
 
         self._log.info( '\nDataset added successfully:\n' )
-        self._log.info( self._training_profiles[profile]['pc'].get_info() )
+        # self._log.info( self._training_profiles[profile]['pc'].get_info() )
 
     def _build_pointnet( self, profile: str ):
 
@@ -262,8 +262,8 @@ class TrainProfile:
         model.compile(
             optimizer = optimizer,
             loss = {
-                'classification_output': keras.losses.CategoricalCrossentropy(),
-                'segmentation_output': keras.losses.CategoricalCrossentropy(),
+                'classification_output': keras.losses.SparseCategoricalCrossentropy(),
+                'segmentation_output': keras.losses.SparseCategoricalCrossentropy(),
                 'se3': keras.losses.MeanSquaredError()
             },
             loss_weights = {
