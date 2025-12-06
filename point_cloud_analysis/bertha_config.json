@@ -121,9 +121,9 @@
     },
     "params": {
         "input_width": 4096,
-        "epochs": 1000,
-        "patience": 100,
-        "batch_size": 32,
+        "epochs": 5000,
+        "patience": 500,
+        "batch_size": 64,
         "learning": {
             "rate": 0.0001,
             "decay_steps": 7000,
@@ -134,6 +134,7 @@
     },
     "file_system": {
         "model_path": "models/",
-        "input_path": "data/"
+        "input_path": "data/",
+        "data_path": "data/"
     }
 }

@@ -94,6 +94,7 @@ class PointNet(Model):
         super(PointNet, self).__init__(**kwargs)
         self._classification_output_width = classification_output_width
         self._segmentation_output_width = segmentation_output_width
+        self._dropout_rate = dropout_rate
         self._random_seed = random_seed
         self._debugging = debugging
         self._custom_layers = []
@@ -126,21 +127,21 @@ class PointNet(Model):
         self.mlp_seg_5 = ConvLayer(filters = self._segmentation_output_width, name = 'seg_l5_output', activation = tf.nn.softmax, apply_bn = False, random_seed = self._random_seed)
 
         # Save layers in iterable format
-        self.layers.append(self.input_transform)
-        self.layers.append(self.mlp_1_1)
-        self.layers.append(self.mlp_1_2)
-        self.layers.append(self.feature_transform)
-        self.layers.append(self.mlp_2_1)
-        self.layers.append(self.mlp_2_2)
-        self.layers.append(self.mlp_2_3)
-        self.layers.append(self.mlp_cls_1)
-        self.layers.append(self.mlp_cls_2)
-        self.layers.append(self.mlp_cls_3)
-        self.layers.append(self.mlp_seg_1)
-        self.layers.append(self.mlp_seg_2)
-        self.layers.append(self.mlp_seg_3)
-        self.layers.append(self.mlp_seg_4)
-        self.layers.append(self.mlp_seg_5)
+        self._custom_layers.append(self.input_transform)
+        self._custom_layers.append(self.mlp_1_1)
+        self._custom_layers.append(self.mlp_1_2)
+        self._custom_layers.append(self.feature_transform)
+        self._custom_layers.append(self.mlp_2_1)
+        self._custom_layers.append(self.mlp_2_2)
+        self._custom_layers.append(self.mlp_2_3)
+        self._custom_layers.append(self.mlp_cls_1)
+        self._custom_layers.append(self.mlp_cls_2)
+        self._custom_layers.append(self.mlp_cls_3)
+        self._custom_layers.append(self.mlp_seg_1)
+        self._custom_layers.append(self.mlp_seg_2)
+        self._custom_layers.append(self.mlp_seg_3)
+        self._custom_layers.append(self.mlp_seg_4)
+        self._custom_layers.append(self.mlp_seg_5)
         
     def build(self, input_shape):
         '''
@@ -306,18 +307,14 @@ class PointNet(Model):
         self.mlp_seg_5.thaw()
 
     def freeze_classification_head(self) -> None:
-        self.mlp_seg_1.freeze()
-        self.mlp_seg_2.freeze()
-        self.mlp_seg_3.freeze()
-        self.mlp_seg_4.freeze()
-        self.mlp_seg_5.freeze()
+        self.mlp_cls_1.freeze()
+        self.mlp_cls_2.freeze()
+        self.mlp_cls_3.freeze()
 
     def thaw_classification_head(self) -> None:
-        self.mlp_seg_1.thaw()
-        self.mlp_seg_2.thaw()
-        self.mlp_seg_3.thaw()
-        self.mlp_seg_4.thaw()
-        self.mlp_seg_5.thaw()
+        self.mlp_cls_1.thaw()
+        self.mlp_cls_2.thaw()
+        self.mlp_cls_3.thaw()
 
     def get_layer_trainability(self) -> dict:
         trainability_dict = {}
@@ -332,6 +329,7 @@ class PointNet(Model):
         config.update({
             'classification_output_width': self._classification_output_width,
             'segmentation_output_width': self._segmentation_output_width,
+            'dropout_rate': self._dropout_rate,
             'random_seed': self._random_seed,
             'debugging': self._debugging
         })
@@ -372,6 +370,7 @@ class TNet(Model):
 
         self.add_regularization = add_regularization
         self.bn_momentum = bn_momentum
+        self.layer_widths = layer_widths
         self.seed = random_seed
         self.name = name
 
@@ -429,9 +428,11 @@ class TNet(Model):
     def get_config(self):
         config = super(TNet, self).get_config()
         config.update({
+            'name': self.name,
             'add_regularization': self.add_regularization,
             'bn_momentum': self.bn_momentum,
-            'seed': self.seed
+            'layer_widths': self.layer_widths,
+            'random_seed': self.seed
         })
 
     def freeze(self):
@@ -539,14 +540,14 @@ class ConvLayer(Layer):
 
         config.update({
             'filters': self.filters,
+            'name': self.name,
             'kernel_size': self.kernel_size,
             'strides': self.strides,
             'padding': self.padding,
             'activation': self.activation,
             'apply_bn': self.apply_bn,
             'bn_momentum': self.bn_momentum,
-            'seed': self.seed,
-            'initializer': self.initializer})
+            'random_seed': self.seed})
         
         return config
     
@@ -627,11 +628,11 @@ class DenseLayer(Layer):
 
         config.update({
             'units': self.units,
+            'name': self.name,
             'activation': self.activation,
             'apply_bn': self.apply_bn,
             'bn_momentum': self.bn_momentum,
-            'seed': self.seed,
-            'initializer': self.initializer})
+            'random_seed': self.seed})
         
         return 
     

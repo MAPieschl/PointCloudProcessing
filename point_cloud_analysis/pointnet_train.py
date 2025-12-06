@@ -32,8 +32,8 @@ from tensorflow import keras
 from tensorflow.keras import Model
 from tensorflow.keras.callbacks import EarlyStopping
 
-from pointnet.PointNet import PointNet
-from pointcloud.PointCloudSet import PointCloudSet, get_dir_contents
+import pointnet.PointNet as PointNet
+import pointcloud.PointCloudSet as PointCloudSet
 
 print( "Package import complete." )
 
@@ -96,9 +96,9 @@ class TrainProfile:
             if( not os.path.isfile( f"{self._model_path}{self._pretrained_model}" ) ): return self._advise_and_abort( f"{self._model_path}{self._pretrained_model} does not exists" )
 
         # create model training data directory
-        self._specific_model_path = f"{self._model_path}{self._name}/"
-        if( not os.path.isdir(self._specific_model_path) ):
-            os.mkdir(self._specific_model_path)
+        self._specific_model_path = f"{self._name}/"
+        if( not os.path.isdir(f"{self._model_path}{self._specific_model_path}") ):
+            os.mkdir(f"{self._model_path}{self._specific_model_path}")
 
         # create logger
         dt = datetime.datetime.now()
@@ -106,7 +106,7 @@ class TrainProfile:
         self._log.setLevel( logging.DEBUG )
 
         console_handler = logging.StreamHandler()
-        file_handler = logging.FileHandler( f"{self._specific_model_path}log_{dt.strftime( '%Y%m%d_%H:%M%S' )}.log" )
+        file_handler = logging.FileHandler( f"{self._model_path}{self._specific_model_path}log_{dt.strftime( '%Y%m%d_%H:%M%S' )}.log" )
 
         console_handler.setFormatter( logging.Formatter('%(name)s - %(levelname)s - %(message)s') )
         file_handler.setFormatter( logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s') )
@@ -125,25 +125,25 @@ class TrainProfile:
 
             else:
                 # create pc set
-                self._training_profiles[prof]['pc'] = PointCloudSet( name = f"{self._name}_{prof}",
-                                                                    class_labels = self._class_labels,
-                                                                    part_labels = self._part_labels,
-                                                                    network_input_width = self._input_width,
-                                                                    jitter_stdev_m = np.array( [ self._training_profiles[prof]['noise']['x_stdev_m'], \
-                                                                                                self._training_profiles[prof]['noise']['y_stdev_m'], \
-                                                                                                self._training_profiles[prof]['noise']['z_stdev_m'] ] ),
-                                                                    batch_size = 2,
-                                                                    rand_seed = 42,
-                                                                    description = prof,
-                                                                    print_func = self._log.info,
-                                                                    data_path = self._data_path )
+                self._training_profiles[prof]['pc'] = PointCloudSet.PointCloudSet( name = f"{self._name}_{prof}",
+                                                                                   class_labels = self._class_labels,
+                                                                                   part_labels = self._part_labels,
+                                                                                   network_input_width = self._input_width,
+                                                                                   jitter_stdev_m = np.array( [ self._training_profiles[prof]['noise']['x_stdev_m'], \
+                                                                                                                self._training_profiles[prof]['noise']['y_stdev_m'], \
+                                                                                                                self._training_profiles[prof]['noise']['z_stdev_m'] ] ),
+                                                                                   batch_size = 2,
+                                                                                   rand_seed = 42,
+                                                                                   description = prof,
+                                                                                   print_func = self._log.info,
+                                                                                   data_path = self._data_path )
                 
             self._profile_datasets( prof )
 
             # create training subdirectory
             self._training_profiles[prof]['path'] = f"{self._specific_model_path}{prof}/"
-            if( not os.path.isdir(self._training_profiles[prof]['path']) ):
-                os.mkdir(self._training_profiles[prof]['path'])
+            if( not os.path.isdir( f"{self._model_path}{self._training_profiles[prof]['path']}" ) ):
+                os.mkdir( f"{self._model_path}{self._training_profiles[prof]['path']}" )
             
     def train( self ):
         '''
@@ -179,16 +179,11 @@ class TrainProfile:
             )
 
             # save Keras model
-            model.save(f"{self._training_profiles[prof]['path']}{self._name}_{prof}.keras")
+            model.save(f"{self._model_path}{self._training_profiles[prof]['path']}{self._name}_{prof}.keras")
 
             # output training history
-            with open(f"{self._training_profiles[prof]['path']}{self._name}_{prof}_history.json", 'w') as j:
-                json.dump({
-                    'loss': history.history['loss'],
-                    'val_loss': history.history['val_loss'],
-                    'categorical_accuracy': history.history['categorical_accuracy'],
-                    'val_categorical_accuracy': history.history['val_categorical_accuracy'],
-                }, j)
+            with open(f"{self._model_path}{self._training_profiles[prof]['path']}{self._name}_{prof}_history.json", 'w') as j:
+                json.dump(history.history, j)
 
             # save ONNX model
             input_signature = [
@@ -201,19 +196,19 @@ class TrainProfile:
                 opset = 13
             )
 
-            onnx.save(onnx_model, f"{self._training_profiles[prof]['path']}{self._name}_{prof}.onnx")
+            onnx.save(onnx_model, f"{self._model_path}{self._training_profiles[prof]['path']}{self._name}_{prof}.onnx")
 
             # copy config file into specific model directory
-            shutil.copy( self._config_file, self._training_profiles[prof]['path'] )
+            shutil.copy( self._config_file, f"{self._model_path}{self._training_profiles[prof]['path']}" )
 
             # copy pretrained model into current directory
-            shutil.copy( f"{self._model_path}{self._pretrained_model}", self._training_profiles[prof]['path'] )
+            if( os.path.isfile( f"{self._model_path}{self._pretrained_model}" ) ):  shutil.copy( f"{self._model_path}{self._pretrained_model}", f"{self._model_path}{self._training_profiles[prof]['path']}" )
 
             self._pretrained_model = f"{self._training_profiles[prof]['path']}{self._name}_{prof}.keras"
         
     def _profile_datasets( self, profile ) -> None:
 
-        datasets = get_dir_contents( f"{self._data_path}{self._name}_{profile}", self._log.info )
+        datasets = PointCloudSet.get_dir_contents( f"{self._data_path}{self._name}_{profile}", self._log.info )
 
         if( len( datasets ) > 0 ):
             self._log.info( f"The following datasets were found in {self._data_path}{self._name}_{profile}:" )
@@ -226,13 +221,15 @@ class TrainProfile:
                 self._training_profiles[profile]['pc'].add_from_aftr_output( dir_path = f"{self._input_path}{set_name}", shuffle_points = True )
 
         self._log.info( '\nDatasets added successfully:\n' )
-        # self._log.info( self._training_profiles[profile]['pc'].get_info() )
+        self._log.info( self._training_profiles[profile]['pc'].get_info() )
 
     def _build_pointnet( self, profile: str ):
 
         self._training_callbacks = []
 
         if( self._pretrained_model != "" ):
+
+            self._log.info( f"Continuing training on model {self._pretrained_model}" )
             
             custom_objects = {
                 "PointNetSegmentation": PointNet.PointNet,
@@ -242,17 +239,17 @@ class TrainProfile:
             }
 
             model = tf.keras.models.load_model(
-                self._pretrained_model,
+                f"{self._model_path}{self._pretrained_model}",
                 custom_objects = custom_objects
             )
 
         else:
 
-            model = PointNet( classification_output_width = len( self._class_labels ),
-                            segmentation_output_width = len( self._part_labels ), 
-                            dropout_rate = 0.3,
-                            random_seed = self._random_seed, 
-                            debugging = self._debugging )
+            model = PointNet.PointNet( classification_output_width = len( self._class_labels ),
+                                       segmentation_output_width = len( self._part_labels ), 
+                                       dropout_rate = 0.3,
+                                       random_seed = self._random_seed, 
+                                       debugging = self._debugging )
             
             model.build(input_shape = (None, self._input_width, 3))
 

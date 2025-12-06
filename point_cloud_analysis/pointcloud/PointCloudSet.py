@@ -382,7 +382,7 @@ class PointCloudSet:
 
         out += f'\n--- Test Set ---\n'
         out += f'Specified proportion:  {self._test_amt}\n'
-        out += f"Actual proportion: {self._data_size['test'] / (self._data_size['train']['count'] + self._data_size['val']['count'] + self._data_size['test']['count'])}\n"
+        out += f"Actual proportion: {self._data_size['test']['count'] / (self._data_size['train']['count'] + self._data_size['val']['count'] + self._data_size['test']['count'])}\n"
         out += f"Total count: {self._data_size['test']['count']}\n"
         out += f'Class count:\n'
         # for label in self._class_labels:
