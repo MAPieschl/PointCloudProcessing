@@ -202,7 +202,7 @@ class TrainProfile:
             shutil.copy( self._config_file, f"{self._model_path}{self._training_profiles[prof]['path']}" )
 
             # copy pretrained model into current directory
-            if( os.path.isfile( f"{self._model_path}{self._pretrained_model}" ) ):  shutil.copy( f"{self._model_path}{self._pretrained_model}", f"{self._model_path}{self._training_profiles[prof]['path']}" )
+            if( os.path.isfile( f"{self._model_path}{self._pretrained_model}" ) ):  shutil.copy( str( f"{self._model_path}{self._pretrained_model}".split("/")[:-1] ), f"{self._model_path}{self._training_profiles[prof]['path']}" )
 
             self._pretrained_model = f"{self._training_profiles[prof]['path']}{self._name}_{prof}.keras"
         

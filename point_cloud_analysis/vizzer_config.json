@@ -43,7 +43,10 @@
             "tnet_train": {
                 "datasets": {
                     "0": "collect_2025.Dec.02_18.31.53.5706279.UTC",
-                    "1": "collect_2025.Dec.02_18.37.25.1269574.UTC"
+                    "1": "collect_2025.Dec.02_18.37.25.1269574.UTC",
+                    "2": "collect_2025.Dec.02_18.38.57.4681778.UTC",
+                    "3": "collect_2025.Dec.02_18.42.17.6290737.UTC",
+                    "4": "collect_2025.Dec.02_18.47.39.2497886.UTC"
                 },
                 "noise": {
                     "x_stdev_m": 0.1,
@@ -60,6 +63,56 @@
                     "classification": 0.0,
                     "segmentation": 0.0,
                     "rotation": 1.0
+                }
+            },
+            "classification_train": {
+                "datasets": {
+                    "0": "collect_2025.Dec.02_18.31.53.5706279.UTC",
+                    "1": "collect_2025.Dec.02_18.37.25.1269574.UTC",
+                    "2": "collect_2025.Dec.02_18.38.57.4681778.UTC",
+                    "3": "collect_2025.Dec.02_18.42.17.6290737.UTC",
+                    "4": "collect_2025.Dec.02_18.47.39.2497886.UTC"
+                },
+                "noise": {
+                    "x_stdev_m": 0.1,
+                    "y_stdev_m": 0.1,
+                    "z_stdev_m": 0.1
+                },
+                "trainable": {
+                    "shared_network": true,
+                    "input_transform": false,
+                    "classification_head": true,
+                    "segmentation_head": false
+                },
+                "loss_weights": {
+                    "classification": 1.0,
+                    "segmentation": 0.0,
+                    "rotation": 0.0
+                }
+            },
+            "segmentation_train": {
+                "datasets": {
+                    "0": "collect_2025.Dec.02_18.31.53.5706279.UTC",
+                    "1": "collect_2025.Dec.02_18.37.25.1269574.UTC",
+                    "2": "collect_2025.Dec.02_18.38.57.4681778.UTC",
+                    "3": "collect_2025.Dec.02_18.42.17.6290737.UTC",
+                    "4": "collect_2025.Dec.02_18.47.39.2497886.UTC"
+                },
+                "noise": {
+                    "x_stdev_m": 0.1,
+                    "y_stdev_m": 0.1,
+                    "z_stdev_m": 0.1
+                },
+                "trainable": {
+                    "shared_network": true,
+                    "input_transform": false,
+                    "classification_head": false,
+                    "segmentation_head": true
+                },
+                "loss_weights": {
+                    "classification": 0.0,
+                    "segmentation": 1.0,
+                    "rotation": 0.0
                 }
             }
         },
