@@ -266,8 +266,7 @@ class TrainProfile:
         )
 
         optimizer = keras.optimizers.Adam(
-            learning_rate = lr_schedule,
-            global_clipnorm = 1.0
+            learning_rate = lr_schedule
         )
 
         # Freeze / thaw specified layers

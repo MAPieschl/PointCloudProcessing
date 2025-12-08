@@ -1,0 +1,50 @@
+2025-12-08 13:47:16,654 - root - INFO - Training profile _bertha_single_tnet_test_tnet_train already exists. Using existing profile...
+2025-12-08 13:47:16,660 - root - INFO - The following datasets were found in data/_bertha_single_tnet_test_tnet_train:
+2025-12-08 13:47:16,660 - root - INFO - 	-> collect_2025.Dec.06_01.59.46.9381284.UTC	(not requested, but will included in training profile)
+2025-12-08 13:47:16,661 - root - INFO - 	-> pc_set.joblib	
+2025-12-08 13:47:16,661 - root - INFO - 
+Datasets added successfully:
+
+2025-12-08 13:47:16,661 - root - INFO - tnet_train
+Random seed: 42
+Class labels: dict_keys(['a-10', 'b-1b', 'b-2', 'c-5', 'c-12', 'c-17a', 'c-32', 'c-130j', 'e-3', 'f-15e', 'f-16', 'f-18e', 'f-22', 'g-iii', 'kc-46', 'kc-135', 'lj-25', 'mig-29', 'mq-20', 'sr-71', 'su-27', 'vc-25a', 'x-47b'])
+Part labels: dict_keys(['wing', 'fuselage', 'engine', 'hstab', 'vstab', 'landing_gear', 'armament', 'boom_wing', 'boom_hull', 'boom_hose', 'dish', 'probe'])
+
+--- Train Set ---
+Specified proportion:  0.75
+Actual proportion: 0.75
+Total count: 3750
+Class count:
+Part count:
+
+--- Validation Set ---
+Specified proportion:  0.15
+Actual proportion: 0.15
+Total count: 750
+Class count:
+Part count:
+
+--- Test Set ---
+Specified proportion:  0.1
+Actual proportion: 0.1
+Total count: 500
+Class count:
+Part count:
+
+2025-12-08 13:47:19,471 - root - INFO - PointNet Build
+2025-12-08 13:47:19,471 - root - INFO - 	Trainable Layers
+2025-12-08 13:47:19,471 - root - INFO - 		-> input_transform: True
+2025-12-08 13:47:19,472 - root - INFO - 		-> s1_l1_64_convolution_layer: False
+2025-12-08 13:47:19,472 - root - INFO - 		-> s1_l2_64_convolution_layer: False
+2025-12-08 13:47:19,472 - root - INFO - 		-> feature_transform: False
+2025-12-08 13:47:19,473 - root - INFO - 		-> s2_l1_64_convolution_layer: False
+2025-12-08 13:47:19,473 - root - INFO - 		-> s2_l2_128_convolution_layer: False
+2025-12-08 13:47:19,473 - root - INFO - 		-> s2_l3_1024_convolution_layer: False
+2025-12-08 13:47:19,473 - root - INFO - 		-> s3_l1_512_dense_layer: False
+2025-12-08 13:47:19,474 - root - INFO - 		-> s3_l2_256_dense_layer: False
+2025-12-08 13:47:19,474 - root - INFO - 		-> output_dense_layer: False
+2025-12-08 13:47:19,474 - root - INFO - 		-> seg_l1_512_convolution_layer: False
+2025-12-08 13:47:19,474 - root - INFO - 		-> seg_l2_256_convolution_layer: False
+2025-12-08 13:47:19,475 - root - INFO - 		-> seg_l3_128_convolution_layer: False
+2025-12-08 13:47:19,475 - root - INFO - 		-> seg_l4_128_convolution_layer: False
+2025-12-08 13:47:19,475 - root - INFO - 		-> seg_l5_output_convolution_layer: False

@@ -1,6 +1,6 @@
 {
     "info": {
-        "name": "_bertha_single_tnet_test",
+        "name": "_bertha_single_seg_test",
         "class_labels": {
             "0": "a-10",
             "1": "b-1b",
@@ -46,20 +46,20 @@
                     "0": "collect_2025.Dec.06_01.59.46.9381284.UTC"
                 },
                 "noise": {
-                    "x_stdev_m": 0.0,
-                    "y_stdev_m": 0.0,
-                    "z_stdev_m": 0.0
+                    "x_stdev_m": 0.1,
+                    "y_stdev_m": 0.1,
+                    "z_stdev_m": 0.1
                 },
                 "trainable": {
-                    "shared_network": false,
+                    "shared_network": true,
                     "input_transform": true,
-                    "classification_head": false,
-                    "segmentation_head": false
+                    "classification_head": true,
+                    "segmentation_head": true
                 },
                 "loss_weights": {
-                    "classification": 0.0,
-                    "segmentation": 0.0,
-                    "rotation": 1.0
+                    "classification": 0.1,
+                    "segmentation": 0.9,
+                    "rotation": 0.0
                 }
             }
         },
