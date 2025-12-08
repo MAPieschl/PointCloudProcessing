@@ -1,0 +1,2445 @@
+2025-12-08 12:41:13,391 - root - INFO - The following datasets were found in data/_bertha_single_test_tnet_train:
+2025-12-08 12:41:13,391 - root - INFO - 	-> pc_set.joblib	
+2025-12-08 12:41:13,392 - root - INFO - Adding data set 1 of 1
+2025-12-08 12:41:13,925 - root - INFO - Parsing frames in data/collect_2025.Dec.02_18.47.39.2497886.UTC...
+2025-12-08 12:42:24,918 - root - INFO - Failed to add file data/collect_2025.Dec.02_18.47.39.2497886.UTC/Virtual Flash Lidar/frame_5000.txt:
+	FileNotFoundError : [Errno 2] No such file or directory: 'data/collect_2025.Dec.02_18.47.39.2497886.UTC/Virtual Flash Lidar/frame_5000.txt'
+2025-12-08 12:42:24,919 - root - INFO - Failed to add file data/collect_2025.Dec.02_18.47.39.2497886.UTC/Virtual Flash Lidar/frame_5001.txt:
+	FileNotFoundError : [Errno 2] No such file or directory: 'data/collect_2025.Dec.02_18.47.39.2497886.UTC/Virtual Flash Lidar/frame_5001.txt'
+2025-12-08 12:42:31,378 - root - INFO - 
+Datasets added successfully:
+
+2025-12-08 12:42:31,378 - root - INFO - tnet_train
+Random seed: 42
+Class labels: dict_keys(['a-10', 'b-1b', 'b-2', 'c-5', 'c-12', 'c-17a', 'c-32', 'c-130j', 'e-3', 'f-15e', 'f-16', 'f-18e', 'f-22', 'g-iii', 'kc-46', 'kc-135', 'lj-25', 'mig-29', 'mq-20', 'sr-71', 'su-27', 'vc-25a', 'x-47b'])
+Part labels: dict_keys(['wing', 'fuselage', 'engine', 'hstab', 'vstab', 'landing_gear', 'armament', 'boom_wing', 'boom_hull', 'boom_hose', 'dish', 'probe'])
+
+--- Train Set ---
+Specified proportion:  0.75
+Actual proportion: 0.75
+Total count: 3750
+Class count:
+Part count:
+
+--- Validation Set ---
+Specified proportion:  0.15
+Actual proportion: 0.15
+Total count: 750
+Class count:
+Part count:
+
+--- Test Set ---
+Specified proportion:  0.1
+Actual proportion: 0.1
+Total count: 500
+Class count:
+Part count:
+
+2025-12-08 12:42:34,047 - root - INFO - PointNet Build
+2025-12-08 12:42:34,047 - root - INFO - 	Trainable Layers
+2025-12-08 12:42:34,048 - root - INFO - 		-> input_transform: True
+2025-12-08 12:42:34,048 - root - INFO - 		-> s1_l1_64_convolution_layer: True
+2025-12-08 12:42:34,048 - root - INFO - 		-> s1_l2_64_convolution_layer: True
+2025-12-08 12:42:34,048 - root - INFO - 		-> feature_transform: True
+2025-12-08 12:42:34,049 - root - INFO - 		-> s2_l1_64_convolution_layer: True
+2025-12-08 12:42:34,049 - root - INFO - 		-> s2_l2_128_convolution_layer: True
+2025-12-08 12:42:34,049 - root - INFO - 		-> s2_l3_1024_convolution_layer: True
+2025-12-08 12:42:34,049 - root - INFO - 		-> s3_l1_512_dense_layer: True
+2025-12-08 12:42:34,050 - root - INFO - 		-> s3_l2_256_dense_layer: True
+2025-12-08 12:42:34,050 - root - INFO - 		-> output_dense_layer: True
+2025-12-08 12:42:34,050 - root - INFO - 		-> seg_l1_512_convolution_layer: True
+2025-12-08 12:42:34,050 - root - INFO - 		-> seg_l2_256_convolution_layer: True
+2025-12-08 12:42:34,050 - root - INFO - 		-> seg_l3_128_convolution_layer: True
+2025-12-08 12:42:34,051 - root - INFO - 		-> seg_l4_128_convolution_layer: True
+2025-12-08 12:42:34,051 - root - INFO - 		-> seg_l5_output_convolution_layer: True
+2025-12-08 12:54:22,812 - h5py._conv - DEBUG - Creating converter from 5 to 3
+2025-12-08 12:54:25,258 - tf2onnx.tfonnx - INFO - Using tensorflow=2.20.0, onnx=1.17.0, tf2onnx=1.16.1/15c810
+2025-12-08 12:54:25,258 - tf2onnx.tfonnx - INFO - Using opset <onnx, 13>
+2025-12-08 12:54:25,339 - tf2onnx.tf_utils - INFO - Computed 0 values for constant folding
+2025-12-08 12:54:25,424 - tf2onnx.graph - DEBUG - Making node: Name=Identity, OP=Identity
+2025-12-08 12:54:25,424 - tf2onnx.graph - DEBUG - Made node: Identity
+OP=Identity
+Name=Identity
+Inputs:
+	point_net_1/output_dense_layer_1/Softmax:0=Softmax, [-1, 23], 1
+Outpus:
+	Identity_raw_output___4:0=[-1, 23], 1
+2025-12-08 12:54:25,425 - tf2onnx.graph - DEBUG - Making node: Name=Identity_graph_outputs_Identity__5, OP=Identity
+2025-12-08 12:54:25,426 - tf2onnx.graph - DEBUG - Made node: Identity_graph_outputs_Identity__5
+OP=Identity
+Name=Identity_graph_outputs_Identity__5
+Inputs:
+	Identity_raw_output___4:0=Identity, [-1, 23], 1
+Outpus:
+	Identity:0=[-1, 23], 1
+2025-12-08 12:54:25,426 - tf2onnx.graph - DEBUG - Making node: Name=Identity_2, OP=Identity
+2025-12-08 12:54:25,426 - tf2onnx.graph - DEBUG - Made node: Identity_2
+OP=Identity
+Name=Identity_2
+Inputs:
+	point_net_1/input_transform_1/add:0=AddV2, [-1, 3, 3], 1
+Outpus:
+	Identity_2_raw_output___6:0=[-1, 3, 3], 1
+2025-12-08 12:54:25,427 - tf2onnx.graph - DEBUG - Making node: Name=Identity_2_graph_outputs_Identity__7, OP=Identity
+2025-12-08 12:54:25,427 - tf2onnx.graph - DEBUG - Made node: Identity_2_graph_outputs_Identity__7
+OP=Identity
+Name=Identity_2_graph_outputs_Identity__7
+Inputs:
+	Identity_2_raw_output___6:0=Identity, [-1, 3, 3], 1
+Outpus:
+	Identity_2:0=[-1, 3, 3], 1
+2025-12-08 12:54:25,428 - tf2onnx.graph - DEBUG - Making node: Name=Identity_1, OP=Identity
+2025-12-08 12:54:25,428 - tf2onnx.graph - DEBUG - Made node: Identity_1
+OP=Identity
+Name=Identity_1
+Inputs:
+	point_net_1/Squeeze_2:0=Squeeze, [-1, 4096, 12], 1
+Outpus:
+	Identity_1_raw_output___8:0=[-1, 4096, 12], 1
+2025-12-08 12:54:25,429 - tf2onnx.graph - DEBUG - Making node: Name=Identity_1_graph_outputs_Identity__9, OP=Identity
+2025-12-08 12:54:25,429 - tf2onnx.graph - DEBUG - Made node: Identity_1_graph_outputs_Identity__9
+OP=Identity
+Name=Identity_1_graph_outputs_Identity__9
+Inputs:
+	Identity_1_raw_output___8:0=Identity, [-1, 4096, 12], 1
+Outpus:
+	Identity_1:0=[-1, 4096, 12], 1
+2025-12-08 12:54:25,434 - tf2onnx.tfonnx - ERROR - rewriter <function rewrite_constant_fold at 0x7fb957e5eb90>: exception `np.cast` was removed in the NumPy 2.0 release. Use `np.asarray(arr, dtype=dtype)` instead.
+2025-12-08 12:54:25,468 - tf2onnx.tfonnx - INFO - ['Traceback (most recent call last):\n', '  File "/mnt/d/Pieschl/PointCloudProcessing/point_cloud_analysis/.venv/lib/python3.10/site-packages/tf2onnx/tfonnx.py", line 375, in run_rewriters\n    ops = func(g, g.get_nodes())\n', '  File "/mnt/d/Pieschl/PointCloudProcessing/point_cloud_analysis/.venv/lib/python3.10/site-packages/tf2onnx/tfonnx.py", line 77, in rewrite_constant_fold\n    "Cast": np.cast,\n', '  File "/mnt/d/Pieschl/PointCloudProcessing/point_cloud_analysis/.venv/lib/python3.10/site-packages/numpy/__init__.py", line 400, in __getattr__\n    raise AttributeError(\n', 'AttributeError: `np.cast` was removed in the NumPy 2.0 release. Use `np.asarray(arr, dtype=dtype)` instead.\n']
+2025-12-08 12:54:25,523 - tf2onnx.rewriter.lstm_rewriter - DEBUG - enter lstm rewriter
+2025-12-08 12:54:25,531 - tf2onnx.rewriter.gru_rewriter - DEBUG - enter gru rewriter
+2025-12-08 12:54:25,539 - tf2onnx.rewriter.custom_rnn_rewriter - DEBUG - enter custom rnn rewriter
+2025-12-08 12:54:25,548 - tf2onnx.rewriter.loop_rewriter - DEBUG - enter loop rewriter
+2025-12-08 12:54:25,555 - tf2onnx.rewriter.cond_rewriter - DEBUG - enter cond pre rewrite
+2025-12-08 12:54:25,563 - tf2onnx.graph - DEBUG - Making node: Name=point_net_1/seg_l5_output_convolution_layer_1/seg_l5_output_convolution_layer_1/BiasAdd, OP=Conv2D
+2025-12-08 12:54:25,563 - tf2onnx.graph - DEBUG - Made node: point_net_1/seg_l5_output_convolution_layer_1/seg_l5_output_convolution_layer_1/BiasAdd
+OP=Conv2D
+Name=point_net_1/seg_l5_output_convolution_layer_1/seg_l5_output_convolution_layer_1/BiasAdd
+Inputs:
+	point_net_1/seg_l4_128_convolution_layer_1/Relu:0=Relu, [-1, 4096, 1, 128], 1
+	point_net_1/seg_l5_output_convolution_layer_1/seg_l5_output_convolution_layer_1/convolution/ReadVariableOp:0=Const, [1, 1, 128, 12], 1
+	point_net_1/seg_l5_output_convolution_layer_1/seg_l5_output_convolution_layer_1/Squeeze:0=Const, [12], 1
+Outpus:
+	point_net_1/seg_l5_output_convolution_layer_1/seg_l5_output_convolution_layer_1/BiasAdd:0=[-1, 4096, 1, 12], 1
+2025-12-08 12:54:25,591 - tf2onnx.tfonnx - VERBOSE - Mapping TF node to ONNX node(s)
+2025-12-08 12:54:25,592 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/seg_l5_output_convolution_layer_1/seg_l5_output_convolution_layer_1/convolution/ReadVariableOp
+OP=Const
+Name=point_net_1/seg_l5_output_convolution_layer_1/seg_l5_output_convolution_layer_1/convolution/ReadVariableOp
+Outpus:
+	point_net_1/seg_l5_output_convolution_layer_1/seg_l5_output_convolution_layer_1/convolution/ReadVariableOp:0=[1, 1, 128, 12], 1
+2025-12-08 12:54:25,592 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/seg_l5_output_convolution_layer_1/seg_l5_output_convolution_layer_1/Squeeze
+OP=Const
+Name=point_net_1/seg_l5_output_convolution_layer_1/seg_l5_output_convolution_layer_1/Squeeze
+Outpus:
+	point_net_1/seg_l5_output_convolution_layer_1/seg_l5_output_convolution_layer_1/Squeeze:0=[12], 1
+2025-12-08 12:54:25,592 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/seg_l4_128_convolution_layer_1/seg_l4_128_convolution_layer_1/convolution/merged_input
+OP=Const
+Name=point_net_1/seg_l4_128_convolution_layer_1/seg_l4_128_convolution_layer_1/convolution/merged_input
+Outpus:
+	point_net_1/seg_l4_128_convolution_layer_1/seg_l4_128_convolution_layer_1/convolution/merged_input:0=[1, 1, 128, 128], 1
+2025-12-08 12:54:25,593 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/seg_l4_128_convolution_layer_1/batch_normalization_20_1/batchnorm/sub
+OP=Const
+Name=point_net_1/seg_l4_128_convolution_layer_1/batch_normalization_20_1/batchnorm/sub
+Outpus:
+	point_net_1/seg_l4_128_convolution_layer_1/batch_normalization_20_1/batchnorm/sub:0=[128], 1
+2025-12-08 12:54:25,593 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/seg_l3_128_convolution_layer_1/seg_l3_128_convolution_layer_1/convolution/merged_input
+OP=Const
+Name=point_net_1/seg_l3_128_convolution_layer_1/seg_l3_128_convolution_layer_1/convolution/merged_input
+Outpus:
+	point_net_1/seg_l3_128_convolution_layer_1/seg_l3_128_convolution_layer_1/convolution/merged_input:0=[1, 1, 256, 128], 1
+2025-12-08 12:54:25,593 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/seg_l3_128_convolution_layer_1/batch_normalization_19_1/batchnorm/sub
+OP=Const
+Name=point_net_1/seg_l3_128_convolution_layer_1/batch_normalization_19_1/batchnorm/sub
+Outpus:
+	point_net_1/seg_l3_128_convolution_layer_1/batch_normalization_19_1/batchnorm/sub:0=[128], 1
+2025-12-08 12:54:25,593 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/seg_l2_256_convolution_layer_1/seg_l2_256_convolution_layer_1/convolution/merged_input
+OP=Const
+Name=point_net_1/seg_l2_256_convolution_layer_1/seg_l2_256_convolution_layer_1/convolution/merged_input
+Outpus:
+	point_net_1/seg_l2_256_convolution_layer_1/seg_l2_256_convolution_layer_1/convolution/merged_input:0=[1, 1, 512, 256], 1
+2025-12-08 12:54:25,594 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/seg_l2_256_convolution_layer_1/batch_normalization_18_1/batchnorm/sub
+OP=Const
+Name=point_net_1/seg_l2_256_convolution_layer_1/batch_normalization_18_1/batchnorm/sub
+Outpus:
+	point_net_1/seg_l2_256_convolution_layer_1/batch_normalization_18_1/batchnorm/sub:0=[256], 1
+2025-12-08 12:54:25,594 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/seg_l1_512_convolution_layer_1/seg_l1_512_convolution_layer_1/convolution/merged_input
+OP=Const
+Name=point_net_1/seg_l1_512_convolution_layer_1/seg_l1_512_convolution_layer_1/convolution/merged_input
+Outpus:
+	point_net_1/seg_l1_512_convolution_layer_1/seg_l1_512_convolution_layer_1/convolution/merged_input:0=[1, 1, 1088, 512], 1
+2025-12-08 12:54:25,594 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/seg_l1_512_convolution_layer_1/batch_normalization_17_1/batchnorm/sub
+OP=Const
+Name=point_net_1/seg_l1_512_convolution_layer_1/batch_normalization_17_1/batchnorm/sub
+Outpus:
+	point_net_1/seg_l1_512_convolution_layer_1/batch_normalization_17_1/batchnorm/sub:0=[512], 1
+2025-12-08 12:54:25,595 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/s3_l2_256_dense_layer_1/s3_l2_256_dense_layer_1/Cast/ReadVariableOp
+OP=Const
+Name=point_net_1/s3_l2_256_dense_layer_1/s3_l2_256_dense_layer_1/Cast/ReadVariableOp
+Outpus:
+	point_net_1/s3_l2_256_dense_layer_1/s3_l2_256_dense_layer_1/Cast/ReadVariableOp:0=[512, 256], 1
+2025-12-08 12:54:25,595 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/s3_l2_256_dense_layer_1/batch_normalization_16_1/batchnorm/sub
+OP=Const
+Name=point_net_1/s3_l2_256_dense_layer_1/batch_normalization_16_1/batchnorm/sub
+Outpus:
+	point_net_1/s3_l2_256_dense_layer_1/batch_normalization_16_1/batchnorm/sub:0=[256], 1
+2025-12-08 12:54:25,595 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/s3_l2_256_dense_layer_1/batch_normalization_16_1/batchnorm/mul
+OP=Const
+Name=point_net_1/s3_l2_256_dense_layer_1/batch_normalization_16_1/batchnorm/mul
+Outpus:
+	point_net_1/s3_l2_256_dense_layer_1/batch_normalization_16_1/batchnorm/mul:0=[256], 1
+2025-12-08 12:54:25,595 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/s3_l1_512_dense_layer_1/s3_l1_512_dense_layer_1/Cast/ReadVariableOp
+OP=Const
+Name=point_net_1/s3_l1_512_dense_layer_1/s3_l1_512_dense_layer_1/Cast/ReadVariableOp
+Outpus:
+	point_net_1/s3_l1_512_dense_layer_1/s3_l1_512_dense_layer_1/Cast/ReadVariableOp:0=[1024, 512], 1
+2025-12-08 12:54:25,596 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/s3_l1_512_dense_layer_1/batch_normalization_15_1/batchnorm/sub
+OP=Const
+Name=point_net_1/s3_l1_512_dense_layer_1/batch_normalization_15_1/batchnorm/sub
+Outpus:
+	point_net_1/s3_l1_512_dense_layer_1/batch_normalization_15_1/batchnorm/sub:0=[512], 1
+2025-12-08 12:54:25,596 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/s3_l1_512_dense_layer_1/batch_normalization_15_1/batchnorm/mul
+OP=Const
+Name=point_net_1/s3_l1_512_dense_layer_1/batch_normalization_15_1/batchnorm/mul
+Outpus:
+	point_net_1/s3_l1_512_dense_layer_1/batch_normalization_15_1/batchnorm/mul:0=[512], 1
+2025-12-08 12:54:25,596 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/s2_l3_1024_convolution_layer_1/s2_l3_1024_convolution_layer_1/convolution/merged_input
+OP=Const
+Name=point_net_1/s2_l3_1024_convolution_layer_1/s2_l3_1024_convolution_layer_1/convolution/merged_input
+Outpus:
+	point_net_1/s2_l3_1024_convolution_layer_1/s2_l3_1024_convolution_layer_1/convolution/merged_input:0=[1, 1, 128, 1024], 1
+2025-12-08 12:54:25,597 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/s2_l3_1024_convolution_layer_1/batch_normalization_14_1/batchnorm/sub
+OP=Const
+Name=point_net_1/s2_l3_1024_convolution_layer_1/batch_normalization_14_1/batchnorm/sub
+Outpus:
+	point_net_1/s2_l3_1024_convolution_layer_1/batch_normalization_14_1/batchnorm/sub:0=[1024], 1
+2025-12-08 12:54:25,597 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/s2_l2_128_convolution_layer_1/s2_l2_128_convolution_layer_1/convolution/merged_input
+OP=Const
+Name=point_net_1/s2_l2_128_convolution_layer_1/s2_l2_128_convolution_layer_1/convolution/merged_input
+Outpus:
+	point_net_1/s2_l2_128_convolution_layer_1/s2_l2_128_convolution_layer_1/convolution/merged_input:0=[1, 1, 64, 128], 1
+2025-12-08 12:54:25,597 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/s2_l2_128_convolution_layer_1/batch_normalization_13_1/batchnorm/sub
+OP=Const
+Name=point_net_1/s2_l2_128_convolution_layer_1/batch_normalization_13_1/batchnorm/sub
+Outpus:
+	point_net_1/s2_l2_128_convolution_layer_1/batch_normalization_13_1/batchnorm/sub:0=[128], 1
+2025-12-08 12:54:25,598 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/s2_l1_64_convolution_layer_1/s2_l1_64_convolution_layer_1/convolution/merged_input
+OP=Const
+Name=point_net_1/s2_l1_64_convolution_layer_1/s2_l1_64_convolution_layer_1/convolution/merged_input
+Outpus:
+	point_net_1/s2_l1_64_convolution_layer_1/s2_l1_64_convolution_layer_1/convolution/merged_input:0=[1, 1, 64, 64], 1
+2025-12-08 12:54:25,598 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/s2_l1_64_convolution_layer_1/batch_normalization_12_1/batchnorm/sub
+OP=Const
+Name=point_net_1/s2_l1_64_convolution_layer_1/batch_normalization_12_1/batchnorm/sub
+Outpus:
+	point_net_1/s2_l1_64_convolution_layer_1/batch_normalization_12_1/batchnorm/sub:0=[64], 1
+2025-12-08 12:54:25,598 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/s1_l2_64_convolution_layer_1/s1_l2_64_convolution_layer_1/convolution/merged_input
+OP=Const
+Name=point_net_1/s1_l2_64_convolution_layer_1/s1_l2_64_convolution_layer_1/convolution/merged_input
+Outpus:
+	point_net_1/s1_l2_64_convolution_layer_1/s1_l2_64_convolution_layer_1/convolution/merged_input:0=[1, 1, 64, 64], 1
+2025-12-08 12:54:25,599 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/s1_l2_64_convolution_layer_1/batch_normalization_6_1/batchnorm/sub
+OP=Const
+Name=point_net_1/s1_l2_64_convolution_layer_1/batch_normalization_6_1/batchnorm/sub
+Outpus:
+	point_net_1/s1_l2_64_convolution_layer_1/batch_normalization_6_1/batchnorm/sub:0=[64], 1
+2025-12-08 12:54:25,599 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/s1_l1_64_convolution_layer_1/s1_l1_64_convolution_layer_1/convolution/merged_input
+OP=Const
+Name=point_net_1/s1_l1_64_convolution_layer_1/s1_l1_64_convolution_layer_1/convolution/merged_input
+Outpus:
+	point_net_1/s1_l1_64_convolution_layer_1/s1_l1_64_convolution_layer_1/convolution/merged_input:0=[1, 1, 3, 64], 1
+2025-12-08 12:54:25,600 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/s1_l1_64_convolution_layer_1/batch_normalization_5_1/batchnorm/sub
+OP=Const
+Name=point_net_1/s1_l1_64_convolution_layer_1/batch_normalization_5_1/batchnorm/sub
+Outpus:
+	point_net_1/s1_l1_64_convolution_layer_1/batch_normalization_5_1/batchnorm/sub:0=[64], 1
+2025-12-08 12:54:25,600 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/output_dense_layer_1/output_dense_layer_1/Cast/ReadVariableOp
+OP=Const
+Name=point_net_1/output_dense_layer_1/output_dense_layer_1/Cast/ReadVariableOp
+Outpus:
+	point_net_1/output_dense_layer_1/output_dense_layer_1/Cast/ReadVariableOp:0=[256, 23], 1
+2025-12-08 12:54:25,600 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/output_dense_layer_1/output_dense_layer_1/BiasAdd/ReadVariableOp
+OP=Const
+Name=point_net_1/output_dense_layer_1/output_dense_layer_1/BiasAdd/ReadVariableOp
+Outpus:
+	point_net_1/output_dense_layer_1/output_dense_layer_1/BiasAdd/ReadVariableOp:0=[23], 1
+2025-12-08 12:54:25,601 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/input_transform_1/input_transform_dense_layer_2_dense_layer_1/input_transform_dense_layer_2_dense_layer_1/Cast/ReadVariableOp
+OP=Const
+Name=point_net_1/input_transform_1/input_transform_dense_layer_2_dense_layer_1/input_transform_dense_layer_2_dense_layer_1/Cast/ReadVariableOp
+Outpus:
+	point_net_1/input_transform_1/input_transform_dense_layer_2_dense_layer_1/input_transform_dense_layer_2_dense_layer_1/Cast/ReadVariableOp:0=[512, 256], 1
+2025-12-08 12:54:25,601 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/input_transform_1/input_transform_dense_layer_2_dense_layer_1/batch_normalization_4_1/batchnorm/sub
+OP=Const
+Name=point_net_1/input_transform_1/input_transform_dense_layer_2_dense_layer_1/batch_normalization_4_1/batchnorm/sub
+Outpus:
+	point_net_1/input_transform_1/input_transform_dense_layer_2_dense_layer_1/batch_normalization_4_1/batchnorm/sub:0=[256], 1
+2025-12-08 12:54:25,602 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/input_transform_1/input_transform_dense_layer_2_dense_layer_1/batch_normalization_4_1/batchnorm/mul
+OP=Const
+Name=point_net_1/input_transform_1/input_transform_dense_layer_2_dense_layer_1/batch_normalization_4_1/batchnorm/mul
+Outpus:
+	point_net_1/input_transform_1/input_transform_dense_layer_2_dense_layer_1/batch_normalization_4_1/batchnorm/mul:0=[256], 1
+2025-12-08 12:54:25,602 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/input_transform_1/input_transform_dense_layer_1_dense_layer_1/input_transform_dense_layer_1_dense_layer_1/Cast/ReadVariableOp
+OP=Const
+Name=point_net_1/input_transform_1/input_transform_dense_layer_1_dense_layer_1/input_transform_dense_layer_1_dense_layer_1/Cast/ReadVariableOp
+Outpus:
+	point_net_1/input_transform_1/input_transform_dense_layer_1_dense_layer_1/input_transform_dense_layer_1_dense_layer_1/Cast/ReadVariableOp:0=[1024, 512], 1
+2025-12-08 12:54:25,602 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/input_transform_1/input_transform_dense_layer_1_dense_layer_1/batch_normalization_3_1/batchnorm/sub
+OP=Const
+Name=point_net_1/input_transform_1/input_transform_dense_layer_1_dense_layer_1/batch_normalization_3_1/batchnorm/sub
+Outpus:
+	point_net_1/input_transform_1/input_transform_dense_layer_1_dense_layer_1/batch_normalization_3_1/batchnorm/sub:0=[512], 1
+2025-12-08 12:54:25,603 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/input_transform_1/input_transform_dense_layer_1_dense_layer_1/batch_normalization_3_1/batchnorm/mul
+OP=Const
+Name=point_net_1/input_transform_1/input_transform_dense_layer_1_dense_layer_1/batch_normalization_3_1/batchnorm/mul
+Outpus:
+	point_net_1/input_transform_1/input_transform_dense_layer_1_dense_layer_1/batch_normalization_3_1/batchnorm/mul:0=[512], 1
+2025-12-08 12:54:25,603 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/input_transform_1/input_transform_convolution_layer_3_convolution_layer_1/input_transform_convolution_layer_3_convolution_layer_1/convolution/merged_input
+OP=Const
+Name=point_net_1/input_transform_1/input_transform_convolution_layer_3_convolution_layer_1/input_transform_convolution_layer_3_convolution_layer_1/convolution/merged_input
+Outpus:
+	point_net_1/input_transform_1/input_transform_convolution_layer_3_convolution_layer_1/input_transform_convolution_layer_3_convolution_layer_1/convolution/merged_input:0=[1, 1, 128, 1024], 1
+2025-12-08 12:54:25,603 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/input_transform_1/input_transform_convolution_layer_3_convolution_layer_1/batch_normalization_2_1/batchnorm/sub
+OP=Const
+Name=point_net_1/input_transform_1/input_transform_convolution_layer_3_convolution_layer_1/batch_normalization_2_1/batchnorm/sub
+Outpus:
+	point_net_1/input_transform_1/input_transform_convolution_layer_3_convolution_layer_1/batch_normalization_2_1/batchnorm/sub:0=[1024], 1
+2025-12-08 12:54:25,604 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/input_transform_1/input_transform_convolution_layer_2_convolution_layer_1/input_transform_convolution_layer_2_convolution_layer_1/convolution/merged_input
+OP=Const
+Name=point_net_1/input_transform_1/input_transform_convolution_layer_2_convolution_layer_1/input_transform_convolution_layer_2_convolution_layer_1/convolution/merged_input
+Outpus:
+	point_net_1/input_transform_1/input_transform_convolution_layer_2_convolution_layer_1/input_transform_convolution_layer_2_convolution_layer_1/convolution/merged_input:0=[1, 1, 64, 128], 1
+2025-12-08 12:54:25,604 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/input_transform_1/input_transform_convolution_layer_2_convolution_layer_1/batch_normalization_1_1/batchnorm/sub
+OP=Const
+Name=point_net_1/input_transform_1/input_transform_convolution_layer_2_convolution_layer_1/batch_normalization_1_1/batchnorm/sub
+Outpus:
+	point_net_1/input_transform_1/input_transform_convolution_layer_2_convolution_layer_1/batch_normalization_1_1/batchnorm/sub:0=[128], 1
+2025-12-08 12:54:25,604 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/input_transform_1/input_transform_convolution_layer_1_convolution_layer_1/input_transform_convolution_layer_1_convolution_layer_1/convolution/merged_input
+OP=Const
+Name=point_net_1/input_transform_1/input_transform_convolution_layer_1_convolution_layer_1/input_transform_convolution_layer_1_convolution_layer_1/convolution/merged_input
+Outpus:
+	point_net_1/input_transform_1/input_transform_convolution_layer_1_convolution_layer_1/input_transform_convolution_layer_1_convolution_layer_1/convolution/merged_input:0=[1, 1, 3, 64], 1
+2025-12-08 12:54:25,605 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/input_transform_1/input_transform_convolution_layer_1_convolution_layer_1/batch_normalization_1/batchnorm/sub
+OP=Const
+Name=point_net_1/input_transform_1/input_transform_convolution_layer_1_convolution_layer_1/batch_normalization_1/batchnorm/sub
+Outpus:
+	point_net_1/input_transform_1/input_transform_convolution_layer_1_convolution_layer_1/batch_normalization_1/batchnorm/sub:0=[64], 1
+2025-12-08 12:54:25,605 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/input_transform_1/add/ReadVariableOp
+OP=Const
+Name=point_net_1/input_transform_1/add/ReadVariableOp
+Outpus:
+	point_net_1/input_transform_1/add/ReadVariableOp:0=[3, 3], 1
+2025-12-08 12:54:25,605 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/input_transform_1/Reshape/shape
+OP=Const
+Name=point_net_1/input_transform_1/Reshape/shape
+Outpus:
+	point_net_1/input_transform_1/Reshape/shape:0=[3], 6
+2025-12-08 12:54:25,605 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/input_transform_1/Max/reduction_indices
+OP=Const
+Name=point_net_1/input_transform_1/Max/reduction_indices
+Outpus:
+	point_net_1/input_transform_1/Max/reduction_indices:0=[], 6
+2025-12-08 12:54:25,606 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/input_transform_1/MatMul/ReadVariableOp
+OP=Const
+Name=point_net_1/input_transform_1/MatMul/ReadVariableOp
+Outpus:
+	point_net_1/input_transform_1/MatMul/ReadVariableOp:0=[256, 9], 1
+2025-12-08 12:54:25,606 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/input_transform_1/ExpandDims_1/dim
+OP=Const
+Name=point_net_1/input_transform_1/ExpandDims_1/dim
+Outpus:
+	point_net_1/input_transform_1/ExpandDims_1/dim:0=[], 6
+2025-12-08 12:54:25,606 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/input_transform_1/ExpandDims/dim
+OP=Const
+Name=point_net_1/input_transform_1/ExpandDims/dim
+Outpus:
+	point_net_1/input_transform_1/ExpandDims/dim:0=[], 6
+2025-12-08 12:54:25,607 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/feature_transform_1/feature_transform_dense_layer_2_dense_layer_1/feature_transform_dense_layer_2_dense_layer_1/Cast/ReadVariableOp
+OP=Const
+Name=point_net_1/feature_transform_1/feature_transform_dense_layer_2_dense_layer_1/feature_transform_dense_layer_2_dense_layer_1/Cast/ReadVariableOp
+Outpus:
+	point_net_1/feature_transform_1/feature_transform_dense_layer_2_dense_layer_1/feature_transform_dense_layer_2_dense_layer_1/Cast/ReadVariableOp:0=[512, 256], 1
+2025-12-08 12:54:25,607 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/feature_transform_1/feature_transform_dense_layer_2_dense_layer_1/batch_normalization_11_1/batchnorm/sub
+OP=Const
+Name=point_net_1/feature_transform_1/feature_transform_dense_layer_2_dense_layer_1/batch_normalization_11_1/batchnorm/sub
+Outpus:
+	point_net_1/feature_transform_1/feature_transform_dense_layer_2_dense_layer_1/batch_normalization_11_1/batchnorm/sub:0=[256], 1
+2025-12-08 12:54:25,607 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/feature_transform_1/feature_transform_dense_layer_2_dense_layer_1/batch_normalization_11_1/batchnorm/mul
+OP=Const
+Name=point_net_1/feature_transform_1/feature_transform_dense_layer_2_dense_layer_1/batch_normalization_11_1/batchnorm/mul
+Outpus:
+	point_net_1/feature_transform_1/feature_transform_dense_layer_2_dense_layer_1/batch_normalization_11_1/batchnorm/mul:0=[256], 1
+2025-12-08 12:54:25,608 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/feature_transform_1/feature_transform_dense_layer_1_dense_layer_1/feature_transform_dense_layer_1_dense_layer_1/Cast/ReadVariableOp
+OP=Const
+Name=point_net_1/feature_transform_1/feature_transform_dense_layer_1_dense_layer_1/feature_transform_dense_layer_1_dense_layer_1/Cast/ReadVariableOp
+Outpus:
+	point_net_1/feature_transform_1/feature_transform_dense_layer_1_dense_layer_1/feature_transform_dense_layer_1_dense_layer_1/Cast/ReadVariableOp:0=[1024, 512], 1
+2025-12-08 12:54:25,608 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/feature_transform_1/feature_transform_dense_layer_1_dense_layer_1/batch_normalization_10_1/batchnorm/sub
+OP=Const
+Name=point_net_1/feature_transform_1/feature_transform_dense_layer_1_dense_layer_1/batch_normalization_10_1/batchnorm/sub
+Outpus:
+	point_net_1/feature_transform_1/feature_transform_dense_layer_1_dense_layer_1/batch_normalization_10_1/batchnorm/sub:0=[512], 1
+2025-12-08 12:54:25,608 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/feature_transform_1/feature_transform_dense_layer_1_dense_layer_1/batch_normalization_10_1/batchnorm/mul
+OP=Const
+Name=point_net_1/feature_transform_1/feature_transform_dense_layer_1_dense_layer_1/batch_normalization_10_1/batchnorm/mul
+Outpus:
+	point_net_1/feature_transform_1/feature_transform_dense_layer_1_dense_layer_1/batch_normalization_10_1/batchnorm/mul:0=[512], 1
+2025-12-08 12:54:25,608 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/feature_transform_1/feature_transform_convolution_layer_3_convolution_layer_1/feature_transform_convolution_layer_3_convolution_layer_1/convolution/merged_input
+OP=Const
+Name=point_net_1/feature_transform_1/feature_transform_convolution_layer_3_convolution_layer_1/feature_transform_convolution_layer_3_convolution_layer_1/convolution/merged_input
+Outpus:
+	point_net_1/feature_transform_1/feature_transform_convolution_layer_3_convolution_layer_1/feature_transform_convolution_layer_3_convolution_layer_1/convolution/merged_input:0=[1, 1, 128, 1024], 1
+2025-12-08 12:54:25,609 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/feature_transform_1/feature_transform_convolution_layer_3_convolution_layer_1/batch_normalization_9_1/batchnorm/sub
+OP=Const
+Name=point_net_1/feature_transform_1/feature_transform_convolution_layer_3_convolution_layer_1/batch_normalization_9_1/batchnorm/sub
+Outpus:
+	point_net_1/feature_transform_1/feature_transform_convolution_layer_3_convolution_layer_1/batch_normalization_9_1/batchnorm/sub:0=[1024], 1
+2025-12-08 12:54:25,609 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/feature_transform_1/feature_transform_convolution_layer_2_convolution_layer_1/feature_transform_convolution_layer_2_convolution_layer_1/convolution/merged_input
+OP=Const
+Name=point_net_1/feature_transform_1/feature_transform_convolution_layer_2_convolution_layer_1/feature_transform_convolution_layer_2_convolution_layer_1/convolution/merged_input
+Outpus:
+	point_net_1/feature_transform_1/feature_transform_convolution_layer_2_convolution_layer_1/feature_transform_convolution_layer_2_convolution_layer_1/convolution/merged_input:0=[1, 1, 64, 128], 1
+2025-12-08 12:54:25,609 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/feature_transform_1/feature_transform_convolution_layer_2_convolution_layer_1/batch_normalization_8_1/batchnorm/sub
+OP=Const
+Name=point_net_1/feature_transform_1/feature_transform_convolution_layer_2_convolution_layer_1/batch_normalization_8_1/batchnorm/sub
+Outpus:
+	point_net_1/feature_transform_1/feature_transform_convolution_layer_2_convolution_layer_1/batch_normalization_8_1/batchnorm/sub:0=[128], 1
+2025-12-08 12:54:25,610 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/feature_transform_1/feature_transform_convolution_layer_1_convolution_layer_1/feature_transform_convolution_layer_1_convolution_layer_1/convolution/merged_input
+OP=Const
+Name=point_net_1/feature_transform_1/feature_transform_convolution_layer_1_convolution_layer_1/feature_transform_convolution_layer_1_convolution_layer_1/convolution/merged_input
+Outpus:
+	point_net_1/feature_transform_1/feature_transform_convolution_layer_1_convolution_layer_1/feature_transform_convolution_layer_1_convolution_layer_1/convolution/merged_input:0=[1, 1, 64, 64], 1
+2025-12-08 12:54:25,610 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/feature_transform_1/feature_transform_convolution_layer_1_convolution_layer_1/batch_normalization_7_1/batchnorm/sub
+OP=Const
+Name=point_net_1/feature_transform_1/feature_transform_convolution_layer_1_convolution_layer_1/batch_normalization_7_1/batchnorm/sub
+Outpus:
+	point_net_1/feature_transform_1/feature_transform_convolution_layer_1_convolution_layer_1/batch_normalization_7_1/batchnorm/sub:0=[64], 1
+2025-12-08 12:54:25,610 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/feature_transform_1/add/ReadVariableOp
+OP=Const
+Name=point_net_1/feature_transform_1/add/ReadVariableOp
+Outpus:
+	point_net_1/feature_transform_1/add/ReadVariableOp:0=[64, 64], 1
+2025-12-08 12:54:25,610 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/feature_transform_1/Reshape/shape
+OP=Const
+Name=point_net_1/feature_transform_1/Reshape/shape
+Outpus:
+	point_net_1/feature_transform_1/Reshape/shape:0=[3], 6
+2025-12-08 12:54:25,611 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/feature_transform_1/Max/reduction_indices
+OP=Const
+Name=point_net_1/feature_transform_1/Max/reduction_indices
+Outpus:
+	point_net_1/feature_transform_1/Max/reduction_indices:0=[], 6
+2025-12-08 12:54:25,611 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/feature_transform_1/MatMul/ReadVariableOp
+OP=Const
+Name=point_net_1/feature_transform_1/MatMul/ReadVariableOp
+Outpus:
+	point_net_1/feature_transform_1/MatMul/ReadVariableOp:0=[256, 4096], 1
+2025-12-08 12:54:25,611 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/feature_transform_1/ExpandDims_1/dim
+OP=Const
+Name=point_net_1/feature_transform_1/ExpandDims_1/dim
+Outpus:
+	point_net_1/feature_transform_1/ExpandDims_1/dim:0=[], 6
+2025-12-08 12:54:25,611 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/feature_transform_1/ExpandDims/dim
+OP=Const
+Name=point_net_1/feature_transform_1/ExpandDims/dim
+Outpus:
+	point_net_1/feature_transform_1/ExpandDims/dim:0=[], 6
+2025-12-08 12:54:25,612 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/concat/axis
+OP=Const
+Name=point_net_1/concat/axis
+Outpus:
+	point_net_1/concat/axis:0=[], 6
+2025-12-08 12:54:25,612 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/Tile/multiples
+OP=Const
+Name=point_net_1/Tile/multiples
+Outpus:
+	point_net_1/Tile/multiples:0=[3], 6
+2025-12-08 12:54:25,612 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/Max/reduction_indices
+OP=Const
+Name=point_net_1/Max/reduction_indices
+Outpus:
+	point_net_1/Max/reduction_indices:0=[], 6
+2025-12-08 12:54:25,613 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/ExpandDims_3/dim
+OP=Const
+Name=point_net_1/ExpandDims_3/dim
+Outpus:
+	point_net_1/ExpandDims_3/dim:0=[], 6
+2025-12-08 12:54:25,613 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/ExpandDims_2/dim
+OP=Const
+Name=point_net_1/ExpandDims_2/dim
+Outpus:
+	point_net_1/ExpandDims_2/dim:0=[], 6
+2025-12-08 12:54:25,613 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/ExpandDims_1/dim
+OP=Const
+Name=point_net_1/ExpandDims_1/dim
+Outpus:
+	point_net_1/ExpandDims_1/dim:0=[], 6
+2025-12-08 12:54:25,614 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/ExpandDims/dim
+OP=Const
+Name=point_net_1/ExpandDims/dim
+Outpus:
+	point_net_1/ExpandDims/dim:0=[], 6
+2025-12-08 12:54:25,614 - tf2onnx.tfonnx - DEBUG - Process node: args_0
+OP=Placeholder
+Name=args_0
+Outpus:
+	args_0=[-1, 4096, 3], 1
+2025-12-08 12:54:25,614 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/input_transform_1/ExpandDims
+OP=ExpandDims
+Name=point_net_1/input_transform_1/ExpandDims
+Inputs:
+	args_0=Placeholder, [-1, 4096, 3], 1
+	point_net_1/input_transform_1/ExpandDims/dim:0=Const, [], 6
+Outpus:
+	point_net_1/input_transform_1/ExpandDims:0=[-1, 4096, 1, 3], 1
+2025-12-08 12:54:25,615 - tf2onnx.graph - DEBUG - Making node: Name=point_net_1/input_transform_1/ExpandDims__10, OP=Cast
+2025-12-08 12:54:25,615 - tf2onnx.graph - DEBUG - Infer shape and dtype for [point_net_1/input_transform_1/ExpandDims__10]
+2025-12-08 12:54:25,616 - tf2onnx.graph - DEBUG - Set dtype of [point_net_1/input_transform_1/ExpandDims__10:0] to 7
+2025-12-08 12:54:25,617 - tf2onnx.graph - DEBUG - Set shape of [point_net_1/input_transform_1/ExpandDims__10:0] to []
+2025-12-08 12:54:25,617 - tf2onnx.graph - DEBUG - Made node: point_net_1/input_transform_1/ExpandDims__10
+OP=Cast
+Name=point_net_1/input_transform_1/ExpandDims__10
+Inputs:
+	point_net_1/input_transform_1/ExpandDims/dim:0=Const, [], 6
+Outpus:
+	point_net_1/input_transform_1/ExpandDims__10:0=[], 7
+2025-12-08 12:54:25,618 - tf2onnx.graph - DEBUG - Making node: Name=reshape_const__11, OP=Const
+2025-12-08 12:54:25,618 - tf2onnx.graph - DEBUG - Made node: reshape_const__11
+OP=Const
+Name=reshape_const__11
+Outpus:
+	reshape_const__11=None, 7
+2025-12-08 12:54:25,619 - tf2onnx.graph - DEBUG - Making node: Name=Reshape__12, OP=Reshape
+2025-12-08 12:54:25,619 - tf2onnx.graph - DEBUG - Infer shape and dtype for [Reshape__12]
+2025-12-08 12:54:25,620 - tf2onnx.graph - DEBUG - Set dtype of [Reshape__12:0] to 7
+2025-12-08 12:54:25,620 - tf2onnx.graph - DEBUG - Set shape of [Reshape__12:0] to [1]
+2025-12-08 12:54:25,620 - tf2onnx.graph - DEBUG - Made node: Reshape__12
+OP=Reshape
+Name=Reshape__12
+Inputs:
+	point_net_1/input_transform_1/ExpandDims__10:0=Cast, [], 7
+	reshape_const__11=Const, [1], 7
+Outpus:
+	Reshape__12:0=[1], 7
+2025-12-08 12:54:25,621 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/input_transform_1/input_transform_convolution_layer_1_convolution_layer_1/batch_normalization_1/batchnorm/mul_1
+OP=Conv2D
+Name=point_net_1/input_transform_1/input_transform_convolution_layer_1_convolution_layer_1/batch_normalization_1/batchnorm/mul_1
+Inputs:
+	point_net_1/input_transform_1/ExpandDims:0=Unsqueeze, [-1, 4096, 1, 3], 1
+	point_net_1/input_transform_1/input_transform_convolution_layer_1_convolution_layer_1/input_transform_convolution_layer_1_convolution_layer_1/convolution/merged_input:0=Const, [1, 1, 3, 64], 1
+Outpus:
+	point_net_1/input_transform_1/input_transform_convolution_layer_1_convolution_layer_1/batch_normalization_1/batchnorm/mul_1:0=[-1, 4096, 1, 64], 1
+2025-12-08 12:54:25,622 - tf2onnx.graph - DEBUG - Making node: Name=point_net_1/input_transform_1/input_transform_convolution_layer_1_convolution_layer_1/batch_normalization_1/batchnorm/mul_1__13, OP=Transpose
+2025-12-08 12:54:25,622 - tf2onnx.graph - DEBUG - Infer shape and dtype for [point_net_1/input_transform_1/input_transform_convolution_layer_1_convolution_layer_1/batch_normalization_1/batchnorm/mul_1__13]
+2025-12-08 12:54:25,623 - tf2onnx.graph - DEBUG - Set dtype of [point_net_1/input_transform_1/input_transform_convolution_layer_1_convolution_layer_1/batch_normalization_1/batchnorm/mul_1__13:0] to 1
+2025-12-08 12:54:25,623 - tf2onnx.graph - DEBUG - Set shape of [point_net_1/input_transform_1/input_transform_convolution_layer_1_convolution_layer_1/batch_normalization_1/batchnorm/mul_1__13:0] to [3, 1, 4096, -1]
+2025-12-08 12:54:25,624 - tf2onnx.graph - DEBUG - Made node: point_net_1/input_transform_1/input_transform_convolution_layer_1_convolution_layer_1/batch_normalization_1/batchnorm/mul_1__13
+OP=Transpose
+Name=point_net_1/input_transform_1/input_transform_convolution_layer_1_convolution_layer_1/batch_normalization_1/batchnorm/mul_1__13
+Inputs:
+	point_net_1/input_transform_1/ExpandDims:0=Unsqueeze, [-1, 4096, 1, 3], 1
+Outpus:
+	point_net_1/input_transform_1/input_transform_convolution_layer_1_convolution_layer_1/batch_normalization_1/batchnorm/mul_1__13:0=[3, 1, 4096, -1], 1
+2025-12-08 12:54:25,624 - tf2onnx.graph - DEBUG - Making node: Name=point_net_1/input_transform_1/input_transform_convolution_layer_1_convolution_layer_1/batch_normalization_1/batchnorm/mul_1__15, OP=Transpose
+2025-12-08 12:54:25,625 - tf2onnx.graph - DEBUG - Infer shape and dtype for [point_net_1/input_transform_1/input_transform_convolution_layer_1_convolution_layer_1/batch_normalization_1/batchnorm/mul_1__15]
+2025-12-08 12:54:25,625 - tf2onnx.graph - DEBUG - Set dtype of [point_net_1/input_transform_1/input_transform_convolution_layer_1_convolution_layer_1/batch_normalization_1/batchnorm/mul_1__15:0] to 1
+2025-12-08 12:54:25,625 - tf2onnx.graph - DEBUG - Set shape of [point_net_1/input_transform_1/input_transform_convolution_layer_1_convolution_layer_1/batch_normalization_1/batchnorm/mul_1__15:0] to [64, 1, 4096, -1]
+2025-12-08 12:54:25,626 - tf2onnx.graph - DEBUG - Made node: point_net_1/input_transform_1/input_transform_convolution_layer_1_convolution_layer_1/batch_normalization_1/batchnorm/mul_1__15
+OP=Transpose
+Name=point_net_1/input_transform_1/input_transform_convolution_layer_1_convolution_layer_1/batch_normalization_1/batchnorm/mul_1__15
+Inputs:
+	point_net_1/input_transform_1/input_transform_convolution_layer_1_convolution_layer_1/batch_normalization_1/batchnorm/mul_1:0=Conv, [-1, 4096, 1, 64], 1
+Outpus:
+	point_net_1/input_transform_1/input_transform_convolution_layer_1_convolution_layer_1/batch_normalization_1/batchnorm/mul_1__15:0=[64, 1, 4096, -1], 1
+2025-12-08 12:54:25,626 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/input_transform_1/input_transform_convolution_layer_1_convolution_layer_1/batch_normalization_1/batchnorm/add_1
+OP=AddV2
+Name=point_net_1/input_transform_1/input_transform_convolution_layer_1_convolution_layer_1/batch_normalization_1/batchnorm/add_1
+Inputs:
+	point_net_1/input_transform_1/input_transform_convolution_layer_1_convolution_layer_1/batch_normalization_1/batchnorm/mul_1__15:0=Transpose, [-1, 4096, 1, 64], 1
+	point_net_1/input_transform_1/input_transform_convolution_layer_1_convolution_layer_1/batch_normalization_1/batchnorm/sub:0=Const, [64], 1
+Outpus:
+	point_net_1/input_transform_1/input_transform_convolution_layer_1_convolution_layer_1/batch_normalization_1/batchnorm/add_1:0=[-1, 4096, 1, 64], 1
+2025-12-08 12:54:25,627 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/input_transform_1/input_transform_convolution_layer_1_convolution_layer_1/Relu
+OP=Relu
+Name=point_net_1/input_transform_1/input_transform_convolution_layer_1_convolution_layer_1/Relu
+Inputs:
+	point_net_1/input_transform_1/input_transform_convolution_layer_1_convolution_layer_1/batch_normalization_1/batchnorm/add_1:0=Add, [-1, 4096, 1, 64], 1
+Outpus:
+	point_net_1/input_transform_1/input_transform_convolution_layer_1_convolution_layer_1/Relu:0=[-1, 4096, 1, 64], 1
+2025-12-08 12:54:25,627 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/input_transform_1/input_transform_convolution_layer_2_convolution_layer_1/batch_normalization_1_1/batchnorm/mul_1
+OP=Conv2D
+Name=point_net_1/input_transform_1/input_transform_convolution_layer_2_convolution_layer_1/batch_normalization_1_1/batchnorm/mul_1
+Inputs:
+	point_net_1/input_transform_1/input_transform_convolution_layer_1_convolution_layer_1/Relu:0=Relu, [-1, 4096, 1, 64], 1
+	point_net_1/input_transform_1/input_transform_convolution_layer_2_convolution_layer_1/input_transform_convolution_layer_2_convolution_layer_1/convolution/merged_input:0=Const, [1, 1, 64, 128], 1
+Outpus:
+	point_net_1/input_transform_1/input_transform_convolution_layer_2_convolution_layer_1/batch_normalization_1_1/batchnorm/mul_1:0=[-1, 4096, 1, 128], 1
+2025-12-08 12:54:25,627 - tf2onnx.graph - DEBUG - Making node: Name=point_net_1/input_transform_1/input_transform_convolution_layer_2_convolution_layer_1/batch_normalization_1_1/batchnorm/mul_1__17, OP=Transpose
+2025-12-08 12:54:25,628 - tf2onnx.graph - DEBUG - Infer shape and dtype for [point_net_1/input_transform_1/input_transform_convolution_layer_2_convolution_layer_1/batch_normalization_1_1/batchnorm/mul_1__17]
+2025-12-08 12:54:25,628 - tf2onnx.graph - DEBUG - Set dtype of [point_net_1/input_transform_1/input_transform_convolution_layer_2_convolution_layer_1/batch_normalization_1_1/batchnorm/mul_1__17:0] to 1
+2025-12-08 12:54:25,629 - tf2onnx.graph - DEBUG - Set shape of [point_net_1/input_transform_1/input_transform_convolution_layer_2_convolution_layer_1/batch_normalization_1_1/batchnorm/mul_1__17:0] to [64, 1, 4096, -1]
+2025-12-08 12:54:25,629 - tf2onnx.graph - DEBUG - Made node: point_net_1/input_transform_1/input_transform_convolution_layer_2_convolution_layer_1/batch_normalization_1_1/batchnorm/mul_1__17
+OP=Transpose
+Name=point_net_1/input_transform_1/input_transform_convolution_layer_2_convolution_layer_1/batch_normalization_1_1/batchnorm/mul_1__17
+Inputs:
+	point_net_1/input_transform_1/input_transform_convolution_layer_1_convolution_layer_1/Relu:0=Relu, [-1, 4096, 1, 64], 1
+Outpus:
+	point_net_1/input_transform_1/input_transform_convolution_layer_2_convolution_layer_1/batch_normalization_1_1/batchnorm/mul_1__17:0=[64, 1, 4096, -1], 1
+2025-12-08 12:54:25,629 - tf2onnx.graph - DEBUG - Making node: Name=point_net_1/input_transform_1/input_transform_convolution_layer_2_convolution_layer_1/batch_normalization_1_1/batchnorm/mul_1__19, OP=Transpose
+2025-12-08 12:54:25,630 - tf2onnx.graph - DEBUG - Infer shape and dtype for [point_net_1/input_transform_1/input_transform_convolution_layer_2_convolution_layer_1/batch_normalization_1_1/batchnorm/mul_1__19]
+2025-12-08 12:54:25,630 - tf2onnx.graph - DEBUG - Set dtype of [point_net_1/input_transform_1/input_transform_convolution_layer_2_convolution_layer_1/batch_normalization_1_1/batchnorm/mul_1__19:0] to 1
+2025-12-08 12:54:25,631 - tf2onnx.graph - DEBUG - Set shape of [point_net_1/input_transform_1/input_transform_convolution_layer_2_convolution_layer_1/batch_normalization_1_1/batchnorm/mul_1__19:0] to [128, 1, 4096, -1]
+2025-12-08 12:54:25,631 - tf2onnx.graph - DEBUG - Made node: point_net_1/input_transform_1/input_transform_convolution_layer_2_convolution_layer_1/batch_normalization_1_1/batchnorm/mul_1__19
+OP=Transpose
+Name=point_net_1/input_transform_1/input_transform_convolution_layer_2_convolution_layer_1/batch_normalization_1_1/batchnorm/mul_1__19
+Inputs:
+	point_net_1/input_transform_1/input_transform_convolution_layer_2_convolution_layer_1/batch_normalization_1_1/batchnorm/mul_1:0=Conv, [-1, 4096, 1, 128], 1
+Outpus:
+	point_net_1/input_transform_1/input_transform_convolution_layer_2_convolution_layer_1/batch_normalization_1_1/batchnorm/mul_1__19:0=[128, 1, 4096, -1], 1
+2025-12-08 12:54:25,632 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/input_transform_1/input_transform_convolution_layer_2_convolution_layer_1/batch_normalization_1_1/batchnorm/add_1
+OP=AddV2
+Name=point_net_1/input_transform_1/input_transform_convolution_layer_2_convolution_layer_1/batch_normalization_1_1/batchnorm/add_1
+Inputs:
+	point_net_1/input_transform_1/input_transform_convolution_layer_2_convolution_layer_1/batch_normalization_1_1/batchnorm/mul_1__19:0=Transpose, [-1, 4096, 1, 128], 1
+	point_net_1/input_transform_1/input_transform_convolution_layer_2_convolution_layer_1/batch_normalization_1_1/batchnorm/sub:0=Const, [128], 1
+Outpus:
+	point_net_1/input_transform_1/input_transform_convolution_layer_2_convolution_layer_1/batch_normalization_1_1/batchnorm/add_1:0=[-1, 4096, 1, 128], 1
+2025-12-08 12:54:25,632 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/input_transform_1/input_transform_convolution_layer_2_convolution_layer_1/Relu
+OP=Relu
+Name=point_net_1/input_transform_1/input_transform_convolution_layer_2_convolution_layer_1/Relu
+Inputs:
+	point_net_1/input_transform_1/input_transform_convolution_layer_2_convolution_layer_1/batch_normalization_1_1/batchnorm/add_1:0=Add, [-1, 4096, 1, 128], 1
+Outpus:
+	point_net_1/input_transform_1/input_transform_convolution_layer_2_convolution_layer_1/Relu:0=[-1, 4096, 1, 128], 1
+2025-12-08 12:54:25,632 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/input_transform_1/input_transform_convolution_layer_3_convolution_layer_1/batch_normalization_2_1/batchnorm/mul_1
+OP=Conv2D
+Name=point_net_1/input_transform_1/input_transform_convolution_layer_3_convolution_layer_1/batch_normalization_2_1/batchnorm/mul_1
+Inputs:
+	point_net_1/input_transform_1/input_transform_convolution_layer_2_convolution_layer_1/Relu:0=Relu, [-1, 4096, 1, 128], 1
+	point_net_1/input_transform_1/input_transform_convolution_layer_3_convolution_layer_1/input_transform_convolution_layer_3_convolution_layer_1/convolution/merged_input:0=Const, [1, 1, 128, 1024], 1
+Outpus:
+	point_net_1/input_transform_1/input_transform_convolution_layer_3_convolution_layer_1/batch_normalization_2_1/batchnorm/mul_1:0=[-1, 4096, 1, 1024], 1
+2025-12-08 12:54:25,633 - tf2onnx.graph - DEBUG - Making node: Name=point_net_1/input_transform_1/input_transform_convolution_layer_3_convolution_layer_1/batch_normalization_2_1/batchnorm/mul_1__21, OP=Transpose
+2025-12-08 12:54:25,633 - tf2onnx.graph - DEBUG - Infer shape and dtype for [point_net_1/input_transform_1/input_transform_convolution_layer_3_convolution_layer_1/batch_normalization_2_1/batchnorm/mul_1__21]
+2025-12-08 12:54:25,634 - tf2onnx.graph - DEBUG - Set dtype of [point_net_1/input_transform_1/input_transform_convolution_layer_3_convolution_layer_1/batch_normalization_2_1/batchnorm/mul_1__21:0] to 1
+2025-12-08 12:54:25,634 - tf2onnx.graph - DEBUG - Set shape of [point_net_1/input_transform_1/input_transform_convolution_layer_3_convolution_layer_1/batch_normalization_2_1/batchnorm/mul_1__21:0] to [128, 1, 4096, -1]
+2025-12-08 12:54:25,634 - tf2onnx.graph - DEBUG - Made node: point_net_1/input_transform_1/input_transform_convolution_layer_3_convolution_layer_1/batch_normalization_2_1/batchnorm/mul_1__21
+OP=Transpose
+Name=point_net_1/input_transform_1/input_transform_convolution_layer_3_convolution_layer_1/batch_normalization_2_1/batchnorm/mul_1__21
+Inputs:
+	point_net_1/input_transform_1/input_transform_convolution_layer_2_convolution_layer_1/Relu:0=Relu, [-1, 4096, 1, 128], 1
+Outpus:
+	point_net_1/input_transform_1/input_transform_convolution_layer_3_convolution_layer_1/batch_normalization_2_1/batchnorm/mul_1__21:0=[128, 1, 4096, -1], 1
+2025-12-08 12:54:25,636 - tf2onnx.graph - DEBUG - Making node: Name=point_net_1/input_transform_1/input_transform_convolution_layer_3_convolution_layer_1/batch_normalization_2_1/batchnorm/mul_1__23, OP=Transpose
+2025-12-08 12:54:25,636 - tf2onnx.graph - DEBUG - Infer shape and dtype for [point_net_1/input_transform_1/input_transform_convolution_layer_3_convolution_layer_1/batch_normalization_2_1/batchnorm/mul_1__23]
+2025-12-08 12:54:25,637 - tf2onnx.graph - DEBUG - Set dtype of [point_net_1/input_transform_1/input_transform_convolution_layer_3_convolution_layer_1/batch_normalization_2_1/batchnorm/mul_1__23:0] to 1
+2025-12-08 12:54:25,637 - tf2onnx.graph - DEBUG - Set shape of [point_net_1/input_transform_1/input_transform_convolution_layer_3_convolution_layer_1/batch_normalization_2_1/batchnorm/mul_1__23:0] to [1024, 1, 4096, -1]
+2025-12-08 12:54:25,637 - tf2onnx.graph - DEBUG - Made node: point_net_1/input_transform_1/input_transform_convolution_layer_3_convolution_layer_1/batch_normalization_2_1/batchnorm/mul_1__23
+OP=Transpose
+Name=point_net_1/input_transform_1/input_transform_convolution_layer_3_convolution_layer_1/batch_normalization_2_1/batchnorm/mul_1__23
+Inputs:
+	point_net_1/input_transform_1/input_transform_convolution_layer_3_convolution_layer_1/batch_normalization_2_1/batchnorm/mul_1:0=Conv, [-1, 4096, 1, 1024], 1
+Outpus:
+	point_net_1/input_transform_1/input_transform_convolution_layer_3_convolution_layer_1/batch_normalization_2_1/batchnorm/mul_1__23:0=[1024, 1, 4096, -1], 1
+2025-12-08 12:54:25,638 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/input_transform_1/input_transform_convolution_layer_3_convolution_layer_1/batch_normalization_2_1/batchnorm/add_1
+OP=AddV2
+Name=point_net_1/input_transform_1/input_transform_convolution_layer_3_convolution_layer_1/batch_normalization_2_1/batchnorm/add_1
+Inputs:
+	point_net_1/input_transform_1/input_transform_convolution_layer_3_convolution_layer_1/batch_normalization_2_1/batchnorm/mul_1__23:0=Transpose, [-1, 4096, 1, 1024], 1
+	point_net_1/input_transform_1/input_transform_convolution_layer_3_convolution_layer_1/batch_normalization_2_1/batchnorm/sub:0=Const, [1024], 1
+Outpus:
+	point_net_1/input_transform_1/input_transform_convolution_layer_3_convolution_layer_1/batch_normalization_2_1/batchnorm/add_1:0=[-1, 4096, 1, 1024], 1
+2025-12-08 12:54:25,638 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/input_transform_1/input_transform_convolution_layer_3_convolution_layer_1/Relu
+OP=Relu
+Name=point_net_1/input_transform_1/input_transform_convolution_layer_3_convolution_layer_1/Relu
+Inputs:
+	point_net_1/input_transform_1/input_transform_convolution_layer_3_convolution_layer_1/batch_normalization_2_1/batchnorm/add_1:0=Add, [-1, 4096, 1, 1024], 1
+Outpus:
+	point_net_1/input_transform_1/input_transform_convolution_layer_3_convolution_layer_1/Relu:0=[-1, 4096, 1, 1024], 1
+2025-12-08 12:54:25,638 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/input_transform_1/Squeeze
+OP=Squeeze
+Name=point_net_1/input_transform_1/Squeeze
+Inputs:
+	point_net_1/input_transform_1/input_transform_convolution_layer_3_convolution_layer_1/Relu:0=Relu, [-1, 4096, 1, 1024], 1
+Outpus:
+	point_net_1/input_transform_1/Squeeze:0=[-1, 4096, 1024], 1
+2025-12-08 12:54:25,639 - tf2onnx.graph - DEBUG - Making node: Name=axes_const__25, OP=Const
+2025-12-08 12:54:25,640 - tf2onnx.graph - DEBUG - Made node: axes_const__25
+OP=Const
+Name=axes_const__25
+Outpus:
+	axes_const__25=None, 7
+2025-12-08 12:54:25,640 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/input_transform_1/Max
+OP=Max
+Name=point_net_1/input_transform_1/Max
+Inputs:
+	point_net_1/input_transform_1/Squeeze:0=Squeeze, [-1, 4096, 1024], 1
+	point_net_1/input_transform_1/Max/reduction_indices:0=Const, [], 6
+Outpus:
+	point_net_1/input_transform_1/Max:0=[-1, 1024], 1
+2025-12-08 12:54:25,641 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/input_transform_1/input_transform_dense_layer_1_dense_layer_1/input_transform_dense_layer_1_dense_layer_1/MatMul
+OP=MatMul
+Name=point_net_1/input_transform_1/input_transform_dense_layer_1_dense_layer_1/input_transform_dense_layer_1_dense_layer_1/MatMul
+Inputs:
+	point_net_1/input_transform_1/Max:0=ReduceMax, [-1, 1024], 1
+	point_net_1/input_transform_1/input_transform_dense_layer_1_dense_layer_1/input_transform_dense_layer_1_dense_layer_1/Cast/ReadVariableOp:0=Const, [1024, 512], 1
+Outpus:
+	point_net_1/input_transform_1/input_transform_dense_layer_1_dense_layer_1/input_transform_dense_layer_1_dense_layer_1/MatMul:0=[-1, 512], 1
+2025-12-08 12:54:25,642 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/input_transform_1/input_transform_dense_layer_1_dense_layer_1/batch_normalization_3_1/batchnorm/mul_1
+OP=Mul
+Name=point_net_1/input_transform_1/input_transform_dense_layer_1_dense_layer_1/batch_normalization_3_1/batchnorm/mul_1
+Inputs:
+	point_net_1/input_transform_1/input_transform_dense_layer_1_dense_layer_1/input_transform_dense_layer_1_dense_layer_1/MatMul:0=MatMul, [-1, 512], 1
+	point_net_1/input_transform_1/input_transform_dense_layer_1_dense_layer_1/batch_normalization_3_1/batchnorm/mul:0=Const, [512], 1
+Outpus:
+	point_net_1/input_transform_1/input_transform_dense_layer_1_dense_layer_1/batch_normalization_3_1/batchnorm/mul_1:0=[-1, 512], 1
+2025-12-08 12:54:25,643 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/input_transform_1/input_transform_dense_layer_1_dense_layer_1/batch_normalization_3_1/batchnorm/add_1
+OP=AddV2
+Name=point_net_1/input_transform_1/input_transform_dense_layer_1_dense_layer_1/batch_normalization_3_1/batchnorm/add_1
+Inputs:
+	point_net_1/input_transform_1/input_transform_dense_layer_1_dense_layer_1/batch_normalization_3_1/batchnorm/mul_1:0=Mul, [-1, 512], 1
+	point_net_1/input_transform_1/input_transform_dense_layer_1_dense_layer_1/batch_normalization_3_1/batchnorm/sub:0=Const, [512], 1
+Outpus:
+	point_net_1/input_transform_1/input_transform_dense_layer_1_dense_layer_1/batch_normalization_3_1/batchnorm/add_1:0=[-1, 512], 1
+2025-12-08 12:54:25,644 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/input_transform_1/input_transform_dense_layer_1_dense_layer_1/Relu
+OP=Relu
+Name=point_net_1/input_transform_1/input_transform_dense_layer_1_dense_layer_1/Relu
+Inputs:
+	point_net_1/input_transform_1/input_transform_dense_layer_1_dense_layer_1/batch_normalization_3_1/batchnorm/add_1:0=Add, [-1, 512], 1
+Outpus:
+	point_net_1/input_transform_1/input_transform_dense_layer_1_dense_layer_1/Relu:0=[-1, 512], 1
+2025-12-08 12:54:25,644 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/input_transform_1/input_transform_dense_layer_2_dense_layer_1/input_transform_dense_layer_2_dense_layer_1/MatMul
+OP=MatMul
+Name=point_net_1/input_transform_1/input_transform_dense_layer_2_dense_layer_1/input_transform_dense_layer_2_dense_layer_1/MatMul
+Inputs:
+	point_net_1/input_transform_1/input_transform_dense_layer_1_dense_layer_1/Relu:0=Relu, [-1, 512], 1
+	point_net_1/input_transform_1/input_transform_dense_layer_2_dense_layer_1/input_transform_dense_layer_2_dense_layer_1/Cast/ReadVariableOp:0=Const, [512, 256], 1
+Outpus:
+	point_net_1/input_transform_1/input_transform_dense_layer_2_dense_layer_1/input_transform_dense_layer_2_dense_layer_1/MatMul:0=[-1, 256], 1
+2025-12-08 12:54:25,644 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/input_transform_1/input_transform_dense_layer_2_dense_layer_1/batch_normalization_4_1/batchnorm/mul_1
+OP=Mul
+Name=point_net_1/input_transform_1/input_transform_dense_layer_2_dense_layer_1/batch_normalization_4_1/batchnorm/mul_1
+Inputs:
+	point_net_1/input_transform_1/input_transform_dense_layer_2_dense_layer_1/input_transform_dense_layer_2_dense_layer_1/MatMul:0=MatMul, [-1, 256], 1
+	point_net_1/input_transform_1/input_transform_dense_layer_2_dense_layer_1/batch_normalization_4_1/batchnorm/mul:0=Const, [256], 1
+Outpus:
+	point_net_1/input_transform_1/input_transform_dense_layer_2_dense_layer_1/batch_normalization_4_1/batchnorm/mul_1:0=[-1, 256], 1
+2025-12-08 12:54:25,645 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/input_transform_1/input_transform_dense_layer_2_dense_layer_1/batch_normalization_4_1/batchnorm/add_1
+OP=AddV2
+Name=point_net_1/input_transform_1/input_transform_dense_layer_2_dense_layer_1/batch_normalization_4_1/batchnorm/add_1
+Inputs:
+	point_net_1/input_transform_1/input_transform_dense_layer_2_dense_layer_1/batch_normalization_4_1/batchnorm/mul_1:0=Mul, [-1, 256], 1
+	point_net_1/input_transform_1/input_transform_dense_layer_2_dense_layer_1/batch_normalization_4_1/batchnorm/sub:0=Const, [256], 1
+Outpus:
+	point_net_1/input_transform_1/input_transform_dense_layer_2_dense_layer_1/batch_normalization_4_1/batchnorm/add_1:0=[-1, 256], 1
+2025-12-08 12:54:25,646 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/input_transform_1/input_transform_dense_layer_2_dense_layer_1/Relu
+OP=Relu
+Name=point_net_1/input_transform_1/input_transform_dense_layer_2_dense_layer_1/Relu
+Inputs:
+	point_net_1/input_transform_1/input_transform_dense_layer_2_dense_layer_1/batch_normalization_4_1/batchnorm/add_1:0=Add, [-1, 256], 1
+Outpus:
+	point_net_1/input_transform_1/input_transform_dense_layer_2_dense_layer_1/Relu:0=[-1, 256], 1
+2025-12-08 12:54:25,646 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/input_transform_1/ExpandDims_1
+OP=ExpandDims
+Name=point_net_1/input_transform_1/ExpandDims_1
+Inputs:
+	point_net_1/input_transform_1/input_transform_dense_layer_2_dense_layer_1/Relu:0=Relu, [-1, 256], 1
+	point_net_1/input_transform_1/ExpandDims_1/dim:0=Const, [], 6
+Outpus:
+	point_net_1/input_transform_1/ExpandDims_1:0=[-1, 1, 256], 1
+2025-12-08 12:54:25,647 - tf2onnx.graph - DEBUG - Making node: Name=point_net_1/input_transform_1/ExpandDims_1__26, OP=Cast
+2025-12-08 12:54:25,648 - tf2onnx.graph - DEBUG - Infer shape and dtype for [point_net_1/input_transform_1/ExpandDims_1__26]
+2025-12-08 12:54:25,649 - tf2onnx.graph - DEBUG - Set dtype of [point_net_1/input_transform_1/ExpandDims_1__26:0] to 7
+2025-12-08 12:54:25,649 - tf2onnx.graph - DEBUG - Set shape of [point_net_1/input_transform_1/ExpandDims_1__26:0] to []
+2025-12-08 12:54:25,649 - tf2onnx.graph - DEBUG - Made node: point_net_1/input_transform_1/ExpandDims_1__26
+OP=Cast
+Name=point_net_1/input_transform_1/ExpandDims_1__26
+Inputs:
+	point_net_1/input_transform_1/ExpandDims_1/dim:0=Const, [], 6
+Outpus:
+	point_net_1/input_transform_1/ExpandDims_1__26:0=[], 7
+2025-12-08 12:54:25,650 - tf2onnx.graph - DEBUG - Making node: Name=reshape_const__27, OP=Const
+2025-12-08 12:54:25,651 - tf2onnx.graph - DEBUG - Made node: reshape_const__27
+OP=Const
+Name=reshape_const__27
+Outpus:
+	reshape_const__27=None, 7
+2025-12-08 12:54:25,651 - tf2onnx.graph - DEBUG - Making node: Name=Reshape__28, OP=Reshape
+2025-12-08 12:54:25,652 - tf2onnx.graph - DEBUG - Infer shape and dtype for [Reshape__28]
+2025-12-08 12:54:25,652 - tf2onnx.graph - DEBUG - Set dtype of [Reshape__28:0] to 7
+2025-12-08 12:54:25,652 - tf2onnx.graph - DEBUG - Set shape of [Reshape__28:0] to [1]
+2025-12-08 12:54:25,653 - tf2onnx.graph - DEBUG - Made node: Reshape__28
+OP=Reshape
+Name=Reshape__28
+Inputs:
+	point_net_1/input_transform_1/ExpandDims_1__26:0=Cast, [], 7
+	reshape_const__27=Const, [1], 7
+Outpus:
+	Reshape__28:0=[1], 7
+2025-12-08 12:54:25,653 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/input_transform_1/MatMul
+OP=BatchMatMulV2
+Name=point_net_1/input_transform_1/MatMul
+Inputs:
+	point_net_1/input_transform_1/ExpandDims_1:0=Unsqueeze, [-1, 1, 256], 1
+	point_net_1/input_transform_1/MatMul/ReadVariableOp:0=Const, [256, 9], 1
+Outpus:
+	point_net_1/input_transform_1/MatMul:0=[-1, 1, 9], 1
+2025-12-08 12:54:25,653 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/input_transform_1/Squeeze_1
+OP=Squeeze
+Name=point_net_1/input_transform_1/Squeeze_1
+Inputs:
+	point_net_1/input_transform_1/MatMul:0=MatMul, [-1, 1, 9], 1
+Outpus:
+	point_net_1/input_transform_1/Squeeze_1:0=[-1, 9], 1
+2025-12-08 12:54:25,654 - tf2onnx.graph - DEBUG - Making node: Name=axes_const__29, OP=Const
+2025-12-08 12:54:25,654 - tf2onnx.graph - DEBUG - Made node: axes_const__29
+OP=Const
+Name=axes_const__29
+Outpus:
+	axes_const__29=None, 7
+2025-12-08 12:54:25,654 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/input_transform_1/Reshape
+OP=Reshape
+Name=point_net_1/input_transform_1/Reshape
+Inputs:
+	point_net_1/input_transform_1/Squeeze_1:0=Squeeze, [-1, 9], 1
+	point_net_1/input_transform_1/Reshape/shape:0=Const, [3], 6
+Outpus:
+	point_net_1/input_transform_1/Reshape:0=[-1, 3, 3], 1
+2025-12-08 12:54:25,655 - tf2onnx.graph - DEBUG - Making node: Name=point_net_1/input_transform_1/Reshape__30, OP=Cast
+2025-12-08 12:54:25,655 - tf2onnx.graph - DEBUG - Infer shape and dtype for [point_net_1/input_transform_1/Reshape__30]
+2025-12-08 12:54:25,656 - tf2onnx.graph - DEBUG - Set dtype of [point_net_1/input_transform_1/Reshape__30:0] to 7
+2025-12-08 12:54:25,657 - tf2onnx.graph - DEBUG - Set shape of [point_net_1/input_transform_1/Reshape__30:0] to [3]
+2025-12-08 12:54:25,657 - tf2onnx.graph - DEBUG - Made node: point_net_1/input_transform_1/Reshape__30
+OP=Cast
+Name=point_net_1/input_transform_1/Reshape__30
+Inputs:
+	point_net_1/input_transform_1/Reshape/shape:0=Const, [3], 6
+Outpus:
+	point_net_1/input_transform_1/Reshape__30:0=[3], 7
+2025-12-08 12:54:25,658 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/input_transform_1/add
+OP=AddV2
+Name=point_net_1/input_transform_1/add
+Inputs:
+	point_net_1/input_transform_1/Reshape:0=Reshape, [-1, 3, 3], 1
+	point_net_1/input_transform_1/add/ReadVariableOp:0=Const, [3, 3], 1
+Outpus:
+	point_net_1/input_transform_1/add:0=[-1, 3, 3], 1
+2025-12-08 12:54:25,658 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/MatMul
+OP=BatchMatMulV2
+Name=point_net_1/MatMul
+Inputs:
+	args_0=Placeholder, [-1, 4096, 3], 1
+	point_net_1/input_transform_1/add:0=Add, [-1, 3, 3], 1
+Outpus:
+	point_net_1/MatMul:0=[-1, 4096, 3], 1
+2025-12-08 12:54:25,659 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/ExpandDims
+OP=ExpandDims
+Name=point_net_1/ExpandDims
+Inputs:
+	point_net_1/MatMul:0=MatMul, [-1, 4096, 3], 1
+	point_net_1/ExpandDims/dim:0=Const, [], 6
+Outpus:
+	point_net_1/ExpandDims:0=[-1, 4096, 1, 3], 1
+2025-12-08 12:54:25,659 - tf2onnx.graph - DEBUG - Making node: Name=point_net_1/ExpandDims__31, OP=Cast
+2025-12-08 12:54:25,660 - tf2onnx.graph - DEBUG - Infer shape and dtype for [point_net_1/ExpandDims__31]
+2025-12-08 12:54:25,660 - tf2onnx.graph - DEBUG - Set dtype of [point_net_1/ExpandDims__31:0] to 7
+2025-12-08 12:54:25,661 - tf2onnx.graph - DEBUG - Set shape of [point_net_1/ExpandDims__31:0] to []
+2025-12-08 12:54:25,661 - tf2onnx.graph - DEBUG - Made node: point_net_1/ExpandDims__31
+OP=Cast
+Name=point_net_1/ExpandDims__31
+Inputs:
+	point_net_1/ExpandDims/dim:0=Const, [], 6
+Outpus:
+	point_net_1/ExpandDims__31:0=[], 7
+2025-12-08 12:54:25,662 - tf2onnx.graph - DEBUG - Making node: Name=reshape_const__32, OP=Const
+2025-12-08 12:54:25,663 - tf2onnx.graph - DEBUG - Made node: reshape_const__32
+OP=Const
+Name=reshape_const__32
+Outpus:
+	reshape_const__32=None, 7
+2025-12-08 12:54:25,663 - tf2onnx.graph - DEBUG - Making node: Name=Reshape__33, OP=Reshape
+2025-12-08 12:54:25,664 - tf2onnx.graph - DEBUG - Infer shape and dtype for [Reshape__33]
+2025-12-08 12:54:25,665 - tf2onnx.graph - DEBUG - Set dtype of [Reshape__33:0] to 7
+2025-12-08 12:54:25,666 - tf2onnx.graph - DEBUG - Set shape of [Reshape__33:0] to [1]
+2025-12-08 12:54:25,666 - tf2onnx.graph - DEBUG - Made node: Reshape__33
+OP=Reshape
+Name=Reshape__33
+Inputs:
+	point_net_1/ExpandDims__31:0=Cast, [], 7
+	reshape_const__32=Const, [1], 7
+Outpus:
+	Reshape__33:0=[1], 7
+2025-12-08 12:54:25,667 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/s1_l1_64_convolution_layer_1/batch_normalization_5_1/batchnorm/mul_1
+OP=Conv2D
+Name=point_net_1/s1_l1_64_convolution_layer_1/batch_normalization_5_1/batchnorm/mul_1
+Inputs:
+	point_net_1/ExpandDims:0=Unsqueeze, [-1, 4096, 1, 3], 1
+	point_net_1/s1_l1_64_convolution_layer_1/s1_l1_64_convolution_layer_1/convolution/merged_input:0=Const, [1, 1, 3, 64], 1
+Outpus:
+	point_net_1/s1_l1_64_convolution_layer_1/batch_normalization_5_1/batchnorm/mul_1:0=[-1, 4096, 1, 64], 1
+2025-12-08 12:54:25,668 - tf2onnx.graph - DEBUG - Making node: Name=point_net_1/s1_l1_64_convolution_layer_1/batch_normalization_5_1/batchnorm/mul_1__34, OP=Transpose
+2025-12-08 12:54:25,668 - tf2onnx.graph - DEBUG - Infer shape and dtype for [point_net_1/s1_l1_64_convolution_layer_1/batch_normalization_5_1/batchnorm/mul_1__34]
+2025-12-08 12:54:25,669 - tf2onnx.graph - DEBUG - Set dtype of [point_net_1/s1_l1_64_convolution_layer_1/batch_normalization_5_1/batchnorm/mul_1__34:0] to 1
+2025-12-08 12:54:25,669 - tf2onnx.graph - DEBUG - Set shape of [point_net_1/s1_l1_64_convolution_layer_1/batch_normalization_5_1/batchnorm/mul_1__34:0] to [3, 1, 4096, -1]
+2025-12-08 12:54:25,669 - tf2onnx.graph - DEBUG - Made node: point_net_1/s1_l1_64_convolution_layer_1/batch_normalization_5_1/batchnorm/mul_1__34
+OP=Transpose
+Name=point_net_1/s1_l1_64_convolution_layer_1/batch_normalization_5_1/batchnorm/mul_1__34
+Inputs:
+	point_net_1/ExpandDims:0=Unsqueeze, [-1, 4096, 1, 3], 1
+Outpus:
+	point_net_1/s1_l1_64_convolution_layer_1/batch_normalization_5_1/batchnorm/mul_1__34:0=[3, 1, 4096, -1], 1
+2025-12-08 12:54:25,670 - tf2onnx.graph - DEBUG - Making node: Name=point_net_1/s1_l1_64_convolution_layer_1/batch_normalization_5_1/batchnorm/mul_1__36, OP=Transpose
+2025-12-08 12:54:25,670 - tf2onnx.graph - DEBUG - Infer shape and dtype for [point_net_1/s1_l1_64_convolution_layer_1/batch_normalization_5_1/batchnorm/mul_1__36]
+2025-12-08 12:54:25,671 - tf2onnx.graph - DEBUG - Set dtype of [point_net_1/s1_l1_64_convolution_layer_1/batch_normalization_5_1/batchnorm/mul_1__36:0] to 1
+2025-12-08 12:54:25,671 - tf2onnx.graph - DEBUG - Set shape of [point_net_1/s1_l1_64_convolution_layer_1/batch_normalization_5_1/batchnorm/mul_1__36:0] to [64, 1, 4096, -1]
+2025-12-08 12:54:25,671 - tf2onnx.graph - DEBUG - Made node: point_net_1/s1_l1_64_convolution_layer_1/batch_normalization_5_1/batchnorm/mul_1__36
+OP=Transpose
+Name=point_net_1/s1_l1_64_convolution_layer_1/batch_normalization_5_1/batchnorm/mul_1__36
+Inputs:
+	point_net_1/s1_l1_64_convolution_layer_1/batch_normalization_5_1/batchnorm/mul_1:0=Conv, [-1, 4096, 1, 64], 1
+Outpus:
+	point_net_1/s1_l1_64_convolution_layer_1/batch_normalization_5_1/batchnorm/mul_1__36:0=[64, 1, 4096, -1], 1
+2025-12-08 12:54:25,672 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/s1_l1_64_convolution_layer_1/batch_normalization_5_1/batchnorm/add_1
+OP=AddV2
+Name=point_net_1/s1_l1_64_convolution_layer_1/batch_normalization_5_1/batchnorm/add_1
+Inputs:
+	point_net_1/s1_l1_64_convolution_layer_1/batch_normalization_5_1/batchnorm/mul_1__36:0=Transpose, [-1, 4096, 1, 64], 1
+	point_net_1/s1_l1_64_convolution_layer_1/batch_normalization_5_1/batchnorm/sub:0=Const, [64], 1
+Outpus:
+	point_net_1/s1_l1_64_convolution_layer_1/batch_normalization_5_1/batchnorm/add_1:0=[-1, 4096, 1, 64], 1
+2025-12-08 12:54:25,672 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/s1_l1_64_convolution_layer_1/Relu
+OP=Relu
+Name=point_net_1/s1_l1_64_convolution_layer_1/Relu
+Inputs:
+	point_net_1/s1_l1_64_convolution_layer_1/batch_normalization_5_1/batchnorm/add_1:0=Add, [-1, 4096, 1, 64], 1
+Outpus:
+	point_net_1/s1_l1_64_convolution_layer_1/Relu:0=[-1, 4096, 1, 64], 1
+2025-12-08 12:54:25,672 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/s1_l2_64_convolution_layer_1/batch_normalization_6_1/batchnorm/mul_1
+OP=Conv2D
+Name=point_net_1/s1_l2_64_convolution_layer_1/batch_normalization_6_1/batchnorm/mul_1
+Inputs:
+	point_net_1/s1_l1_64_convolution_layer_1/Relu:0=Relu, [-1, 4096, 1, 64], 1
+	point_net_1/s1_l2_64_convolution_layer_1/s1_l2_64_convolution_layer_1/convolution/merged_input:0=Const, [1, 1, 64, 64], 1
+Outpus:
+	point_net_1/s1_l2_64_convolution_layer_1/batch_normalization_6_1/batchnorm/mul_1:0=[-1, 4096, 1, 64], 1
+2025-12-08 12:54:25,673 - tf2onnx.graph - DEBUG - Making node: Name=point_net_1/s1_l2_64_convolution_layer_1/batch_normalization_6_1/batchnorm/mul_1__38, OP=Transpose
+2025-12-08 12:54:25,673 - tf2onnx.graph - DEBUG - Infer shape and dtype for [point_net_1/s1_l2_64_convolution_layer_1/batch_normalization_6_1/batchnorm/mul_1__38]
+2025-12-08 12:54:25,674 - tf2onnx.graph - DEBUG - Set dtype of [point_net_1/s1_l2_64_convolution_layer_1/batch_normalization_6_1/batchnorm/mul_1__38:0] to 1
+2025-12-08 12:54:25,674 - tf2onnx.graph - DEBUG - Set shape of [point_net_1/s1_l2_64_convolution_layer_1/batch_normalization_6_1/batchnorm/mul_1__38:0] to [64, 1, 4096, -1]
+2025-12-08 12:54:25,674 - tf2onnx.graph - DEBUG - Made node: point_net_1/s1_l2_64_convolution_layer_1/batch_normalization_6_1/batchnorm/mul_1__38
+OP=Transpose
+Name=point_net_1/s1_l2_64_convolution_layer_1/batch_normalization_6_1/batchnorm/mul_1__38
+Inputs:
+	point_net_1/s1_l1_64_convolution_layer_1/Relu:0=Relu, [-1, 4096, 1, 64], 1
+Outpus:
+	point_net_1/s1_l2_64_convolution_layer_1/batch_normalization_6_1/batchnorm/mul_1__38:0=[64, 1, 4096, -1], 1
+2025-12-08 12:54:25,675 - tf2onnx.graph - DEBUG - Making node: Name=point_net_1/s1_l2_64_convolution_layer_1/batch_normalization_6_1/batchnorm/mul_1__40, OP=Transpose
+2025-12-08 12:54:25,675 - tf2onnx.graph - DEBUG - Infer shape and dtype for [point_net_1/s1_l2_64_convolution_layer_1/batch_normalization_6_1/batchnorm/mul_1__40]
+2025-12-08 12:54:25,676 - tf2onnx.graph - DEBUG - Set dtype of [point_net_1/s1_l2_64_convolution_layer_1/batch_normalization_6_1/batchnorm/mul_1__40:0] to 1
+2025-12-08 12:54:25,676 - tf2onnx.graph - DEBUG - Set shape of [point_net_1/s1_l2_64_convolution_layer_1/batch_normalization_6_1/batchnorm/mul_1__40:0] to [64, 1, 4096, -1]
+2025-12-08 12:54:25,676 - tf2onnx.graph - DEBUG - Made node: point_net_1/s1_l2_64_convolution_layer_1/batch_normalization_6_1/batchnorm/mul_1__40
+OP=Transpose
+Name=point_net_1/s1_l2_64_convolution_layer_1/batch_normalization_6_1/batchnorm/mul_1__40
+Inputs:
+	point_net_1/s1_l2_64_convolution_layer_1/batch_normalization_6_1/batchnorm/mul_1:0=Conv, [-1, 4096, 1, 64], 1
+Outpus:
+	point_net_1/s1_l2_64_convolution_layer_1/batch_normalization_6_1/batchnorm/mul_1__40:0=[64, 1, 4096, -1], 1
+2025-12-08 12:54:25,677 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/s1_l2_64_convolution_layer_1/batch_normalization_6_1/batchnorm/add_1
+OP=AddV2
+Name=point_net_1/s1_l2_64_convolution_layer_1/batch_normalization_6_1/batchnorm/add_1
+Inputs:
+	point_net_1/s1_l2_64_convolution_layer_1/batch_normalization_6_1/batchnorm/mul_1__40:0=Transpose, [-1, 4096, 1, 64], 1
+	point_net_1/s1_l2_64_convolution_layer_1/batch_normalization_6_1/batchnorm/sub:0=Const, [64], 1
+Outpus:
+	point_net_1/s1_l2_64_convolution_layer_1/batch_normalization_6_1/batchnorm/add_1:0=[-1, 4096, 1, 64], 1
+2025-12-08 12:54:25,677 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/s1_l2_64_convolution_layer_1/Relu
+OP=Relu
+Name=point_net_1/s1_l2_64_convolution_layer_1/Relu
+Inputs:
+	point_net_1/s1_l2_64_convolution_layer_1/batch_normalization_6_1/batchnorm/add_1:0=Add, [-1, 4096, 1, 64], 1
+Outpus:
+	point_net_1/s1_l2_64_convolution_layer_1/Relu:0=[-1, 4096, 1, 64], 1
+2025-12-08 12:54:25,678 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/Squeeze
+OP=Squeeze
+Name=point_net_1/Squeeze
+Inputs:
+	point_net_1/s1_l2_64_convolution_layer_1/Relu:0=Relu, [-1, 4096, 1, 64], 1
+Outpus:
+	point_net_1/Squeeze:0=[-1, 4096, 64], 1
+2025-12-08 12:54:25,678 - tf2onnx.graph - DEBUG - Making node: Name=axes_const__42, OP=Const
+2025-12-08 12:54:25,678 - tf2onnx.graph - DEBUG - Made node: axes_const__42
+OP=Const
+Name=axes_const__42
+Outpus:
+	axes_const__42=None, 7
+2025-12-08 12:54:25,679 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/feature_transform_1/ExpandDims
+OP=ExpandDims
+Name=point_net_1/feature_transform_1/ExpandDims
+Inputs:
+	point_net_1/Squeeze:0=Squeeze, [-1, 4096, 64], 1
+	point_net_1/feature_transform_1/ExpandDims/dim:0=Const, [], 6
+Outpus:
+	point_net_1/feature_transform_1/ExpandDims:0=[-1, 4096, 1, 64], 1
+2025-12-08 12:54:25,679 - tf2onnx.graph - DEBUG - Making node: Name=point_net_1/feature_transform_1/ExpandDims__43, OP=Cast
+2025-12-08 12:54:25,679 - tf2onnx.graph - DEBUG - Infer shape and dtype for [point_net_1/feature_transform_1/ExpandDims__43]
+2025-12-08 12:54:25,680 - tf2onnx.graph - DEBUG - Set dtype of [point_net_1/feature_transform_1/ExpandDims__43:0] to 7
+2025-12-08 12:54:25,680 - tf2onnx.graph - DEBUG - Set shape of [point_net_1/feature_transform_1/ExpandDims__43:0] to []
+2025-12-08 12:54:25,681 - tf2onnx.graph - DEBUG - Made node: point_net_1/feature_transform_1/ExpandDims__43
+OP=Cast
+Name=point_net_1/feature_transform_1/ExpandDims__43
+Inputs:
+	point_net_1/feature_transform_1/ExpandDims/dim:0=Const, [], 6
+Outpus:
+	point_net_1/feature_transform_1/ExpandDims__43:0=[], 7
+2025-12-08 12:54:25,681 - tf2onnx.graph - DEBUG - Making node: Name=reshape_const__44, OP=Const
+2025-12-08 12:54:25,681 - tf2onnx.graph - DEBUG - Made node: reshape_const__44
+OP=Const
+Name=reshape_const__44
+Outpus:
+	reshape_const__44=None, 7
+2025-12-08 12:54:25,681 - tf2onnx.graph - DEBUG - Making node: Name=Reshape__45, OP=Reshape
+2025-12-08 12:54:25,682 - tf2onnx.graph - DEBUG - Infer shape and dtype for [Reshape__45]
+2025-12-08 12:54:25,682 - tf2onnx.graph - DEBUG - Set dtype of [Reshape__45:0] to 7
+2025-12-08 12:54:25,683 - tf2onnx.graph - DEBUG - Set shape of [Reshape__45:0] to [1]
+2025-12-08 12:54:25,683 - tf2onnx.graph - DEBUG - Made node: Reshape__45
+OP=Reshape
+Name=Reshape__45
+Inputs:
+	point_net_1/feature_transform_1/ExpandDims__43:0=Cast, [], 7
+	reshape_const__44=Const, [1], 7
+Outpus:
+	Reshape__45:0=[1], 7
+2025-12-08 12:54:25,684 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/feature_transform_1/feature_transform_convolution_layer_1_convolution_layer_1/batch_normalization_7_1/batchnorm/mul_1
+OP=Conv2D
+Name=point_net_1/feature_transform_1/feature_transform_convolution_layer_1_convolution_layer_1/batch_normalization_7_1/batchnorm/mul_1
+Inputs:
+	point_net_1/feature_transform_1/ExpandDims:0=Unsqueeze, [-1, 4096, 1, 64], 1
+	point_net_1/feature_transform_1/feature_transform_convolution_layer_1_convolution_layer_1/feature_transform_convolution_layer_1_convolution_layer_1/convolution/merged_input:0=Const, [1, 1, 64, 64], 1
+Outpus:
+	point_net_1/feature_transform_1/feature_transform_convolution_layer_1_convolution_layer_1/batch_normalization_7_1/batchnorm/mul_1:0=[-1, 4096, 1, 64], 1
+2025-12-08 12:54:25,684 - tf2onnx.graph - DEBUG - Making node: Name=point_net_1/feature_transform_1/feature_transform_convolution_layer_1_convolution_layer_1/batch_normalization_7_1/batchnorm/mul_1__46, OP=Transpose
+2025-12-08 12:54:25,684 - tf2onnx.graph - DEBUG - Infer shape and dtype for [point_net_1/feature_transform_1/feature_transform_convolution_layer_1_convolution_layer_1/batch_normalization_7_1/batchnorm/mul_1__46]
+2025-12-08 12:54:25,685 - tf2onnx.graph - DEBUG - Set dtype of [point_net_1/feature_transform_1/feature_transform_convolution_layer_1_convolution_layer_1/batch_normalization_7_1/batchnorm/mul_1__46:0] to 1
+2025-12-08 12:54:25,685 - tf2onnx.graph - DEBUG - Set shape of [point_net_1/feature_transform_1/feature_transform_convolution_layer_1_convolution_layer_1/batch_normalization_7_1/batchnorm/mul_1__46:0] to [64, 1, 4096, -1]
+2025-12-08 12:54:25,685 - tf2onnx.graph - DEBUG - Made node: point_net_1/feature_transform_1/feature_transform_convolution_layer_1_convolution_layer_1/batch_normalization_7_1/batchnorm/mul_1__46
+OP=Transpose
+Name=point_net_1/feature_transform_1/feature_transform_convolution_layer_1_convolution_layer_1/batch_normalization_7_1/batchnorm/mul_1__46
+Inputs:
+	point_net_1/feature_transform_1/ExpandDims:0=Unsqueeze, [-1, 4096, 1, 64], 1
+Outpus:
+	point_net_1/feature_transform_1/feature_transform_convolution_layer_1_convolution_layer_1/batch_normalization_7_1/batchnorm/mul_1__46:0=[64, 1, 4096, -1], 1
+2025-12-08 12:54:25,686 - tf2onnx.graph - DEBUG - Making node: Name=point_net_1/feature_transform_1/feature_transform_convolution_layer_1_convolution_layer_1/batch_normalization_7_1/batchnorm/mul_1__48, OP=Transpose
+2025-12-08 12:54:25,686 - tf2onnx.graph - DEBUG - Infer shape and dtype for [point_net_1/feature_transform_1/feature_transform_convolution_layer_1_convolution_layer_1/batch_normalization_7_1/batchnorm/mul_1__48]
+2025-12-08 12:54:25,687 - tf2onnx.graph - DEBUG - Set dtype of [point_net_1/feature_transform_1/feature_transform_convolution_layer_1_convolution_layer_1/batch_normalization_7_1/batchnorm/mul_1__48:0] to 1
+2025-12-08 12:54:25,687 - tf2onnx.graph - DEBUG - Set shape of [point_net_1/feature_transform_1/feature_transform_convolution_layer_1_convolution_layer_1/batch_normalization_7_1/batchnorm/mul_1__48:0] to [64, 1, 4096, -1]
+2025-12-08 12:54:25,687 - tf2onnx.graph - DEBUG - Made node: point_net_1/feature_transform_1/feature_transform_convolution_layer_1_convolution_layer_1/batch_normalization_7_1/batchnorm/mul_1__48
+OP=Transpose
+Name=point_net_1/feature_transform_1/feature_transform_convolution_layer_1_convolution_layer_1/batch_normalization_7_1/batchnorm/mul_1__48
+Inputs:
+	point_net_1/feature_transform_1/feature_transform_convolution_layer_1_convolution_layer_1/batch_normalization_7_1/batchnorm/mul_1:0=Conv, [-1, 4096, 1, 64], 1
+Outpus:
+	point_net_1/feature_transform_1/feature_transform_convolution_layer_1_convolution_layer_1/batch_normalization_7_1/batchnorm/mul_1__48:0=[64, 1, 4096, -1], 1
+2025-12-08 12:54:25,688 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/feature_transform_1/feature_transform_convolution_layer_1_convolution_layer_1/batch_normalization_7_1/batchnorm/add_1
+OP=AddV2
+Name=point_net_1/feature_transform_1/feature_transform_convolution_layer_1_convolution_layer_1/batch_normalization_7_1/batchnorm/add_1
+Inputs:
+	point_net_1/feature_transform_1/feature_transform_convolution_layer_1_convolution_layer_1/batch_normalization_7_1/batchnorm/mul_1__48:0=Transpose, [-1, 4096, 1, 64], 1
+	point_net_1/feature_transform_1/feature_transform_convolution_layer_1_convolution_layer_1/batch_normalization_7_1/batchnorm/sub:0=Const, [64], 1
+Outpus:
+	point_net_1/feature_transform_1/feature_transform_convolution_layer_1_convolution_layer_1/batch_normalization_7_1/batchnorm/add_1:0=[-1, 4096, 1, 64], 1
+2025-12-08 12:54:25,688 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/feature_transform_1/feature_transform_convolution_layer_1_convolution_layer_1/Relu
+OP=Relu
+Name=point_net_1/feature_transform_1/feature_transform_convolution_layer_1_convolution_layer_1/Relu
+Inputs:
+	point_net_1/feature_transform_1/feature_transform_convolution_layer_1_convolution_layer_1/batch_normalization_7_1/batchnorm/add_1:0=Add, [-1, 4096, 1, 64], 1
+Outpus:
+	point_net_1/feature_transform_1/feature_transform_convolution_layer_1_convolution_layer_1/Relu:0=[-1, 4096, 1, 64], 1
+2025-12-08 12:54:25,689 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/feature_transform_1/feature_transform_convolution_layer_2_convolution_layer_1/batch_normalization_8_1/batchnorm/mul_1
+OP=Conv2D
+Name=point_net_1/feature_transform_1/feature_transform_convolution_layer_2_convolution_layer_1/batch_normalization_8_1/batchnorm/mul_1
+Inputs:
+	point_net_1/feature_transform_1/feature_transform_convolution_layer_1_convolution_layer_1/Relu:0=Relu, [-1, 4096, 1, 64], 1
+	point_net_1/feature_transform_1/feature_transform_convolution_layer_2_convolution_layer_1/feature_transform_convolution_layer_2_convolution_layer_1/convolution/merged_input:0=Const, [1, 1, 64, 128], 1
+Outpus:
+	point_net_1/feature_transform_1/feature_transform_convolution_layer_2_convolution_layer_1/batch_normalization_8_1/batchnorm/mul_1:0=[-1, 4096, 1, 128], 1
+2025-12-08 12:54:25,689 - tf2onnx.graph - DEBUG - Making node: Name=point_net_1/feature_transform_1/feature_transform_convolution_layer_2_convolution_layer_1/batch_normalization_8_1/batchnorm/mul_1__50, OP=Transpose
+2025-12-08 12:54:25,689 - tf2onnx.graph - DEBUG - Infer shape and dtype for [point_net_1/feature_transform_1/feature_transform_convolution_layer_2_convolution_layer_1/batch_normalization_8_1/batchnorm/mul_1__50]
+2025-12-08 12:54:25,690 - tf2onnx.graph - DEBUG - Set dtype of [point_net_1/feature_transform_1/feature_transform_convolution_layer_2_convolution_layer_1/batch_normalization_8_1/batchnorm/mul_1__50:0] to 1
+2025-12-08 12:54:25,690 - tf2onnx.graph - DEBUG - Set shape of [point_net_1/feature_transform_1/feature_transform_convolution_layer_2_convolution_layer_1/batch_normalization_8_1/batchnorm/mul_1__50:0] to [64, 1, 4096, -1]
+2025-12-08 12:54:25,690 - tf2onnx.graph - DEBUG - Made node: point_net_1/feature_transform_1/feature_transform_convolution_layer_2_convolution_layer_1/batch_normalization_8_1/batchnorm/mul_1__50
+OP=Transpose
+Name=point_net_1/feature_transform_1/feature_transform_convolution_layer_2_convolution_layer_1/batch_normalization_8_1/batchnorm/mul_1__50
+Inputs:
+	point_net_1/feature_transform_1/feature_transform_convolution_layer_1_convolution_layer_1/Relu:0=Relu, [-1, 4096, 1, 64], 1
+Outpus:
+	point_net_1/feature_transform_1/feature_transform_convolution_layer_2_convolution_layer_1/batch_normalization_8_1/batchnorm/mul_1__50:0=[64, 1, 4096, -1], 1
+2025-12-08 12:54:25,691 - tf2onnx.graph - DEBUG - Making node: Name=point_net_1/feature_transform_1/feature_transform_convolution_layer_2_convolution_layer_1/batch_normalization_8_1/batchnorm/mul_1__52, OP=Transpose
+2025-12-08 12:54:25,691 - tf2onnx.graph - DEBUG - Infer shape and dtype for [point_net_1/feature_transform_1/feature_transform_convolution_layer_2_convolution_layer_1/batch_normalization_8_1/batchnorm/mul_1__52]
+2025-12-08 12:54:25,692 - tf2onnx.graph - DEBUG - Set dtype of [point_net_1/feature_transform_1/feature_transform_convolution_layer_2_convolution_layer_1/batch_normalization_8_1/batchnorm/mul_1__52:0] to 1
+2025-12-08 12:54:25,692 - tf2onnx.graph - DEBUG - Set shape of [point_net_1/feature_transform_1/feature_transform_convolution_layer_2_convolution_layer_1/batch_normalization_8_1/batchnorm/mul_1__52:0] to [128, 1, 4096, -1]
+2025-12-08 12:54:25,692 - tf2onnx.graph - DEBUG - Made node: point_net_1/feature_transform_1/feature_transform_convolution_layer_2_convolution_layer_1/batch_normalization_8_1/batchnorm/mul_1__52
+OP=Transpose
+Name=point_net_1/feature_transform_1/feature_transform_convolution_layer_2_convolution_layer_1/batch_normalization_8_1/batchnorm/mul_1__52
+Inputs:
+	point_net_1/feature_transform_1/feature_transform_convolution_layer_2_convolution_layer_1/batch_normalization_8_1/batchnorm/mul_1:0=Conv, [-1, 4096, 1, 128], 1
+Outpus:
+	point_net_1/feature_transform_1/feature_transform_convolution_layer_2_convolution_layer_1/batch_normalization_8_1/batchnorm/mul_1__52:0=[128, 1, 4096, -1], 1
+2025-12-08 12:54:25,693 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/feature_transform_1/feature_transform_convolution_layer_2_convolution_layer_1/batch_normalization_8_1/batchnorm/add_1
+OP=AddV2
+Name=point_net_1/feature_transform_1/feature_transform_convolution_layer_2_convolution_layer_1/batch_normalization_8_1/batchnorm/add_1
+Inputs:
+	point_net_1/feature_transform_1/feature_transform_convolution_layer_2_convolution_layer_1/batch_normalization_8_1/batchnorm/mul_1__52:0=Transpose, [-1, 4096, 1, 128], 1
+	point_net_1/feature_transform_1/feature_transform_convolution_layer_2_convolution_layer_1/batch_normalization_8_1/batchnorm/sub:0=Const, [128], 1
+Outpus:
+	point_net_1/feature_transform_1/feature_transform_convolution_layer_2_convolution_layer_1/batch_normalization_8_1/batchnorm/add_1:0=[-1, 4096, 1, 128], 1
+2025-12-08 12:54:25,693 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/feature_transform_1/feature_transform_convolution_layer_2_convolution_layer_1/Relu
+OP=Relu
+Name=point_net_1/feature_transform_1/feature_transform_convolution_layer_2_convolution_layer_1/Relu
+Inputs:
+	point_net_1/feature_transform_1/feature_transform_convolution_layer_2_convolution_layer_1/batch_normalization_8_1/batchnorm/add_1:0=Add, [-1, 4096, 1, 128], 1
+Outpus:
+	point_net_1/feature_transform_1/feature_transform_convolution_layer_2_convolution_layer_1/Relu:0=[-1, 4096, 1, 128], 1
+2025-12-08 12:54:25,693 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/feature_transform_1/feature_transform_convolution_layer_3_convolution_layer_1/batch_normalization_9_1/batchnorm/mul_1
+OP=Conv2D
+Name=point_net_1/feature_transform_1/feature_transform_convolution_layer_3_convolution_layer_1/batch_normalization_9_1/batchnorm/mul_1
+Inputs:
+	point_net_1/feature_transform_1/feature_transform_convolution_layer_2_convolution_layer_1/Relu:0=Relu, [-1, 4096, 1, 128], 1
+	point_net_1/feature_transform_1/feature_transform_convolution_layer_3_convolution_layer_1/feature_transform_convolution_layer_3_convolution_layer_1/convolution/merged_input:0=Const, [1, 1, 128, 1024], 1
+Outpus:
+	point_net_1/feature_transform_1/feature_transform_convolution_layer_3_convolution_layer_1/batch_normalization_9_1/batchnorm/mul_1:0=[-1, 4096, 1, 1024], 1
+2025-12-08 12:54:25,694 - tf2onnx.graph - DEBUG - Making node: Name=point_net_1/feature_transform_1/feature_transform_convolution_layer_3_convolution_layer_1/batch_normalization_9_1/batchnorm/mul_1__54, OP=Transpose
+2025-12-08 12:54:25,695 - tf2onnx.graph - DEBUG - Infer shape and dtype for [point_net_1/feature_transform_1/feature_transform_convolution_layer_3_convolution_layer_1/batch_normalization_9_1/batchnorm/mul_1__54]
+2025-12-08 12:54:25,695 - tf2onnx.graph - DEBUG - Set dtype of [point_net_1/feature_transform_1/feature_transform_convolution_layer_3_convolution_layer_1/batch_normalization_9_1/batchnorm/mul_1__54:0] to 1
+2025-12-08 12:54:25,696 - tf2onnx.graph - DEBUG - Set shape of [point_net_1/feature_transform_1/feature_transform_convolution_layer_3_convolution_layer_1/batch_normalization_9_1/batchnorm/mul_1__54:0] to [128, 1, 4096, -1]
+2025-12-08 12:54:25,696 - tf2onnx.graph - DEBUG - Made node: point_net_1/feature_transform_1/feature_transform_convolution_layer_3_convolution_layer_1/batch_normalization_9_1/batchnorm/mul_1__54
+OP=Transpose
+Name=point_net_1/feature_transform_1/feature_transform_convolution_layer_3_convolution_layer_1/batch_normalization_9_1/batchnorm/mul_1__54
+Inputs:
+	point_net_1/feature_transform_1/feature_transform_convolution_layer_2_convolution_layer_1/Relu:0=Relu, [-1, 4096, 1, 128], 1
+Outpus:
+	point_net_1/feature_transform_1/feature_transform_convolution_layer_3_convolution_layer_1/batch_normalization_9_1/batchnorm/mul_1__54:0=[128, 1, 4096, -1], 1
+2025-12-08 12:54:25,697 - tf2onnx.graph - DEBUG - Making node: Name=point_net_1/feature_transform_1/feature_transform_convolution_layer_3_convolution_layer_1/batch_normalization_9_1/batchnorm/mul_1__56, OP=Transpose
+2025-12-08 12:54:25,698 - tf2onnx.graph - DEBUG - Infer shape and dtype for [point_net_1/feature_transform_1/feature_transform_convolution_layer_3_convolution_layer_1/batch_normalization_9_1/batchnorm/mul_1__56]
+2025-12-08 12:54:25,698 - tf2onnx.graph - DEBUG - Set dtype of [point_net_1/feature_transform_1/feature_transform_convolution_layer_3_convolution_layer_1/batch_normalization_9_1/batchnorm/mul_1__56:0] to 1
+2025-12-08 12:54:25,699 - tf2onnx.graph - DEBUG - Set shape of [point_net_1/feature_transform_1/feature_transform_convolution_layer_3_convolution_layer_1/batch_normalization_9_1/batchnorm/mul_1__56:0] to [1024, 1, 4096, -1]
+2025-12-08 12:54:25,699 - tf2onnx.graph - DEBUG - Made node: point_net_1/feature_transform_1/feature_transform_convolution_layer_3_convolution_layer_1/batch_normalization_9_1/batchnorm/mul_1__56
+OP=Transpose
+Name=point_net_1/feature_transform_1/feature_transform_convolution_layer_3_convolution_layer_1/batch_normalization_9_1/batchnorm/mul_1__56
+Inputs:
+	point_net_1/feature_transform_1/feature_transform_convolution_layer_3_convolution_layer_1/batch_normalization_9_1/batchnorm/mul_1:0=Conv, [-1, 4096, 1, 1024], 1
+Outpus:
+	point_net_1/feature_transform_1/feature_transform_convolution_layer_3_convolution_layer_1/batch_normalization_9_1/batchnorm/mul_1__56:0=[1024, 1, 4096, -1], 1
+2025-12-08 12:54:25,700 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/feature_transform_1/feature_transform_convolution_layer_3_convolution_layer_1/batch_normalization_9_1/batchnorm/add_1
+OP=AddV2
+Name=point_net_1/feature_transform_1/feature_transform_convolution_layer_3_convolution_layer_1/batch_normalization_9_1/batchnorm/add_1
+Inputs:
+	point_net_1/feature_transform_1/feature_transform_convolution_layer_3_convolution_layer_1/batch_normalization_9_1/batchnorm/mul_1__56:0=Transpose, [-1, 4096, 1, 1024], 1
+	point_net_1/feature_transform_1/feature_transform_convolution_layer_3_convolution_layer_1/batch_normalization_9_1/batchnorm/sub:0=Const, [1024], 1
+Outpus:
+	point_net_1/feature_transform_1/feature_transform_convolution_layer_3_convolution_layer_1/batch_normalization_9_1/batchnorm/add_1:0=[-1, 4096, 1, 1024], 1
+2025-12-08 12:54:25,700 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/feature_transform_1/feature_transform_convolution_layer_3_convolution_layer_1/Relu
+OP=Relu
+Name=point_net_1/feature_transform_1/feature_transform_convolution_layer_3_convolution_layer_1/Relu
+Inputs:
+	point_net_1/feature_transform_1/feature_transform_convolution_layer_3_convolution_layer_1/batch_normalization_9_1/batchnorm/add_1:0=Add, [-1, 4096, 1, 1024], 1
+Outpus:
+	point_net_1/feature_transform_1/feature_transform_convolution_layer_3_convolution_layer_1/Relu:0=[-1, 4096, 1, 1024], 1
+2025-12-08 12:54:25,701 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/feature_transform_1/Squeeze
+OP=Squeeze
+Name=point_net_1/feature_transform_1/Squeeze
+Inputs:
+	point_net_1/feature_transform_1/feature_transform_convolution_layer_3_convolution_layer_1/Relu:0=Relu, [-1, 4096, 1, 1024], 1
+Outpus:
+	point_net_1/feature_transform_1/Squeeze:0=[-1, 4096, 1024], 1
+2025-12-08 12:54:25,702 - tf2onnx.graph - DEBUG - Making node: Name=axes_const__58, OP=Const
+2025-12-08 12:54:25,703 - tf2onnx.graph - DEBUG - Made node: axes_const__58
+OP=Const
+Name=axes_const__58
+Outpus:
+	axes_const__58=None, 7
+2025-12-08 12:54:25,703 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/feature_transform_1/Max
+OP=Max
+Name=point_net_1/feature_transform_1/Max
+Inputs:
+	point_net_1/feature_transform_1/Squeeze:0=Squeeze, [-1, 4096, 1024], 1
+	point_net_1/feature_transform_1/Max/reduction_indices:0=Const, [], 6
+Outpus:
+	point_net_1/feature_transform_1/Max:0=[-1, 1024], 1
+2025-12-08 12:54:25,704 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/feature_transform_1/feature_transform_dense_layer_1_dense_layer_1/feature_transform_dense_layer_1_dense_layer_1/MatMul
+OP=MatMul
+Name=point_net_1/feature_transform_1/feature_transform_dense_layer_1_dense_layer_1/feature_transform_dense_layer_1_dense_layer_1/MatMul
+Inputs:
+	point_net_1/feature_transform_1/Max:0=ReduceMax, [-1, 1024], 1
+	point_net_1/feature_transform_1/feature_transform_dense_layer_1_dense_layer_1/feature_transform_dense_layer_1_dense_layer_1/Cast/ReadVariableOp:0=Const, [1024, 512], 1
+Outpus:
+	point_net_1/feature_transform_1/feature_transform_dense_layer_1_dense_layer_1/feature_transform_dense_layer_1_dense_layer_1/MatMul:0=[-1, 512], 1
+2025-12-08 12:54:25,704 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/feature_transform_1/feature_transform_dense_layer_1_dense_layer_1/batch_normalization_10_1/batchnorm/mul_1
+OP=Mul
+Name=point_net_1/feature_transform_1/feature_transform_dense_layer_1_dense_layer_1/batch_normalization_10_1/batchnorm/mul_1
+Inputs:
+	point_net_1/feature_transform_1/feature_transform_dense_layer_1_dense_layer_1/feature_transform_dense_layer_1_dense_layer_1/MatMul:0=MatMul, [-1, 512], 1
+	point_net_1/feature_transform_1/feature_transform_dense_layer_1_dense_layer_1/batch_normalization_10_1/batchnorm/mul:0=Const, [512], 1
+Outpus:
+	point_net_1/feature_transform_1/feature_transform_dense_layer_1_dense_layer_1/batch_normalization_10_1/batchnorm/mul_1:0=[-1, 512], 1
+2025-12-08 12:54:25,705 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/feature_transform_1/feature_transform_dense_layer_1_dense_layer_1/batch_normalization_10_1/batchnorm/add_1
+OP=AddV2
+Name=point_net_1/feature_transform_1/feature_transform_dense_layer_1_dense_layer_1/batch_normalization_10_1/batchnorm/add_1
+Inputs:
+	point_net_1/feature_transform_1/feature_transform_dense_layer_1_dense_layer_1/batch_normalization_10_1/batchnorm/mul_1:0=Mul, [-1, 512], 1
+	point_net_1/feature_transform_1/feature_transform_dense_layer_1_dense_layer_1/batch_normalization_10_1/batchnorm/sub:0=Const, [512], 1
+Outpus:
+	point_net_1/feature_transform_1/feature_transform_dense_layer_1_dense_layer_1/batch_normalization_10_1/batchnorm/add_1:0=[-1, 512], 1
+2025-12-08 12:54:25,705 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/feature_transform_1/feature_transform_dense_layer_1_dense_layer_1/Relu
+OP=Relu
+Name=point_net_1/feature_transform_1/feature_transform_dense_layer_1_dense_layer_1/Relu
+Inputs:
+	point_net_1/feature_transform_1/feature_transform_dense_layer_1_dense_layer_1/batch_normalization_10_1/batchnorm/add_1:0=Add, [-1, 512], 1
+Outpus:
+	point_net_1/feature_transform_1/feature_transform_dense_layer_1_dense_layer_1/Relu:0=[-1, 512], 1
+2025-12-08 12:54:25,706 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/feature_transform_1/feature_transform_dense_layer_2_dense_layer_1/feature_transform_dense_layer_2_dense_layer_1/MatMul
+OP=MatMul
+Name=point_net_1/feature_transform_1/feature_transform_dense_layer_2_dense_layer_1/feature_transform_dense_layer_2_dense_layer_1/MatMul
+Inputs:
+	point_net_1/feature_transform_1/feature_transform_dense_layer_1_dense_layer_1/Relu:0=Relu, [-1, 512], 1
+	point_net_1/feature_transform_1/feature_transform_dense_layer_2_dense_layer_1/feature_transform_dense_layer_2_dense_layer_1/Cast/ReadVariableOp:0=Const, [512, 256], 1
+Outpus:
+	point_net_1/feature_transform_1/feature_transform_dense_layer_2_dense_layer_1/feature_transform_dense_layer_2_dense_layer_1/MatMul:0=[-1, 256], 1
+2025-12-08 12:54:25,706 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/feature_transform_1/feature_transform_dense_layer_2_dense_layer_1/batch_normalization_11_1/batchnorm/mul_1
+OP=Mul
+Name=point_net_1/feature_transform_1/feature_transform_dense_layer_2_dense_layer_1/batch_normalization_11_1/batchnorm/mul_1
+Inputs:
+	point_net_1/feature_transform_1/feature_transform_dense_layer_2_dense_layer_1/feature_transform_dense_layer_2_dense_layer_1/MatMul:0=MatMul, [-1, 256], 1
+	point_net_1/feature_transform_1/feature_transform_dense_layer_2_dense_layer_1/batch_normalization_11_1/batchnorm/mul:0=Const, [256], 1
+Outpus:
+	point_net_1/feature_transform_1/feature_transform_dense_layer_2_dense_layer_1/batch_normalization_11_1/batchnorm/mul_1:0=[-1, 256], 1
+2025-12-08 12:54:25,707 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/feature_transform_1/feature_transform_dense_layer_2_dense_layer_1/batch_normalization_11_1/batchnorm/add_1
+OP=AddV2
+Name=point_net_1/feature_transform_1/feature_transform_dense_layer_2_dense_layer_1/batch_normalization_11_1/batchnorm/add_1
+Inputs:
+	point_net_1/feature_transform_1/feature_transform_dense_layer_2_dense_layer_1/batch_normalization_11_1/batchnorm/mul_1:0=Mul, [-1, 256], 1
+	point_net_1/feature_transform_1/feature_transform_dense_layer_2_dense_layer_1/batch_normalization_11_1/batchnorm/sub:0=Const, [256], 1
+Outpus:
+	point_net_1/feature_transform_1/feature_transform_dense_layer_2_dense_layer_1/batch_normalization_11_1/batchnorm/add_1:0=[-1, 256], 1
+2025-12-08 12:54:25,708 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/feature_transform_1/feature_transform_dense_layer_2_dense_layer_1/Relu
+OP=Relu
+Name=point_net_1/feature_transform_1/feature_transform_dense_layer_2_dense_layer_1/Relu
+Inputs:
+	point_net_1/feature_transform_1/feature_transform_dense_layer_2_dense_layer_1/batch_normalization_11_1/batchnorm/add_1:0=Add, [-1, 256], 1
+Outpus:
+	point_net_1/feature_transform_1/feature_transform_dense_layer_2_dense_layer_1/Relu:0=[-1, 256], 1
+2025-12-08 12:54:25,708 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/feature_transform_1/ExpandDims_1
+OP=ExpandDims
+Name=point_net_1/feature_transform_1/ExpandDims_1
+Inputs:
+	point_net_1/feature_transform_1/feature_transform_dense_layer_2_dense_layer_1/Relu:0=Relu, [-1, 256], 1
+	point_net_1/feature_transform_1/ExpandDims_1/dim:0=Const, [], 6
+Outpus:
+	point_net_1/feature_transform_1/ExpandDims_1:0=[-1, 1, 256], 1
+2025-12-08 12:54:25,708 - tf2onnx.graph - DEBUG - Making node: Name=point_net_1/feature_transform_1/ExpandDims_1__59, OP=Cast
+2025-12-08 12:54:25,709 - tf2onnx.graph - DEBUG - Infer shape and dtype for [point_net_1/feature_transform_1/ExpandDims_1__59]
+2025-12-08 12:54:25,710 - tf2onnx.graph - DEBUG - Set dtype of [point_net_1/feature_transform_1/ExpandDims_1__59:0] to 7
+2025-12-08 12:54:25,710 - tf2onnx.graph - DEBUG - Set shape of [point_net_1/feature_transform_1/ExpandDims_1__59:0] to []
+2025-12-08 12:54:25,710 - tf2onnx.graph - DEBUG - Made node: point_net_1/feature_transform_1/ExpandDims_1__59
+OP=Cast
+Name=point_net_1/feature_transform_1/ExpandDims_1__59
+Inputs:
+	point_net_1/feature_transform_1/ExpandDims_1/dim:0=Const, [], 6
+Outpus:
+	point_net_1/feature_transform_1/ExpandDims_1__59:0=[], 7
+2025-12-08 12:54:25,711 - tf2onnx.graph - DEBUG - Making node: Name=reshape_const__60, OP=Const
+2025-12-08 12:54:25,712 - tf2onnx.graph - DEBUG - Made node: reshape_const__60
+OP=Const
+Name=reshape_const__60
+Outpus:
+	reshape_const__60=None, 7
+2025-12-08 12:54:25,712 - tf2onnx.graph - DEBUG - Making node: Name=Reshape__61, OP=Reshape
+2025-12-08 12:54:25,712 - tf2onnx.graph - DEBUG - Infer shape and dtype for [Reshape__61]
+2025-12-08 12:54:25,713 - tf2onnx.graph - DEBUG - Set dtype of [Reshape__61:0] to 7
+2025-12-08 12:54:25,714 - tf2onnx.graph - DEBUG - Set shape of [Reshape__61:0] to [1]
+2025-12-08 12:54:25,714 - tf2onnx.graph - DEBUG - Made node: Reshape__61
+OP=Reshape
+Name=Reshape__61
+Inputs:
+	point_net_1/feature_transform_1/ExpandDims_1__59:0=Cast, [], 7
+	reshape_const__60=Const, [1], 7
+Outpus:
+	Reshape__61:0=[1], 7
+2025-12-08 12:54:25,714 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/feature_transform_1/MatMul
+OP=BatchMatMulV2
+Name=point_net_1/feature_transform_1/MatMul
+Inputs:
+	point_net_1/feature_transform_1/ExpandDims_1:0=Unsqueeze, [-1, 1, 256], 1
+	point_net_1/feature_transform_1/MatMul/ReadVariableOp:0=Const, [256, 4096], 1
+Outpus:
+	point_net_1/feature_transform_1/MatMul:0=[-1, 1, 4096], 1
+2025-12-08 12:54:25,715 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/feature_transform_1/Squeeze_1
+OP=Squeeze
+Name=point_net_1/feature_transform_1/Squeeze_1
+Inputs:
+	point_net_1/feature_transform_1/MatMul:0=MatMul, [-1, 1, 4096], 1
+Outpus:
+	point_net_1/feature_transform_1/Squeeze_1:0=[-1, 4096], 1
+2025-12-08 12:54:25,716 - tf2onnx.graph - DEBUG - Making node: Name=axes_const__62, OP=Const
+2025-12-08 12:54:25,716 - tf2onnx.graph - DEBUG - Made node: axes_const__62
+OP=Const
+Name=axes_const__62
+Outpus:
+	axes_const__62=None, 7
+2025-12-08 12:54:25,717 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/feature_transform_1/Reshape
+OP=Reshape
+Name=point_net_1/feature_transform_1/Reshape
+Inputs:
+	point_net_1/feature_transform_1/Squeeze_1:0=Squeeze, [-1, 4096], 1
+	point_net_1/feature_transform_1/Reshape/shape:0=Const, [3], 6
+Outpus:
+	point_net_1/feature_transform_1/Reshape:0=[-1, 64, 64], 1
+2025-12-08 12:54:25,718 - tf2onnx.graph - DEBUG - Making node: Name=point_net_1/feature_transform_1/Reshape__63, OP=Cast
+2025-12-08 12:54:25,718 - tf2onnx.graph - DEBUG - Infer shape and dtype for [point_net_1/feature_transform_1/Reshape__63]
+2025-12-08 12:54:25,719 - tf2onnx.graph - DEBUG - Set dtype of [point_net_1/feature_transform_1/Reshape__63:0] to 7
+2025-12-08 12:54:25,719 - tf2onnx.graph - DEBUG - Set shape of [point_net_1/feature_transform_1/Reshape__63:0] to [3]
+2025-12-08 12:54:25,720 - tf2onnx.graph - DEBUG - Made node: point_net_1/feature_transform_1/Reshape__63
+OP=Cast
+Name=point_net_1/feature_transform_1/Reshape__63
+Inputs:
+	point_net_1/feature_transform_1/Reshape/shape:0=Const, [3], 6
+Outpus:
+	point_net_1/feature_transform_1/Reshape__63:0=[3], 7
+2025-12-08 12:54:25,720 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/feature_transform_1/add
+OP=AddV2
+Name=point_net_1/feature_transform_1/add
+Inputs:
+	point_net_1/feature_transform_1/Reshape:0=Reshape, [-1, 64, 64], 1
+	point_net_1/feature_transform_1/add/ReadVariableOp:0=Const, [64, 64], 1
+Outpus:
+	point_net_1/feature_transform_1/add:0=[-1, 64, 64], 1
+2025-12-08 12:54:25,721 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/MatMul_1
+OP=BatchMatMulV2
+Name=point_net_1/MatMul_1
+Inputs:
+	point_net_1/Squeeze:0=Squeeze, [-1, 4096, 64], 1
+	point_net_1/feature_transform_1/add:0=Add, [-1, 64, 64], 1
+Outpus:
+	point_net_1/MatMul_1:0=[-1, 4096, 64], 1
+2025-12-08 12:54:25,721 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/ExpandDims_1
+OP=ExpandDims
+Name=point_net_1/ExpandDims_1
+Inputs:
+	point_net_1/MatMul_1:0=MatMul, [-1, 4096, 64], 1
+	point_net_1/ExpandDims_1/dim:0=Const, [], 6
+Outpus:
+	point_net_1/ExpandDims_1:0=[-1, 4096, 1, 64], 1
+2025-12-08 12:54:25,722 - tf2onnx.graph - DEBUG - Making node: Name=point_net_1/ExpandDims_1__64, OP=Cast
+2025-12-08 12:54:25,722 - tf2onnx.graph - DEBUG - Infer shape and dtype for [point_net_1/ExpandDims_1__64]
+2025-12-08 12:54:25,723 - tf2onnx.graph - DEBUG - Set dtype of [point_net_1/ExpandDims_1__64:0] to 7
+2025-12-08 12:54:25,724 - tf2onnx.graph - DEBUG - Set shape of [point_net_1/ExpandDims_1__64:0] to []
+2025-12-08 12:54:25,724 - tf2onnx.graph - DEBUG - Made node: point_net_1/ExpandDims_1__64
+OP=Cast
+Name=point_net_1/ExpandDims_1__64
+Inputs:
+	point_net_1/ExpandDims_1/dim:0=Const, [], 6
+Outpus:
+	point_net_1/ExpandDims_1__64:0=[], 7
+2025-12-08 12:54:25,724 - tf2onnx.graph - DEBUG - Making node: Name=reshape_const__65, OP=Const
+2025-12-08 12:54:25,725 - tf2onnx.graph - DEBUG - Made node: reshape_const__65
+OP=Const
+Name=reshape_const__65
+Outpus:
+	reshape_const__65=None, 7
+2025-12-08 12:54:25,725 - tf2onnx.graph - DEBUG - Making node: Name=Reshape__66, OP=Reshape
+2025-12-08 12:54:25,726 - tf2onnx.graph - DEBUG - Infer shape and dtype for [Reshape__66]
+2025-12-08 12:54:25,726 - tf2onnx.graph - DEBUG - Set dtype of [Reshape__66:0] to 7
+2025-12-08 12:54:25,726 - tf2onnx.graph - DEBUG - Set shape of [Reshape__66:0] to [1]
+2025-12-08 12:54:25,727 - tf2onnx.graph - DEBUG - Made node: Reshape__66
+OP=Reshape
+Name=Reshape__66
+Inputs:
+	point_net_1/ExpandDims_1__64:0=Cast, [], 7
+	reshape_const__65=Const, [1], 7
+Outpus:
+	Reshape__66:0=[1], 7
+2025-12-08 12:54:25,727 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/s2_l1_64_convolution_layer_1/batch_normalization_12_1/batchnorm/mul_1
+OP=Conv2D
+Name=point_net_1/s2_l1_64_convolution_layer_1/batch_normalization_12_1/batchnorm/mul_1
+Inputs:
+	point_net_1/ExpandDims_1:0=Unsqueeze, [-1, 4096, 1, 64], 1
+	point_net_1/s2_l1_64_convolution_layer_1/s2_l1_64_convolution_layer_1/convolution/merged_input:0=Const, [1, 1, 64, 64], 1
+Outpus:
+	point_net_1/s2_l1_64_convolution_layer_1/batch_normalization_12_1/batchnorm/mul_1:0=[-1, 4096, 1, 64], 1
+2025-12-08 12:54:25,728 - tf2onnx.graph - DEBUG - Making node: Name=point_net_1/s2_l1_64_convolution_layer_1/batch_normalization_12_1/batchnorm/mul_1__67, OP=Transpose
+2025-12-08 12:54:25,728 - tf2onnx.graph - DEBUG - Infer shape and dtype for [point_net_1/s2_l1_64_convolution_layer_1/batch_normalization_12_1/batchnorm/mul_1__67]
+2025-12-08 12:54:25,728 - tf2onnx.graph - DEBUG - Set dtype of [point_net_1/s2_l1_64_convolution_layer_1/batch_normalization_12_1/batchnorm/mul_1__67:0] to 1
+2025-12-08 12:54:25,729 - tf2onnx.graph - DEBUG - Set shape of [point_net_1/s2_l1_64_convolution_layer_1/batch_normalization_12_1/batchnorm/mul_1__67:0] to [64, 1, 4096, -1]
+2025-12-08 12:54:25,729 - tf2onnx.graph - DEBUG - Made node: point_net_1/s2_l1_64_convolution_layer_1/batch_normalization_12_1/batchnorm/mul_1__67
+OP=Transpose
+Name=point_net_1/s2_l1_64_convolution_layer_1/batch_normalization_12_1/batchnorm/mul_1__67
+Inputs:
+	point_net_1/ExpandDims_1:0=Unsqueeze, [-1, 4096, 1, 64], 1
+Outpus:
+	point_net_1/s2_l1_64_convolution_layer_1/batch_normalization_12_1/batchnorm/mul_1__67:0=[64, 1, 4096, -1], 1
+2025-12-08 12:54:25,730 - tf2onnx.graph - DEBUG - Making node: Name=point_net_1/s2_l1_64_convolution_layer_1/batch_normalization_12_1/batchnorm/mul_1__69, OP=Transpose
+2025-12-08 12:54:25,730 - tf2onnx.graph - DEBUG - Infer shape and dtype for [point_net_1/s2_l1_64_convolution_layer_1/batch_normalization_12_1/batchnorm/mul_1__69]
+2025-12-08 12:54:25,730 - tf2onnx.graph - DEBUG - Set dtype of [point_net_1/s2_l1_64_convolution_layer_1/batch_normalization_12_1/batchnorm/mul_1__69:0] to 1
+2025-12-08 12:54:25,731 - tf2onnx.graph - DEBUG - Set shape of [point_net_1/s2_l1_64_convolution_layer_1/batch_normalization_12_1/batchnorm/mul_1__69:0] to [64, 1, 4096, -1]
+2025-12-08 12:54:25,731 - tf2onnx.graph - DEBUG - Made node: point_net_1/s2_l1_64_convolution_layer_1/batch_normalization_12_1/batchnorm/mul_1__69
+OP=Transpose
+Name=point_net_1/s2_l1_64_convolution_layer_1/batch_normalization_12_1/batchnorm/mul_1__69
+Inputs:
+	point_net_1/s2_l1_64_convolution_layer_1/batch_normalization_12_1/batchnorm/mul_1:0=Conv, [-1, 4096, 1, 64], 1
+Outpus:
+	point_net_1/s2_l1_64_convolution_layer_1/batch_normalization_12_1/batchnorm/mul_1__69:0=[64, 1, 4096, -1], 1
+2025-12-08 12:54:25,732 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/s2_l1_64_convolution_layer_1/batch_normalization_12_1/batchnorm/add_1
+OP=AddV2
+Name=point_net_1/s2_l1_64_convolution_layer_1/batch_normalization_12_1/batchnorm/add_1
+Inputs:
+	point_net_1/s2_l1_64_convolution_layer_1/batch_normalization_12_1/batchnorm/mul_1__69:0=Transpose, [-1, 4096, 1, 64], 1
+	point_net_1/s2_l1_64_convolution_layer_1/batch_normalization_12_1/batchnorm/sub:0=Const, [64], 1
+Outpus:
+	point_net_1/s2_l1_64_convolution_layer_1/batch_normalization_12_1/batchnorm/add_1:0=[-1, 4096, 1, 64], 1
+2025-12-08 12:54:25,732 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/s2_l1_64_convolution_layer_1/Relu
+OP=Relu
+Name=point_net_1/s2_l1_64_convolution_layer_1/Relu
+Inputs:
+	point_net_1/s2_l1_64_convolution_layer_1/batch_normalization_12_1/batchnorm/add_1:0=Add, [-1, 4096, 1, 64], 1
+Outpus:
+	point_net_1/s2_l1_64_convolution_layer_1/Relu:0=[-1, 4096, 1, 64], 1
+2025-12-08 12:54:25,733 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/s2_l2_128_convolution_layer_1/batch_normalization_13_1/batchnorm/mul_1
+OP=Conv2D
+Name=point_net_1/s2_l2_128_convolution_layer_1/batch_normalization_13_1/batchnorm/mul_1
+Inputs:
+	point_net_1/s2_l1_64_convolution_layer_1/Relu:0=Relu, [-1, 4096, 1, 64], 1
+	point_net_1/s2_l2_128_convolution_layer_1/s2_l2_128_convolution_layer_1/convolution/merged_input:0=Const, [1, 1, 64, 128], 1
+Outpus:
+	point_net_1/s2_l2_128_convolution_layer_1/batch_normalization_13_1/batchnorm/mul_1:0=[-1, 4096, 1, 128], 1
+2025-12-08 12:54:25,733 - tf2onnx.graph - DEBUG - Making node: Name=point_net_1/s2_l2_128_convolution_layer_1/batch_normalization_13_1/batchnorm/mul_1__71, OP=Transpose
+2025-12-08 12:54:25,734 - tf2onnx.graph - DEBUG - Infer shape and dtype for [point_net_1/s2_l2_128_convolution_layer_1/batch_normalization_13_1/batchnorm/mul_1__71]
+2025-12-08 12:54:25,734 - tf2onnx.graph - DEBUG - Set dtype of [point_net_1/s2_l2_128_convolution_layer_1/batch_normalization_13_1/batchnorm/mul_1__71:0] to 1
+2025-12-08 12:54:25,734 - tf2onnx.graph - DEBUG - Set shape of [point_net_1/s2_l2_128_convolution_layer_1/batch_normalization_13_1/batchnorm/mul_1__71:0] to [64, 1, 4096, -1]
+2025-12-08 12:54:25,735 - tf2onnx.graph - DEBUG - Made node: point_net_1/s2_l2_128_convolution_layer_1/batch_normalization_13_1/batchnorm/mul_1__71
+OP=Transpose
+Name=point_net_1/s2_l2_128_convolution_layer_1/batch_normalization_13_1/batchnorm/mul_1__71
+Inputs:
+	point_net_1/s2_l1_64_convolution_layer_1/Relu:0=Relu, [-1, 4096, 1, 64], 1
+Outpus:
+	point_net_1/s2_l2_128_convolution_layer_1/batch_normalization_13_1/batchnorm/mul_1__71:0=[64, 1, 4096, -1], 1
+2025-12-08 12:54:25,735 - tf2onnx.graph - DEBUG - Making node: Name=point_net_1/s2_l2_128_convolution_layer_1/batch_normalization_13_1/batchnorm/mul_1__73, OP=Transpose
+2025-12-08 12:54:25,736 - tf2onnx.graph - DEBUG - Infer shape and dtype for [point_net_1/s2_l2_128_convolution_layer_1/batch_normalization_13_1/batchnorm/mul_1__73]
+2025-12-08 12:54:25,736 - tf2onnx.graph - DEBUG - Set dtype of [point_net_1/s2_l2_128_convolution_layer_1/batch_normalization_13_1/batchnorm/mul_1__73:0] to 1
+2025-12-08 12:54:25,736 - tf2onnx.graph - DEBUG - Set shape of [point_net_1/s2_l2_128_convolution_layer_1/batch_normalization_13_1/batchnorm/mul_1__73:0] to [128, 1, 4096, -1]
+2025-12-08 12:54:25,737 - tf2onnx.graph - DEBUG - Made node: point_net_1/s2_l2_128_convolution_layer_1/batch_normalization_13_1/batchnorm/mul_1__73
+OP=Transpose
+Name=point_net_1/s2_l2_128_convolution_layer_1/batch_normalization_13_1/batchnorm/mul_1__73
+Inputs:
+	point_net_1/s2_l2_128_convolution_layer_1/batch_normalization_13_1/batchnorm/mul_1:0=Conv, [-1, 4096, 1, 128], 1
+Outpus:
+	point_net_1/s2_l2_128_convolution_layer_1/batch_normalization_13_1/batchnorm/mul_1__73:0=[128, 1, 4096, -1], 1
+2025-12-08 12:54:25,737 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/s2_l2_128_convolution_layer_1/batch_normalization_13_1/batchnorm/add_1
+OP=AddV2
+Name=point_net_1/s2_l2_128_convolution_layer_1/batch_normalization_13_1/batchnorm/add_1
+Inputs:
+	point_net_1/s2_l2_128_convolution_layer_1/batch_normalization_13_1/batchnorm/mul_1__73:0=Transpose, [-1, 4096, 1, 128], 1
+	point_net_1/s2_l2_128_convolution_layer_1/batch_normalization_13_1/batchnorm/sub:0=Const, [128], 1
+Outpus:
+	point_net_1/s2_l2_128_convolution_layer_1/batch_normalization_13_1/batchnorm/add_1:0=[-1, 4096, 1, 128], 1
+2025-12-08 12:54:25,737 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/s2_l2_128_convolution_layer_1/Relu
+OP=Relu
+Name=point_net_1/s2_l2_128_convolution_layer_1/Relu
+Inputs:
+	point_net_1/s2_l2_128_convolution_layer_1/batch_normalization_13_1/batchnorm/add_1:0=Add, [-1, 4096, 1, 128], 1
+Outpus:
+	point_net_1/s2_l2_128_convolution_layer_1/Relu:0=[-1, 4096, 1, 128], 1
+2025-12-08 12:54:25,738 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/s2_l3_1024_convolution_layer_1/batch_normalization_14_1/batchnorm/mul_1
+OP=Conv2D
+Name=point_net_1/s2_l3_1024_convolution_layer_1/batch_normalization_14_1/batchnorm/mul_1
+Inputs:
+	point_net_1/s2_l2_128_convolution_layer_1/Relu:0=Relu, [-1, 4096, 1, 128], 1
+	point_net_1/s2_l3_1024_convolution_layer_1/s2_l3_1024_convolution_layer_1/convolution/merged_input:0=Const, [1, 1, 128, 1024], 1
+Outpus:
+	point_net_1/s2_l3_1024_convolution_layer_1/batch_normalization_14_1/batchnorm/mul_1:0=[-1, 4096, 1, 1024], 1
+2025-12-08 12:54:25,738 - tf2onnx.graph - DEBUG - Making node: Name=point_net_1/s2_l3_1024_convolution_layer_1/batch_normalization_14_1/batchnorm/mul_1__75, OP=Transpose
+2025-12-08 12:54:25,739 - tf2onnx.graph - DEBUG - Infer shape and dtype for [point_net_1/s2_l3_1024_convolution_layer_1/batch_normalization_14_1/batchnorm/mul_1__75]
+2025-12-08 12:54:25,739 - tf2onnx.graph - DEBUG - Set dtype of [point_net_1/s2_l3_1024_convolution_layer_1/batch_normalization_14_1/batchnorm/mul_1__75:0] to 1
+2025-12-08 12:54:25,739 - tf2onnx.graph - DEBUG - Set shape of [point_net_1/s2_l3_1024_convolution_layer_1/batch_normalization_14_1/batchnorm/mul_1__75:0] to [128, 1, 4096, -1]
+2025-12-08 12:54:25,740 - tf2onnx.graph - DEBUG - Made node: point_net_1/s2_l3_1024_convolution_layer_1/batch_normalization_14_1/batchnorm/mul_1__75
+OP=Transpose
+Name=point_net_1/s2_l3_1024_convolution_layer_1/batch_normalization_14_1/batchnorm/mul_1__75
+Inputs:
+	point_net_1/s2_l2_128_convolution_layer_1/Relu:0=Relu, [-1, 4096, 1, 128], 1
+Outpus:
+	point_net_1/s2_l3_1024_convolution_layer_1/batch_normalization_14_1/batchnorm/mul_1__75:0=[128, 1, 4096, -1], 1
+2025-12-08 12:54:25,743 - tf2onnx.graph - DEBUG - Making node: Name=point_net_1/s2_l3_1024_convolution_layer_1/batch_normalization_14_1/batchnorm/mul_1__77, OP=Transpose
+2025-12-08 12:54:25,743 - tf2onnx.graph - DEBUG - Infer shape and dtype for [point_net_1/s2_l3_1024_convolution_layer_1/batch_normalization_14_1/batchnorm/mul_1__77]
+2025-12-08 12:54:25,744 - tf2onnx.graph - DEBUG - Set dtype of [point_net_1/s2_l3_1024_convolution_layer_1/batch_normalization_14_1/batchnorm/mul_1__77:0] to 1
+2025-12-08 12:54:25,745 - tf2onnx.graph - DEBUG - Set shape of [point_net_1/s2_l3_1024_convolution_layer_1/batch_normalization_14_1/batchnorm/mul_1__77:0] to [1024, 1, 4096, -1]
+2025-12-08 12:54:25,745 - tf2onnx.graph - DEBUG - Made node: point_net_1/s2_l3_1024_convolution_layer_1/batch_normalization_14_1/batchnorm/mul_1__77
+OP=Transpose
+Name=point_net_1/s2_l3_1024_convolution_layer_1/batch_normalization_14_1/batchnorm/mul_1__77
+Inputs:
+	point_net_1/s2_l3_1024_convolution_layer_1/batch_normalization_14_1/batchnorm/mul_1:0=Conv, [-1, 4096, 1, 1024], 1
+Outpus:
+	point_net_1/s2_l3_1024_convolution_layer_1/batch_normalization_14_1/batchnorm/mul_1__77:0=[1024, 1, 4096, -1], 1
+2025-12-08 12:54:25,746 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/s2_l3_1024_convolution_layer_1/batch_normalization_14_1/batchnorm/add_1
+OP=AddV2
+Name=point_net_1/s2_l3_1024_convolution_layer_1/batch_normalization_14_1/batchnorm/add_1
+Inputs:
+	point_net_1/s2_l3_1024_convolution_layer_1/batch_normalization_14_1/batchnorm/mul_1__77:0=Transpose, [-1, 4096, 1, 1024], 1
+	point_net_1/s2_l3_1024_convolution_layer_1/batch_normalization_14_1/batchnorm/sub:0=Const, [1024], 1
+Outpus:
+	point_net_1/s2_l3_1024_convolution_layer_1/batch_normalization_14_1/batchnorm/add_1:0=[-1, 4096, 1, 1024], 1
+2025-12-08 12:54:25,747 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/s2_l3_1024_convolution_layer_1/Relu
+OP=Relu
+Name=point_net_1/s2_l3_1024_convolution_layer_1/Relu
+Inputs:
+	point_net_1/s2_l3_1024_convolution_layer_1/batch_normalization_14_1/batchnorm/add_1:0=Add, [-1, 4096, 1, 1024], 1
+Outpus:
+	point_net_1/s2_l3_1024_convolution_layer_1/Relu:0=[-1, 4096, 1, 1024], 1
+2025-12-08 12:54:25,748 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/Squeeze_1
+OP=Squeeze
+Name=point_net_1/Squeeze_1
+Inputs:
+	point_net_1/s2_l3_1024_convolution_layer_1/Relu:0=Relu, [-1, 4096, 1, 1024], 1
+Outpus:
+	point_net_1/Squeeze_1:0=[-1, 4096, 1024], 1
+2025-12-08 12:54:25,748 - tf2onnx.graph - DEBUG - Making node: Name=axes_const__79, OP=Const
+2025-12-08 12:54:25,749 - tf2onnx.graph - DEBUG - Made node: axes_const__79
+OP=Const
+Name=axes_const__79
+Outpus:
+	axes_const__79=None, 7
+2025-12-08 12:54:25,750 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/Max
+OP=Max
+Name=point_net_1/Max
+Inputs:
+	point_net_1/Squeeze_1:0=Squeeze, [-1, 4096, 1024], 1
+	point_net_1/Max/reduction_indices:0=Const, [], 6
+Outpus:
+	point_net_1/Max:0=[-1, 1024], 1
+2025-12-08 12:54:25,751 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/s3_l1_512_dense_layer_1/s3_l1_512_dense_layer_1/MatMul
+OP=MatMul
+Name=point_net_1/s3_l1_512_dense_layer_1/s3_l1_512_dense_layer_1/MatMul
+Inputs:
+	point_net_1/Max:0=ReduceMax, [-1, 1024], 1
+	point_net_1/s3_l1_512_dense_layer_1/s3_l1_512_dense_layer_1/Cast/ReadVariableOp:0=Const, [1024, 512], 1
+Outpus:
+	point_net_1/s3_l1_512_dense_layer_1/s3_l1_512_dense_layer_1/MatMul:0=[-1, 512], 1
+2025-12-08 12:54:25,751 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/s3_l1_512_dense_layer_1/batch_normalization_15_1/batchnorm/mul_1
+OP=Mul
+Name=point_net_1/s3_l1_512_dense_layer_1/batch_normalization_15_1/batchnorm/mul_1
+Inputs:
+	point_net_1/s3_l1_512_dense_layer_1/s3_l1_512_dense_layer_1/MatMul:0=MatMul, [-1, 512], 1
+	point_net_1/s3_l1_512_dense_layer_1/batch_normalization_15_1/batchnorm/mul:0=Const, [512], 1
+Outpus:
+	point_net_1/s3_l1_512_dense_layer_1/batch_normalization_15_1/batchnorm/mul_1:0=[-1, 512], 1
+2025-12-08 12:54:25,751 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/s3_l1_512_dense_layer_1/batch_normalization_15_1/batchnorm/add_1
+OP=AddV2
+Name=point_net_1/s3_l1_512_dense_layer_1/batch_normalization_15_1/batchnorm/add_1
+Inputs:
+	point_net_1/s3_l1_512_dense_layer_1/batch_normalization_15_1/batchnorm/mul_1:0=Mul, [-1, 512], 1
+	point_net_1/s3_l1_512_dense_layer_1/batch_normalization_15_1/batchnorm/sub:0=Const, [512], 1
+Outpus:
+	point_net_1/s3_l1_512_dense_layer_1/batch_normalization_15_1/batchnorm/add_1:0=[-1, 512], 1
+2025-12-08 12:54:25,753 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/s3_l1_512_dense_layer_1/Relu
+OP=Relu
+Name=point_net_1/s3_l1_512_dense_layer_1/Relu
+Inputs:
+	point_net_1/s3_l1_512_dense_layer_1/batch_normalization_15_1/batchnorm/add_1:0=Add, [-1, 512], 1
+Outpus:
+	point_net_1/s3_l1_512_dense_layer_1/Relu:0=[-1, 512], 1
+2025-12-08 12:54:25,753 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/s3_l2_256_dense_layer_1/s3_l2_256_dense_layer_1/MatMul
+OP=MatMul
+Name=point_net_1/s3_l2_256_dense_layer_1/s3_l2_256_dense_layer_1/MatMul
+Inputs:
+	point_net_1/s3_l1_512_dense_layer_1/Relu:0=Relu, [-1, 512], 1
+	point_net_1/s3_l2_256_dense_layer_1/s3_l2_256_dense_layer_1/Cast/ReadVariableOp:0=Const, [512, 256], 1
+Outpus:
+	point_net_1/s3_l2_256_dense_layer_1/s3_l2_256_dense_layer_1/MatMul:0=[-1, 256], 1
+2025-12-08 12:54:25,754 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/s3_l2_256_dense_layer_1/batch_normalization_16_1/batchnorm/mul_1
+OP=Mul
+Name=point_net_1/s3_l2_256_dense_layer_1/batch_normalization_16_1/batchnorm/mul_1
+Inputs:
+	point_net_1/s3_l2_256_dense_layer_1/s3_l2_256_dense_layer_1/MatMul:0=MatMul, [-1, 256], 1
+	point_net_1/s3_l2_256_dense_layer_1/batch_normalization_16_1/batchnorm/mul:0=Const, [256], 1
+Outpus:
+	point_net_1/s3_l2_256_dense_layer_1/batch_normalization_16_1/batchnorm/mul_1:0=[-1, 256], 1
+2025-12-08 12:54:25,754 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/s3_l2_256_dense_layer_1/batch_normalization_16_1/batchnorm/add_1
+OP=AddV2
+Name=point_net_1/s3_l2_256_dense_layer_1/batch_normalization_16_1/batchnorm/add_1
+Inputs:
+	point_net_1/s3_l2_256_dense_layer_1/batch_normalization_16_1/batchnorm/mul_1:0=Mul, [-1, 256], 1
+	point_net_1/s3_l2_256_dense_layer_1/batch_normalization_16_1/batchnorm/sub:0=Const, [256], 1
+Outpus:
+	point_net_1/s3_l2_256_dense_layer_1/batch_normalization_16_1/batchnorm/add_1:0=[-1, 256], 1
+2025-12-08 12:54:25,755 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/s3_l2_256_dense_layer_1/Relu
+OP=Relu
+Name=point_net_1/s3_l2_256_dense_layer_1/Relu
+Inputs:
+	point_net_1/s3_l2_256_dense_layer_1/batch_normalization_16_1/batchnorm/add_1:0=Add, [-1, 256], 1
+Outpus:
+	point_net_1/s3_l2_256_dense_layer_1/Relu:0=[-1, 256], 1
+2025-12-08 12:54:25,756 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/output_dense_layer_1/output_dense_layer_1/MatMul
+OP=MatMul
+Name=point_net_1/output_dense_layer_1/output_dense_layer_1/MatMul
+Inputs:
+	point_net_1/s3_l2_256_dense_layer_1/Relu:0=Relu, [-1, 256], 1
+	point_net_1/output_dense_layer_1/output_dense_layer_1/Cast/ReadVariableOp:0=Const, [256, 23], 1
+Outpus:
+	point_net_1/output_dense_layer_1/output_dense_layer_1/MatMul:0=[-1, 23], 1
+2025-12-08 12:54:25,756 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/output_dense_layer_1/output_dense_layer_1/BiasAdd
+OP=BiasAdd
+Name=point_net_1/output_dense_layer_1/output_dense_layer_1/BiasAdd
+Inputs:
+	point_net_1/output_dense_layer_1/output_dense_layer_1/MatMul:0=MatMul, [-1, 23], 1
+	point_net_1/output_dense_layer_1/output_dense_layer_1/BiasAdd/ReadVariableOp:0=Const, [23], 1
+Outpus:
+	point_net_1/output_dense_layer_1/output_dense_layer_1/BiasAdd:0=[-1, 23], 1
+2025-12-08 12:54:25,757 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/output_dense_layer_1/Softmax
+OP=Softmax
+Name=point_net_1/output_dense_layer_1/Softmax
+Inputs:
+	point_net_1/output_dense_layer_1/output_dense_layer_1/BiasAdd:0=Add, [-1, 23], 1
+Outpus:
+	point_net_1/output_dense_layer_1/Softmax:0=[-1, 23], 1
+2025-12-08 12:54:25,757 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/ExpandDims_2
+OP=ExpandDims
+Name=point_net_1/ExpandDims_2
+Inputs:
+	point_net_1/Max:0=ReduceMax, [-1, 1024], 1
+	point_net_1/ExpandDims_2/dim:0=Const, [], 6
+Outpus:
+	point_net_1/ExpandDims_2:0=[-1, 1, 1024], 1
+2025-12-08 12:54:25,758 - tf2onnx.graph - DEBUG - Making node: Name=point_net_1/ExpandDims_2__80, OP=Cast
+2025-12-08 12:54:25,759 - tf2onnx.graph - DEBUG - Infer shape and dtype for [point_net_1/ExpandDims_2__80]
+2025-12-08 12:54:25,760 - tf2onnx.graph - DEBUG - Set dtype of [point_net_1/ExpandDims_2__80:0] to 7
+2025-12-08 12:54:25,760 - tf2onnx.graph - DEBUG - Set shape of [point_net_1/ExpandDims_2__80:0] to []
+2025-12-08 12:54:25,761 - tf2onnx.graph - DEBUG - Made node: point_net_1/ExpandDims_2__80
+OP=Cast
+Name=point_net_1/ExpandDims_2__80
+Inputs:
+	point_net_1/ExpandDims_2/dim:0=Const, [], 6
+Outpus:
+	point_net_1/ExpandDims_2__80:0=[], 7
+2025-12-08 12:54:25,761 - tf2onnx.graph - DEBUG - Making node: Name=reshape_const__81, OP=Const
+2025-12-08 12:54:25,762 - tf2onnx.graph - DEBUG - Made node: reshape_const__81
+OP=Const
+Name=reshape_const__81
+Outpus:
+	reshape_const__81=None, 7
+2025-12-08 12:54:25,763 - tf2onnx.graph - DEBUG - Making node: Name=Reshape__82, OP=Reshape
+2025-12-08 12:54:25,763 - tf2onnx.graph - DEBUG - Infer shape and dtype for [Reshape__82]
+2025-12-08 12:54:25,764 - tf2onnx.graph - DEBUG - Set dtype of [Reshape__82:0] to 7
+2025-12-08 12:54:25,764 - tf2onnx.graph - DEBUG - Set shape of [Reshape__82:0] to [1]
+2025-12-08 12:54:25,765 - tf2onnx.graph - DEBUG - Made node: Reshape__82
+OP=Reshape
+Name=Reshape__82
+Inputs:
+	point_net_1/ExpandDims_2__80:0=Cast, [], 7
+	reshape_const__81=Const, [1], 7
+Outpus:
+	Reshape__82:0=[1], 7
+2025-12-08 12:54:25,765 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/Tile
+OP=Tile
+Name=point_net_1/Tile
+Inputs:
+	point_net_1/ExpandDims_2:0=Unsqueeze, [-1, 1, 1024], 1
+	point_net_1/Tile/multiples:0=Const, [3], 6
+Outpus:
+	point_net_1/Tile:0=[-1, 4096, 1024], 1
+2025-12-08 12:54:25,766 - tf2onnx.graph - DEBUG - Making node: Name=point_net_1/Tile__83, OP=Cast
+2025-12-08 12:54:25,766 - tf2onnx.graph - DEBUG - Infer shape and dtype for [point_net_1/Tile__83]
+2025-12-08 12:54:25,767 - tf2onnx.graph - DEBUG - Set dtype of [point_net_1/Tile__83:0] to 7
+2025-12-08 12:54:25,768 - tf2onnx.graph - DEBUG - Set shape of [point_net_1/Tile__83:0] to [3]
+2025-12-08 12:54:25,768 - tf2onnx.graph - DEBUG - Made node: point_net_1/Tile__83
+OP=Cast
+Name=point_net_1/Tile__83
+Inputs:
+	point_net_1/Tile/multiples:0=Const, [3], 6
+Outpus:
+	point_net_1/Tile__83:0=[3], 7
+2025-12-08 12:54:25,769 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/concat
+OP=ConcatV2
+Name=point_net_1/concat
+Inputs:
+	point_net_1/MatMul_1:0=MatMul, [-1, 4096, 64], 1
+	point_net_1/Tile:0=Tile, [-1, 4096, 1024], 1
+	point_net_1/concat/axis:0=Const, [], 6
+Outpus:
+	point_net_1/concat:0=[-1, 4096, 1088], 1
+2025-12-08 12:54:25,770 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/ExpandDims_3
+OP=ExpandDims
+Name=point_net_1/ExpandDims_3
+Inputs:
+	point_net_1/concat:0=Concat, [-1, 4096, 1088], 1
+	point_net_1/ExpandDims_3/dim:0=Const, [], 6
+Outpus:
+	point_net_1/ExpandDims_3:0=[-1, 4096, 1, 1088], 1
+2025-12-08 12:54:25,770 - tf2onnx.graph - DEBUG - Making node: Name=point_net_1/ExpandDims_3__84, OP=Cast
+2025-12-08 12:54:25,771 - tf2onnx.graph - DEBUG - Infer shape and dtype for [point_net_1/ExpandDims_3__84]
+2025-12-08 12:54:25,771 - tf2onnx.graph - DEBUG - Set dtype of [point_net_1/ExpandDims_3__84:0] to 7
+2025-12-08 12:54:25,772 - tf2onnx.graph - DEBUG - Set shape of [point_net_1/ExpandDims_3__84:0] to []
+2025-12-08 12:54:25,772 - tf2onnx.graph - DEBUG - Made node: point_net_1/ExpandDims_3__84
+OP=Cast
+Name=point_net_1/ExpandDims_3__84
+Inputs:
+	point_net_1/ExpandDims_3/dim:0=Const, [], 6
+Outpus:
+	point_net_1/ExpandDims_3__84:0=[], 7
+2025-12-08 12:54:25,773 - tf2onnx.graph - DEBUG - Making node: Name=reshape_const__85, OP=Const
+2025-12-08 12:54:25,773 - tf2onnx.graph - DEBUG - Made node: reshape_const__85
+OP=Const
+Name=reshape_const__85
+Outpus:
+	reshape_const__85=None, 7
+2025-12-08 12:54:25,773 - tf2onnx.graph - DEBUG - Making node: Name=Reshape__86, OP=Reshape
+2025-12-08 12:54:25,774 - tf2onnx.graph - DEBUG - Infer shape and dtype for [Reshape__86]
+2025-12-08 12:54:25,774 - tf2onnx.graph - DEBUG - Set dtype of [Reshape__86:0] to 7
+2025-12-08 12:54:25,774 - tf2onnx.graph - DEBUG - Set shape of [Reshape__86:0] to [1]
+2025-12-08 12:54:25,775 - tf2onnx.graph - DEBUG - Made node: Reshape__86
+OP=Reshape
+Name=Reshape__86
+Inputs:
+	point_net_1/ExpandDims_3__84:0=Cast, [], 7
+	reshape_const__85=Const, [1], 7
+Outpus:
+	Reshape__86:0=[1], 7
+2025-12-08 12:54:25,775 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/seg_l1_512_convolution_layer_1/batch_normalization_17_1/batchnorm/mul_1
+OP=Conv2D
+Name=point_net_1/seg_l1_512_convolution_layer_1/batch_normalization_17_1/batchnorm/mul_1
+Inputs:
+	point_net_1/ExpandDims_3:0=Unsqueeze, [-1, 4096, 1, 1088], 1
+	point_net_1/seg_l1_512_convolution_layer_1/seg_l1_512_convolution_layer_1/convolution/merged_input:0=Const, [1, 1, 1088, 512], 1
+Outpus:
+	point_net_1/seg_l1_512_convolution_layer_1/batch_normalization_17_1/batchnorm/mul_1:0=[-1, 4096, 1, 512], 1
+2025-12-08 12:54:25,776 - tf2onnx.graph - DEBUG - Making node: Name=point_net_1/seg_l1_512_convolution_layer_1/batch_normalization_17_1/batchnorm/mul_1__87, OP=Transpose
+2025-12-08 12:54:25,776 - tf2onnx.graph - DEBUG - Infer shape and dtype for [point_net_1/seg_l1_512_convolution_layer_1/batch_normalization_17_1/batchnorm/mul_1__87]
+2025-12-08 12:54:25,778 - tf2onnx.graph - DEBUG - Set dtype of [point_net_1/seg_l1_512_convolution_layer_1/batch_normalization_17_1/batchnorm/mul_1__87:0] to 1
+2025-12-08 12:54:25,779 - tf2onnx.graph - DEBUG - Set shape of [point_net_1/seg_l1_512_convolution_layer_1/batch_normalization_17_1/batchnorm/mul_1__87:0] to [1088, 1, 4096, -1]
+2025-12-08 12:54:25,779 - tf2onnx.graph - DEBUG - Made node: point_net_1/seg_l1_512_convolution_layer_1/batch_normalization_17_1/batchnorm/mul_1__87
+OP=Transpose
+Name=point_net_1/seg_l1_512_convolution_layer_1/batch_normalization_17_1/batchnorm/mul_1__87
+Inputs:
+	point_net_1/ExpandDims_3:0=Unsqueeze, [-1, 4096, 1, 1088], 1
+Outpus:
+	point_net_1/seg_l1_512_convolution_layer_1/batch_normalization_17_1/batchnorm/mul_1__87:0=[1088, 1, 4096, -1], 1
+2025-12-08 12:54:25,785 - tf2onnx.graph - DEBUG - Making node: Name=point_net_1/seg_l1_512_convolution_layer_1/batch_normalization_17_1/batchnorm/mul_1__89, OP=Transpose
+2025-12-08 12:54:25,786 - tf2onnx.graph - DEBUG - Infer shape and dtype for [point_net_1/seg_l1_512_convolution_layer_1/batch_normalization_17_1/batchnorm/mul_1__89]
+2025-12-08 12:54:25,787 - tf2onnx.graph - DEBUG - Set dtype of [point_net_1/seg_l1_512_convolution_layer_1/batch_normalization_17_1/batchnorm/mul_1__89:0] to 1
+2025-12-08 12:54:25,787 - tf2onnx.graph - DEBUG - Set shape of [point_net_1/seg_l1_512_convolution_layer_1/batch_normalization_17_1/batchnorm/mul_1__89:0] to [512, 1, 4096, -1]
+2025-12-08 12:54:25,788 - tf2onnx.graph - DEBUG - Made node: point_net_1/seg_l1_512_convolution_layer_1/batch_normalization_17_1/batchnorm/mul_1__89
+OP=Transpose
+Name=point_net_1/seg_l1_512_convolution_layer_1/batch_normalization_17_1/batchnorm/mul_1__89
+Inputs:
+	point_net_1/seg_l1_512_convolution_layer_1/batch_normalization_17_1/batchnorm/mul_1:0=Conv, [-1, 4096, 1, 512], 1
+Outpus:
+	point_net_1/seg_l1_512_convolution_layer_1/batch_normalization_17_1/batchnorm/mul_1__89:0=[512, 1, 4096, -1], 1
+2025-12-08 12:54:25,788 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/seg_l1_512_convolution_layer_1/batch_normalization_17_1/batchnorm/add_1
+OP=AddV2
+Name=point_net_1/seg_l1_512_convolution_layer_1/batch_normalization_17_1/batchnorm/add_1
+Inputs:
+	point_net_1/seg_l1_512_convolution_layer_1/batch_normalization_17_1/batchnorm/mul_1__89:0=Transpose, [-1, 4096, 1, 512], 1
+	point_net_1/seg_l1_512_convolution_layer_1/batch_normalization_17_1/batchnorm/sub:0=Const, [512], 1
+Outpus:
+	point_net_1/seg_l1_512_convolution_layer_1/batch_normalization_17_1/batchnorm/add_1:0=[-1, 4096, 1, 512], 1
+2025-12-08 12:54:25,789 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/seg_l1_512_convolution_layer_1/Relu
+OP=Relu
+Name=point_net_1/seg_l1_512_convolution_layer_1/Relu
+Inputs:
+	point_net_1/seg_l1_512_convolution_layer_1/batch_normalization_17_1/batchnorm/add_1:0=Add, [-1, 4096, 1, 512], 1
+Outpus:
+	point_net_1/seg_l1_512_convolution_layer_1/Relu:0=[-1, 4096, 1, 512], 1
+2025-12-08 12:54:25,789 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/seg_l2_256_convolution_layer_1/batch_normalization_18_1/batchnorm/mul_1
+OP=Conv2D
+Name=point_net_1/seg_l2_256_convolution_layer_1/batch_normalization_18_1/batchnorm/mul_1
+Inputs:
+	point_net_1/seg_l1_512_convolution_layer_1/Relu:0=Relu, [-1, 4096, 1, 512], 1
+	point_net_1/seg_l2_256_convolution_layer_1/seg_l2_256_convolution_layer_1/convolution/merged_input:0=Const, [1, 1, 512, 256], 1
+Outpus:
+	point_net_1/seg_l2_256_convolution_layer_1/batch_normalization_18_1/batchnorm/mul_1:0=[-1, 4096, 1, 256], 1
+2025-12-08 12:54:25,790 - tf2onnx.graph - DEBUG - Making node: Name=point_net_1/seg_l2_256_convolution_layer_1/batch_normalization_18_1/batchnorm/mul_1__91, OP=Transpose
+2025-12-08 12:54:25,791 - tf2onnx.graph - DEBUG - Infer shape and dtype for [point_net_1/seg_l2_256_convolution_layer_1/batch_normalization_18_1/batchnorm/mul_1__91]
+2025-12-08 12:54:25,791 - tf2onnx.graph - DEBUG - Set dtype of [point_net_1/seg_l2_256_convolution_layer_1/batch_normalization_18_1/batchnorm/mul_1__91:0] to 1
+2025-12-08 12:54:25,792 - tf2onnx.graph - DEBUG - Set shape of [point_net_1/seg_l2_256_convolution_layer_1/batch_normalization_18_1/batchnorm/mul_1__91:0] to [512, 1, 4096, -1]
+2025-12-08 12:54:25,792 - tf2onnx.graph - DEBUG - Made node: point_net_1/seg_l2_256_convolution_layer_1/batch_normalization_18_1/batchnorm/mul_1__91
+OP=Transpose
+Name=point_net_1/seg_l2_256_convolution_layer_1/batch_normalization_18_1/batchnorm/mul_1__91
+Inputs:
+	point_net_1/seg_l1_512_convolution_layer_1/Relu:0=Relu, [-1, 4096, 1, 512], 1
+Outpus:
+	point_net_1/seg_l2_256_convolution_layer_1/batch_normalization_18_1/batchnorm/mul_1__91:0=[512, 1, 4096, -1], 1
+2025-12-08 12:54:25,795 - tf2onnx.graph - DEBUG - Making node: Name=point_net_1/seg_l2_256_convolution_layer_1/batch_normalization_18_1/batchnorm/mul_1__93, OP=Transpose
+2025-12-08 12:54:25,796 - tf2onnx.graph - DEBUG - Infer shape and dtype for [point_net_1/seg_l2_256_convolution_layer_1/batch_normalization_18_1/batchnorm/mul_1__93]
+2025-12-08 12:54:25,796 - tf2onnx.graph - DEBUG - Set dtype of [point_net_1/seg_l2_256_convolution_layer_1/batch_normalization_18_1/batchnorm/mul_1__93:0] to 1
+2025-12-08 12:54:25,797 - tf2onnx.graph - DEBUG - Set shape of [point_net_1/seg_l2_256_convolution_layer_1/batch_normalization_18_1/batchnorm/mul_1__93:0] to [256, 1, 4096, -1]
+2025-12-08 12:54:25,797 - tf2onnx.graph - DEBUG - Made node: point_net_1/seg_l2_256_convolution_layer_1/batch_normalization_18_1/batchnorm/mul_1__93
+OP=Transpose
+Name=point_net_1/seg_l2_256_convolution_layer_1/batch_normalization_18_1/batchnorm/mul_1__93
+Inputs:
+	point_net_1/seg_l2_256_convolution_layer_1/batch_normalization_18_1/batchnorm/mul_1:0=Conv, [-1, 4096, 1, 256], 1
+Outpus:
+	point_net_1/seg_l2_256_convolution_layer_1/batch_normalization_18_1/batchnorm/mul_1__93:0=[256, 1, 4096, -1], 1
+2025-12-08 12:54:25,798 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/seg_l2_256_convolution_layer_1/batch_normalization_18_1/batchnorm/add_1
+OP=AddV2
+Name=point_net_1/seg_l2_256_convolution_layer_1/batch_normalization_18_1/batchnorm/add_1
+Inputs:
+	point_net_1/seg_l2_256_convolution_layer_1/batch_normalization_18_1/batchnorm/mul_1__93:0=Transpose, [-1, 4096, 1, 256], 1
+	point_net_1/seg_l2_256_convolution_layer_1/batch_normalization_18_1/batchnorm/sub:0=Const, [256], 1
+Outpus:
+	point_net_1/seg_l2_256_convolution_layer_1/batch_normalization_18_1/batchnorm/add_1:0=[-1, 4096, 1, 256], 1
+2025-12-08 12:54:25,798 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/seg_l2_256_convolution_layer_1/Relu
+OP=Relu
+Name=point_net_1/seg_l2_256_convolution_layer_1/Relu
+Inputs:
+	point_net_1/seg_l2_256_convolution_layer_1/batch_normalization_18_1/batchnorm/add_1:0=Add, [-1, 4096, 1, 256], 1
+Outpus:
+	point_net_1/seg_l2_256_convolution_layer_1/Relu:0=[-1, 4096, 1, 256], 1
+2025-12-08 12:54:25,799 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/seg_l3_128_convolution_layer_1/batch_normalization_19_1/batchnorm/mul_1
+OP=Conv2D
+Name=point_net_1/seg_l3_128_convolution_layer_1/batch_normalization_19_1/batchnorm/mul_1
+Inputs:
+	point_net_1/seg_l2_256_convolution_layer_1/Relu:0=Relu, [-1, 4096, 1, 256], 1
+	point_net_1/seg_l3_128_convolution_layer_1/seg_l3_128_convolution_layer_1/convolution/merged_input:0=Const, [1, 1, 256, 128], 1
+Outpus:
+	point_net_1/seg_l3_128_convolution_layer_1/batch_normalization_19_1/batchnorm/mul_1:0=[-1, 4096, 1, 128], 1
+2025-12-08 12:54:25,800 - tf2onnx.graph - DEBUG - Making node: Name=point_net_1/seg_l3_128_convolution_layer_1/batch_normalization_19_1/batchnorm/mul_1__95, OP=Transpose
+2025-12-08 12:54:25,800 - tf2onnx.graph - DEBUG - Infer shape and dtype for [point_net_1/seg_l3_128_convolution_layer_1/batch_normalization_19_1/batchnorm/mul_1__95]
+2025-12-08 12:54:25,801 - tf2onnx.graph - DEBUG - Set dtype of [point_net_1/seg_l3_128_convolution_layer_1/batch_normalization_19_1/batchnorm/mul_1__95:0] to 1
+2025-12-08 12:54:25,801 - tf2onnx.graph - DEBUG - Set shape of [point_net_1/seg_l3_128_convolution_layer_1/batch_normalization_19_1/batchnorm/mul_1__95:0] to [256, 1, 4096, -1]
+2025-12-08 12:54:25,801 - tf2onnx.graph - DEBUG - Made node: point_net_1/seg_l3_128_convolution_layer_1/batch_normalization_19_1/batchnorm/mul_1__95
+OP=Transpose
+Name=point_net_1/seg_l3_128_convolution_layer_1/batch_normalization_19_1/batchnorm/mul_1__95
+Inputs:
+	point_net_1/seg_l2_256_convolution_layer_1/Relu:0=Relu, [-1, 4096, 1, 256], 1
+Outpus:
+	point_net_1/seg_l3_128_convolution_layer_1/batch_normalization_19_1/batchnorm/mul_1__95:0=[256, 1, 4096, -1], 1
+2025-12-08 12:54:25,802 - tf2onnx.graph - DEBUG - Making node: Name=point_net_1/seg_l3_128_convolution_layer_1/batch_normalization_19_1/batchnorm/mul_1__97, OP=Transpose
+2025-12-08 12:54:25,803 - tf2onnx.graph - DEBUG - Infer shape and dtype for [point_net_1/seg_l3_128_convolution_layer_1/batch_normalization_19_1/batchnorm/mul_1__97]
+2025-12-08 12:54:25,804 - tf2onnx.graph - DEBUG - Set dtype of [point_net_1/seg_l3_128_convolution_layer_1/batch_normalization_19_1/batchnorm/mul_1__97:0] to 1
+2025-12-08 12:54:25,804 - tf2onnx.graph - DEBUG - Set shape of [point_net_1/seg_l3_128_convolution_layer_1/batch_normalization_19_1/batchnorm/mul_1__97:0] to [128, 1, 4096, -1]
+2025-12-08 12:54:25,805 - tf2onnx.graph - DEBUG - Made node: point_net_1/seg_l3_128_convolution_layer_1/batch_normalization_19_1/batchnorm/mul_1__97
+OP=Transpose
+Name=point_net_1/seg_l3_128_convolution_layer_1/batch_normalization_19_1/batchnorm/mul_1__97
+Inputs:
+	point_net_1/seg_l3_128_convolution_layer_1/batch_normalization_19_1/batchnorm/mul_1:0=Conv, [-1, 4096, 1, 128], 1
+Outpus:
+	point_net_1/seg_l3_128_convolution_layer_1/batch_normalization_19_1/batchnorm/mul_1__97:0=[128, 1, 4096, -1], 1
+2025-12-08 12:54:25,806 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/seg_l3_128_convolution_layer_1/batch_normalization_19_1/batchnorm/add_1
+OP=AddV2
+Name=point_net_1/seg_l3_128_convolution_layer_1/batch_normalization_19_1/batchnorm/add_1
+Inputs:
+	point_net_1/seg_l3_128_convolution_layer_1/batch_normalization_19_1/batchnorm/mul_1__97:0=Transpose, [-1, 4096, 1, 128], 1
+	point_net_1/seg_l3_128_convolution_layer_1/batch_normalization_19_1/batchnorm/sub:0=Const, [128], 1
+Outpus:
+	point_net_1/seg_l3_128_convolution_layer_1/batch_normalization_19_1/batchnorm/add_1:0=[-1, 4096, 1, 128], 1
+2025-12-08 12:54:25,806 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/seg_l3_128_convolution_layer_1/Relu
+OP=Relu
+Name=point_net_1/seg_l3_128_convolution_layer_1/Relu
+Inputs:
+	point_net_1/seg_l3_128_convolution_layer_1/batch_normalization_19_1/batchnorm/add_1:0=Add, [-1, 4096, 1, 128], 1
+Outpus:
+	point_net_1/seg_l3_128_convolution_layer_1/Relu:0=[-1, 4096, 1, 128], 1
+2025-12-08 12:54:25,807 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/seg_l4_128_convolution_layer_1/batch_normalization_20_1/batchnorm/mul_1
+OP=Conv2D
+Name=point_net_1/seg_l4_128_convolution_layer_1/batch_normalization_20_1/batchnorm/mul_1
+Inputs:
+	point_net_1/seg_l3_128_convolution_layer_1/Relu:0=Relu, [-1, 4096, 1, 128], 1
+	point_net_1/seg_l4_128_convolution_layer_1/seg_l4_128_convolution_layer_1/convolution/merged_input:0=Const, [1, 1, 128, 128], 1
+Outpus:
+	point_net_1/seg_l4_128_convolution_layer_1/batch_normalization_20_1/batchnorm/mul_1:0=[-1, 4096, 1, 128], 1
+2025-12-08 12:54:25,807 - tf2onnx.graph - DEBUG - Making node: Name=point_net_1/seg_l4_128_convolution_layer_1/batch_normalization_20_1/batchnorm/mul_1__99, OP=Transpose
+2025-12-08 12:54:25,808 - tf2onnx.graph - DEBUG - Infer shape and dtype for [point_net_1/seg_l4_128_convolution_layer_1/batch_normalization_20_1/batchnorm/mul_1__99]
+2025-12-08 12:54:25,809 - tf2onnx.graph - DEBUG - Set dtype of [point_net_1/seg_l4_128_convolution_layer_1/batch_normalization_20_1/batchnorm/mul_1__99:0] to 1
+2025-12-08 12:54:25,809 - tf2onnx.graph - DEBUG - Set shape of [point_net_1/seg_l4_128_convolution_layer_1/batch_normalization_20_1/batchnorm/mul_1__99:0] to [128, 1, 4096, -1]
+2025-12-08 12:54:25,810 - tf2onnx.graph - DEBUG - Made node: point_net_1/seg_l4_128_convolution_layer_1/batch_normalization_20_1/batchnorm/mul_1__99
+OP=Transpose
+Name=point_net_1/seg_l4_128_convolution_layer_1/batch_normalization_20_1/batchnorm/mul_1__99
+Inputs:
+	point_net_1/seg_l3_128_convolution_layer_1/Relu:0=Relu, [-1, 4096, 1, 128], 1
+Outpus:
+	point_net_1/seg_l4_128_convolution_layer_1/batch_normalization_20_1/batchnorm/mul_1__99:0=[128, 1, 4096, -1], 1
+2025-12-08 12:54:25,811 - tf2onnx.graph - DEBUG - Making node: Name=point_net_1/seg_l4_128_convolution_layer_1/batch_normalization_20_1/batchnorm/mul_1__101, OP=Transpose
+2025-12-08 12:54:25,811 - tf2onnx.graph - DEBUG - Infer shape and dtype for [point_net_1/seg_l4_128_convolution_layer_1/batch_normalization_20_1/batchnorm/mul_1__101]
+2025-12-08 12:54:25,812 - tf2onnx.graph - DEBUG - Set dtype of [point_net_1/seg_l4_128_convolution_layer_1/batch_normalization_20_1/batchnorm/mul_1__101:0] to 1
+2025-12-08 12:54:25,813 - tf2onnx.graph - DEBUG - Set shape of [point_net_1/seg_l4_128_convolution_layer_1/batch_normalization_20_1/batchnorm/mul_1__101:0] to [128, 1, 4096, -1]
+2025-12-08 12:54:25,813 - tf2onnx.graph - DEBUG - Made node: point_net_1/seg_l4_128_convolution_layer_1/batch_normalization_20_1/batchnorm/mul_1__101
+OP=Transpose
+Name=point_net_1/seg_l4_128_convolution_layer_1/batch_normalization_20_1/batchnorm/mul_1__101
+Inputs:
+	point_net_1/seg_l4_128_convolution_layer_1/batch_normalization_20_1/batchnorm/mul_1:0=Conv, [-1, 4096, 1, 128], 1
+Outpus:
+	point_net_1/seg_l4_128_convolution_layer_1/batch_normalization_20_1/batchnorm/mul_1__101:0=[128, 1, 4096, -1], 1
+2025-12-08 12:54:25,814 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/seg_l4_128_convolution_layer_1/batch_normalization_20_1/batchnorm/add_1
+OP=AddV2
+Name=point_net_1/seg_l4_128_convolution_layer_1/batch_normalization_20_1/batchnorm/add_1
+Inputs:
+	point_net_1/seg_l4_128_convolution_layer_1/batch_normalization_20_1/batchnorm/mul_1__101:0=Transpose, [-1, 4096, 1, 128], 1
+	point_net_1/seg_l4_128_convolution_layer_1/batch_normalization_20_1/batchnorm/sub:0=Const, [128], 1
+Outpus:
+	point_net_1/seg_l4_128_convolution_layer_1/batch_normalization_20_1/batchnorm/add_1:0=[-1, 4096, 1, 128], 1
+2025-12-08 12:54:25,814 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/seg_l4_128_convolution_layer_1/Relu
+OP=Relu
+Name=point_net_1/seg_l4_128_convolution_layer_1/Relu
+Inputs:
+	point_net_1/seg_l4_128_convolution_layer_1/batch_normalization_20_1/batchnorm/add_1:0=Add, [-1, 4096, 1, 128], 1
+Outpus:
+	point_net_1/seg_l4_128_convolution_layer_1/Relu:0=[-1, 4096, 1, 128], 1
+2025-12-08 12:54:25,815 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/seg_l5_output_convolution_layer_1/seg_l5_output_convolution_layer_1/BiasAdd
+OP=Conv2D
+Name=point_net_1/seg_l5_output_convolution_layer_1/seg_l5_output_convolution_layer_1/BiasAdd
+Inputs:
+	point_net_1/seg_l4_128_convolution_layer_1/Relu:0=Relu, [-1, 4096, 1, 128], 1
+	point_net_1/seg_l5_output_convolution_layer_1/seg_l5_output_convolution_layer_1/convolution/ReadVariableOp:0=Const, [1, 1, 128, 12], 1
+	point_net_1/seg_l5_output_convolution_layer_1/seg_l5_output_convolution_layer_1/Squeeze:0=Const, [12], 1
+Outpus:
+	point_net_1/seg_l5_output_convolution_layer_1/seg_l5_output_convolution_layer_1/BiasAdd:0=[-1, 4096, 1, 12], 1
+2025-12-08 12:54:25,816 - tf2onnx.graph - DEBUG - Making node: Name=point_net_1/seg_l5_output_convolution_layer_1/seg_l5_output_convolution_layer_1/BiasAdd__103, OP=Transpose
+2025-12-08 12:54:25,817 - tf2onnx.graph - DEBUG - Infer shape and dtype for [point_net_1/seg_l5_output_convolution_layer_1/seg_l5_output_convolution_layer_1/BiasAdd__103]
+2025-12-08 12:54:25,817 - tf2onnx.graph - DEBUG - Set dtype of [point_net_1/seg_l5_output_convolution_layer_1/seg_l5_output_convolution_layer_1/BiasAdd__103:0] to 1
+2025-12-08 12:54:25,818 - tf2onnx.graph - DEBUG - Set shape of [point_net_1/seg_l5_output_convolution_layer_1/seg_l5_output_convolution_layer_1/BiasAdd__103:0] to [128, 1, 4096, -1]
+2025-12-08 12:54:25,818 - tf2onnx.graph - DEBUG - Made node: point_net_1/seg_l5_output_convolution_layer_1/seg_l5_output_convolution_layer_1/BiasAdd__103
+OP=Transpose
+Name=point_net_1/seg_l5_output_convolution_layer_1/seg_l5_output_convolution_layer_1/BiasAdd__103
+Inputs:
+	point_net_1/seg_l4_128_convolution_layer_1/Relu:0=Relu, [-1, 4096, 1, 128], 1
+Outpus:
+	point_net_1/seg_l5_output_convolution_layer_1/seg_l5_output_convolution_layer_1/BiasAdd__103:0=[128, 1, 4096, -1], 1
+2025-12-08 12:54:25,819 - tf2onnx.graph - DEBUG - Making node: Name=point_net_1/seg_l5_output_convolution_layer_1/seg_l5_output_convolution_layer_1/BiasAdd__105, OP=Transpose
+2025-12-08 12:54:25,820 - tf2onnx.graph - DEBUG - Infer shape and dtype for [point_net_1/seg_l5_output_convolution_layer_1/seg_l5_output_convolution_layer_1/BiasAdd__105]
+2025-12-08 12:54:25,820 - tf2onnx.graph - DEBUG - Set dtype of [point_net_1/seg_l5_output_convolution_layer_1/seg_l5_output_convolution_layer_1/BiasAdd__105:0] to 1
+2025-12-08 12:54:25,821 - tf2onnx.graph - DEBUG - Set shape of [point_net_1/seg_l5_output_convolution_layer_1/seg_l5_output_convolution_layer_1/BiasAdd__105:0] to [12, 1, 4096, -1]
+2025-12-08 12:54:25,822 - tf2onnx.graph - DEBUG - Made node: point_net_1/seg_l5_output_convolution_layer_1/seg_l5_output_convolution_layer_1/BiasAdd__105
+OP=Transpose
+Name=point_net_1/seg_l5_output_convolution_layer_1/seg_l5_output_convolution_layer_1/BiasAdd__105
+Inputs:
+	point_net_1/seg_l5_output_convolution_layer_1/seg_l5_output_convolution_layer_1/BiasAdd:0=Conv, [-1, 4096, 1, 12], 1
+Outpus:
+	point_net_1/seg_l5_output_convolution_layer_1/seg_l5_output_convolution_layer_1/BiasAdd__105:0=[12, 1, 4096, -1], 1
+2025-12-08 12:54:25,823 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/seg_l5_output_convolution_layer_1/Softmax
+OP=Softmax
+Name=point_net_1/seg_l5_output_convolution_layer_1/Softmax
+Inputs:
+	point_net_1/seg_l5_output_convolution_layer_1/seg_l5_output_convolution_layer_1/BiasAdd__105:0=Transpose, [-1, 4096, 1, 12], 1
+Outpus:
+	point_net_1/seg_l5_output_convolution_layer_1/Softmax:0=[-1, 4096, 1, 12], 1
+2025-12-08 12:54:25,823 - tf2onnx.tfonnx - DEBUG - Process node: point_net_1/Squeeze_2
+OP=Squeeze
+Name=point_net_1/Squeeze_2
+Inputs:
+	point_net_1/seg_l5_output_convolution_layer_1/Softmax:0=Softmax, [-1, 4096, 1, 12], 1
+Outpus:
+	point_net_1/Squeeze_2:0=[-1, 4096, 12], 1
+2025-12-08 12:54:25,824 - tf2onnx.graph - DEBUG - Making node: Name=axes_const__107, OP=Const
+2025-12-08 12:54:25,825 - tf2onnx.graph - DEBUG - Made node: axes_const__107
+OP=Const
+Name=axes_const__107
+Outpus:
+	axes_const__107=None, 7
+2025-12-08 12:54:25,826 - tf2onnx.tfonnx - DEBUG - Process node: Identity_2
+OP=Identity
+Name=Identity_2
+Inputs:
+	point_net_1/input_transform_1/add:0=Add, [-1, 3, 3], 1
+Outpus:
+	Identity_2_raw_output___6:0=[-1, 3, 3], 1
+2025-12-08 12:54:25,827 - tf2onnx.tfonnx - DEBUG - Process node: Identity_2_graph_outputs_Identity__7
+OP=Identity
+Name=Identity_2_graph_outputs_Identity__7
+Inputs:
+	Identity_2_raw_output___6:0=Identity, [-1, 3, 3], 1
+Outpus:
+	segmentation_output=[-1, 3, 3], 1
+2025-12-08 12:54:25,827 - tf2onnx.tfonnx - DEBUG - explicitly skip node Identity_2_graph_outputs_Identity__7
+2025-12-08 12:54:25,827 - tf2onnx.tfonnx - DEBUG - Process node: Identity_1
+OP=Identity
+Name=Identity_1
+Inputs:
+	point_net_1/Squeeze_2:0=Squeeze, [-1, 4096, 12], 1
+Outpus:
+	Identity_1_raw_output___8:0=[-1, 4096, 12], 1
+2025-12-08 12:54:25,828 - tf2onnx.tfonnx - DEBUG - Process node: Identity_1_graph_outputs_Identity__9
+OP=Identity
+Name=Identity_1_graph_outputs_Identity__9
+Inputs:
+	Identity_1_raw_output___8:0=Identity, [-1, 4096, 12], 1
+Outpus:
+	se3=[-1, 4096, 12], 1
+2025-12-08 12:54:25,828 - tf2onnx.tfonnx - DEBUG - explicitly skip node Identity_1_graph_outputs_Identity__9
+2025-12-08 12:54:25,829 - tf2onnx.tfonnx - DEBUG - Process node: Identity
+OP=Identity
+Name=Identity
+Inputs:
+	point_net_1/output_dense_layer_1/Softmax:0=Softmax, [-1, 23], 1
+Outpus:
+	Identity_raw_output___4:0=[-1, 23], 1
+2025-12-08 12:54:25,829 - tf2onnx.tfonnx - DEBUG - Process node: Identity_graph_outputs_Identity__5
+OP=Identity
+Name=Identity_graph_outputs_Identity__5
+Inputs:
+	Identity_raw_output___4:0=Identity, [-1, 23], 1
+Outpus:
+	classification_output=[-1, 23], 1
+2025-12-08 12:54:25,830 - tf2onnx.tfonnx - DEBUG - explicitly skip node Identity_graph_outputs_Identity__5
+2025-12-08 12:54:25,848 - tf2onnx.tfonnx - VERBOSE - Summay Stats:
+	tensorflow ops: Counter({'Const': 71, 'AddV2': 23, 'Relu': 21, 'Conv2D': 16, 'ExpandDims': 8, 'Squeeze': 7, 'MatMul': 7, 'Mul': 6, 'Identity': 6, 'BatchMatMulV2': 4, 'Max': 3, 'Reshape': 2, 'BiasAdd': 2, 'Softmax': 2, 'Placeholder': 1, 'Tile': 1, 'ConcatV2': 1})
+	tensorflow attr: Counter({'dtype': 72, 'value': 71, 'data_format': 18, 'dilations': 16, 'padding': 16, 'strides': 16, 'explicit_paddings': 16, 'squeeze_dims': 7, 'grad_a': 7, 'grad_b': 7, 'transpose_a': 7, 'transpose_b': 7, 'Tidx': 4, 'adj_x': 4, 'adj_y': 4, 'grad_x': 4, 'grad_y': 4, 'keep_dims': 3, 'shape': 1, 'N': 1})
+	onnx mapped: Counter({'Const': 71, 'AddV2': 23, 'Relu': 21, 'Conv2D': 16, 'ExpandDims': 8, 'Squeeze': 7, 'MatMul': 7, 'Mul': 6, 'BatchMatMulV2': 4, 'Max': 3, 'Identity': 3, 'Reshape': 2, 'Softmax': 2, 'Placeholder': 1, 'BiasAdd': 1, 'Tile': 1, 'ConcatV2': 1})
+	onnx unmapped: Counter()
+2025-12-08 12:54:25,849 - tf2onnx.optimizer - INFO - Optimizing ONNX model
+2025-12-08 12:54:25,853 - tf2onnx.optimizer - VERBOSE - Apply optimize_transpose
+2025-12-08 12:54:25,893 - tf2onnx.graph - DEBUG - Making node: Name=Conv__108, OP=Conv
+2025-12-08 12:54:25,893 - tf2onnx.graph - DEBUG - Infer shape and dtype for [Conv__108]
+2025-12-08 12:54:25,894 - tf2onnx.graph - DEBUG - Set dtype of [Conv__108:0] to 1
+2025-12-08 12:54:25,894 - tf2onnx.graph - DEBUG - Set shape of [Conv__108:0] to [-1, 64, 4096, 1]
+2025-12-08 12:54:25,894 - tf2onnx.graph - DEBUG - Made node: Conv__108
+OP=Conv
+Name=Conv__108
+Inputs:
+	point_net_1/input_transform_1/input_transform_convolution_layer_1_convolution_layer_1/batch_normalization_1/batchnorm/mul_1__13:0=Transpose, [-1, 3, 4096, 1], 1
+	point_net_1/input_transform_1/input_transform_convolution_layer_1_convolution_layer_1/input_transform_convolution_layer_1_convolution_layer_1/convolution/merged_input:0=Const, [64, 3, 1, 1], 1
+	point_net_1/input_transform_1/input_transform_convolution_layer_1_convolution_layer_1/batch_normalization_1/batchnorm/sub:0=Const, [64], 1
+Outpus:
+	Conv__108:0=[-1, 64, 4096, 1], 1
+2025-12-08 12:54:25,897 - tf2onnx.graph - DEBUG - Making node: Name=Conv__110, OP=Conv
+2025-12-08 12:54:25,897 - tf2onnx.graph - DEBUG - Infer shape and dtype for [Conv__110]
+2025-12-08 12:54:25,898 - tf2onnx.graph - DEBUG - Set dtype of [Conv__110:0] to 1
+2025-12-08 12:54:25,898 - tf2onnx.graph - DEBUG - Set shape of [Conv__110:0] to [-1, 128, 4096, 1]
+2025-12-08 12:54:25,899 - tf2onnx.graph - DEBUG - Made node: Conv__110
+OP=Conv
+Name=Conv__110
+Inputs:
+	point_net_1/input_transform_1/input_transform_convolution_layer_2_convolution_layer_1/batch_normalization_1_1/batchnorm/mul_1__17:0=Transpose, [-1, 64, 4096, 1], 1
+	point_net_1/input_transform_1/input_transform_convolution_layer_2_convolution_layer_1/input_transform_convolution_layer_2_convolution_layer_1/convolution/merged_input:0=Const, [128, 64, 1, 1], 1
+	point_net_1/input_transform_1/input_transform_convolution_layer_2_convolution_layer_1/batch_normalization_1_1/batchnorm/sub:0=Const, [128], 1
+Outpus:
+	Conv__110:0=[-1, 128, 4096, 1], 1
+2025-12-08 12:54:25,901 - tf2onnx.graph - DEBUG - Making node: Name=Conv__112, OP=Conv
+2025-12-08 12:54:25,901 - tf2onnx.graph - DEBUG - Infer shape and dtype for [Conv__112]
+2025-12-08 12:54:25,903 - tf2onnx.graph - DEBUG - Set dtype of [Conv__112:0] to 1
+2025-12-08 12:54:25,903 - tf2onnx.graph - DEBUG - Set shape of [Conv__112:0] to [-1, 1024, 4096, 1]
+2025-12-08 12:54:25,903 - tf2onnx.graph - DEBUG - Made node: Conv__112
+OP=Conv
+Name=Conv__112
+Inputs:
+	point_net_1/input_transform_1/input_transform_convolution_layer_3_convolution_layer_1/batch_normalization_2_1/batchnorm/mul_1__21:0=Transpose, [-1, 128, 4096, 1], 1
+	point_net_1/input_transform_1/input_transform_convolution_layer_3_convolution_layer_1/input_transform_convolution_layer_3_convolution_layer_1/convolution/merged_input:0=Const, [1024, 128, 1, 1], 1
+	point_net_1/input_transform_1/input_transform_convolution_layer_3_convolution_layer_1/batch_normalization_2_1/batchnorm/sub:0=Const, [1024], 1
+Outpus:
+	Conv__112:0=[-1, 1024, 4096, 1], 1
+2025-12-08 12:54:25,906 - tf2onnx.graph - DEBUG - Making node: Name=axes_const__25__114, OP=Const
+2025-12-08 12:54:25,906 - tf2onnx.graph - DEBUG - Made node: axes_const__25__114
+OP=Const
+Name=axes_const__25__114
+Outpus:
+	axes_const__25__114=None, 7
+2025-12-08 12:54:25,910 - tf2onnx.graph - DEBUG - Making node: Name=Conv__115, OP=Conv
+2025-12-08 12:54:25,910 - tf2onnx.graph - DEBUG - Infer shape and dtype for [Conv__115]
+2025-12-08 12:54:25,911 - tf2onnx.graph - DEBUG - Set dtype of [Conv__115:0] to 1
+2025-12-08 12:54:25,911 - tf2onnx.graph - DEBUG - Set shape of [Conv__115:0] to [-1, 64, 4096, 1]
+2025-12-08 12:54:25,911 - tf2onnx.graph - DEBUG - Made node: Conv__115
+OP=Conv
+Name=Conv__115
+Inputs:
+	point_net_1/s1_l1_64_convolution_layer_1/batch_normalization_5_1/batchnorm/mul_1__34:0=Transpose, [-1, 3, 4096, 1], 1
+	point_net_1/s1_l1_64_convolution_layer_1/s1_l1_64_convolution_layer_1/convolution/merged_input:0=Const, [64, 3, 1, 1], 1
+	point_net_1/s1_l1_64_convolution_layer_1/batch_normalization_5_1/batchnorm/sub:0=Const, [64], 1
+Outpus:
+	Conv__115:0=[-1, 64, 4096, 1], 1
+2025-12-08 12:54:25,915 - tf2onnx.graph - DEBUG - Making node: Name=Conv__117, OP=Conv
+2025-12-08 12:54:25,916 - tf2onnx.graph - DEBUG - Infer shape and dtype for [Conv__117]
+2025-12-08 12:54:25,917 - tf2onnx.graph - DEBUG - Set dtype of [Conv__117:0] to 1
+2025-12-08 12:54:25,918 - tf2onnx.graph - DEBUG - Set shape of [Conv__117:0] to [-1, 64, 4096, 1]
+2025-12-08 12:54:25,919 - tf2onnx.graph - DEBUG - Made node: Conv__117
+OP=Conv
+Name=Conv__117
+Inputs:
+	point_net_1/s1_l2_64_convolution_layer_1/batch_normalization_6_1/batchnorm/mul_1__38:0=Transpose, [-1, 64, 4096, 1], 1
+	point_net_1/s1_l2_64_convolution_layer_1/s1_l2_64_convolution_layer_1/convolution/merged_input:0=Const, [64, 64, 1, 1], 1
+	point_net_1/s1_l2_64_convolution_layer_1/batch_normalization_6_1/batchnorm/sub:0=Const, [64], 1
+Outpus:
+	Conv__117:0=[-1, 64, 4096, 1], 1
+2025-12-08 12:54:25,922 - tf2onnx.graph - DEBUG - Making node: Name=axes_const__42__119, OP=Const
+2025-12-08 12:54:25,923 - tf2onnx.graph - DEBUG - Made node: axes_const__42__119
+OP=Const
+Name=axes_const__42__119
+Outpus:
+	axes_const__42__119=None, 7
+2025-12-08 12:54:25,924 - tf2onnx.graph - DEBUG - Making node: Name=Conv__120, OP=Conv
+2025-12-08 12:54:25,925 - tf2onnx.graph - DEBUG - Infer shape and dtype for [Conv__120]
+2025-12-08 12:54:25,926 - tf2onnx.graph - DEBUG - Set dtype of [Conv__120:0] to 1
+2025-12-08 12:54:25,926 - tf2onnx.graph - DEBUG - Set shape of [Conv__120:0] to [-1, 64, 4096, 1]
+2025-12-08 12:54:25,926 - tf2onnx.graph - DEBUG - Made node: Conv__120
+OP=Conv
+Name=Conv__120
+Inputs:
+	point_net_1/feature_transform_1/feature_transform_convolution_layer_1_convolution_layer_1/batch_normalization_7_1/batchnorm/mul_1__46:0=Transpose, [-1, 64, 4096, 1], 1
+	point_net_1/feature_transform_1/feature_transform_convolution_layer_1_convolution_layer_1/feature_transform_convolution_layer_1_convolution_layer_1/convolution/merged_input:0=Const, [64, 64, 1, 1], 1
+	point_net_1/feature_transform_1/feature_transform_convolution_layer_1_convolution_layer_1/batch_normalization_7_1/batchnorm/sub:0=Const, [64], 1
+Outpus:
+	Conv__120:0=[-1, 64, 4096, 1], 1
+2025-12-08 12:54:25,929 - tf2onnx.graph - DEBUG - Making node: Name=Conv__122, OP=Conv
+2025-12-08 12:54:25,930 - tf2onnx.graph - DEBUG - Infer shape and dtype for [Conv__122]
+2025-12-08 12:54:25,930 - tf2onnx.graph - DEBUG - Set dtype of [Conv__122:0] to 1
+2025-12-08 12:54:25,931 - tf2onnx.graph - DEBUG - Set shape of [Conv__122:0] to [-1, 128, 4096, 1]
+2025-12-08 12:54:25,931 - tf2onnx.graph - DEBUG - Made node: Conv__122
+OP=Conv
+Name=Conv__122
+Inputs:
+	point_net_1/feature_transform_1/feature_transform_convolution_layer_2_convolution_layer_1/batch_normalization_8_1/batchnorm/mul_1__50:0=Transpose, [-1, 64, 4096, 1], 1
+	point_net_1/feature_transform_1/feature_transform_convolution_layer_2_convolution_layer_1/feature_transform_convolution_layer_2_convolution_layer_1/convolution/merged_input:0=Const, [128, 64, 1, 1], 1
+	point_net_1/feature_transform_1/feature_transform_convolution_layer_2_convolution_layer_1/batch_normalization_8_1/batchnorm/sub:0=Const, [128], 1
+Outpus:
+	Conv__122:0=[-1, 128, 4096, 1], 1
+2025-12-08 12:54:25,934 - tf2onnx.graph - DEBUG - Making node: Name=Conv__124, OP=Conv
+2025-12-08 12:54:25,934 - tf2onnx.graph - DEBUG - Infer shape and dtype for [Conv__124]
+2025-12-08 12:54:25,935 - tf2onnx.graph - DEBUG - Set dtype of [Conv__124:0] to 1
+2025-12-08 12:54:25,935 - tf2onnx.graph - DEBUG - Set shape of [Conv__124:0] to [-1, 1024, 4096, 1]
+2025-12-08 12:54:25,936 - tf2onnx.graph - DEBUG - Made node: Conv__124
+OP=Conv
+Name=Conv__124
+Inputs:
+	point_net_1/feature_transform_1/feature_transform_convolution_layer_3_convolution_layer_1/batch_normalization_9_1/batchnorm/mul_1__54:0=Transpose, [-1, 128, 4096, 1], 1
+	point_net_1/feature_transform_1/feature_transform_convolution_layer_3_convolution_layer_1/feature_transform_convolution_layer_3_convolution_layer_1/convolution/merged_input:0=Const, [1024, 128, 1, 1], 1
+	point_net_1/feature_transform_1/feature_transform_convolution_layer_3_convolution_layer_1/batch_normalization_9_1/batchnorm/sub:0=Const, [1024], 1
+Outpus:
+	Conv__124:0=[-1, 1024, 4096, 1], 1
+2025-12-08 12:54:25,939 - tf2onnx.graph - DEBUG - Making node: Name=axes_const__58__126, OP=Const
+2025-12-08 12:54:25,939 - tf2onnx.graph - DEBUG - Made node: axes_const__58__126
+OP=Const
+Name=axes_const__58__126
+Outpus:
+	axes_const__58__126=None, 7
+2025-12-08 12:54:25,943 - tf2onnx.graph - DEBUG - Making node: Name=Conv__127, OP=Conv
+2025-12-08 12:54:25,944 - tf2onnx.graph - DEBUG - Infer shape and dtype for [Conv__127]
+2025-12-08 12:54:25,944 - tf2onnx.graph - DEBUG - Set dtype of [Conv__127:0] to 1
+2025-12-08 12:54:25,945 - tf2onnx.graph - DEBUG - Set shape of [Conv__127:0] to [-1, 64, 4096, 1]
+2025-12-08 12:54:25,945 - tf2onnx.graph - DEBUG - Made node: Conv__127
+OP=Conv
+Name=Conv__127
+Inputs:
+	point_net_1/s2_l1_64_convolution_layer_1/batch_normalization_12_1/batchnorm/mul_1__67:0=Transpose, [-1, 64, 4096, 1], 1
+	point_net_1/s2_l1_64_convolution_layer_1/s2_l1_64_convolution_layer_1/convolution/merged_input:0=Const, [64, 64, 1, 1], 1
+	point_net_1/s2_l1_64_convolution_layer_1/batch_normalization_12_1/batchnorm/sub:0=Const, [64], 1
+Outpus:
+	Conv__127:0=[-1, 64, 4096, 1], 1
+2025-12-08 12:54:25,948 - tf2onnx.graph - DEBUG - Making node: Name=Conv__129, OP=Conv
+2025-12-08 12:54:25,949 - tf2onnx.graph - DEBUG - Infer shape and dtype for [Conv__129]
+2025-12-08 12:54:25,949 - tf2onnx.graph - DEBUG - Set dtype of [Conv__129:0] to 1
+2025-12-08 12:54:25,949 - tf2onnx.graph - DEBUG - Set shape of [Conv__129:0] to [-1, 128, 4096, 1]
+2025-12-08 12:54:25,950 - tf2onnx.graph - DEBUG - Made node: Conv__129
+OP=Conv
+Name=Conv__129
+Inputs:
+	point_net_1/s2_l2_128_convolution_layer_1/batch_normalization_13_1/batchnorm/mul_1__71:0=Transpose, [-1, 64, 4096, 1], 1
+	point_net_1/s2_l2_128_convolution_layer_1/s2_l2_128_convolution_layer_1/convolution/merged_input:0=Const, [128, 64, 1, 1], 1
+	point_net_1/s2_l2_128_convolution_layer_1/batch_normalization_13_1/batchnorm/sub:0=Const, [128], 1
+Outpus:
+	Conv__129:0=[-1, 128, 4096, 1], 1
+2025-12-08 12:54:25,953 - tf2onnx.graph - DEBUG - Making node: Name=Conv__131, OP=Conv
+2025-12-08 12:54:25,954 - tf2onnx.graph - DEBUG - Infer shape and dtype for [Conv__131]
+2025-12-08 12:54:25,955 - tf2onnx.graph - DEBUG - Set dtype of [Conv__131:0] to 1
+2025-12-08 12:54:25,955 - tf2onnx.graph - DEBUG - Set shape of [Conv__131:0] to [-1, 1024, 4096, 1]
+2025-12-08 12:54:25,955 - tf2onnx.graph - DEBUG - Made node: Conv__131
+OP=Conv
+Name=Conv__131
+Inputs:
+	point_net_1/s2_l3_1024_convolution_layer_1/batch_normalization_14_1/batchnorm/mul_1__75:0=Transpose, [-1, 128, 4096, 1], 1
+	point_net_1/s2_l3_1024_convolution_layer_1/s2_l3_1024_convolution_layer_1/convolution/merged_input:0=Const, [1024, 128, 1, 1], 1
+	point_net_1/s2_l3_1024_convolution_layer_1/batch_normalization_14_1/batchnorm/sub:0=Const, [1024], 1
+Outpus:
+	Conv__131:0=[-1, 1024, 4096, 1], 1
+2025-12-08 12:54:25,959 - tf2onnx.graph - DEBUG - Making node: Name=axes_const__79__133, OP=Const
+2025-12-08 12:54:25,959 - tf2onnx.graph - DEBUG - Made node: axes_const__79__133
+OP=Const
+Name=axes_const__79__133
+Outpus:
+	axes_const__79__133=None, 7
+2025-12-08 12:54:25,967 - tf2onnx.graph - DEBUG - Making node: Name=Conv__134, OP=Conv
+2025-12-08 12:54:25,967 - tf2onnx.graph - DEBUG - Infer shape and dtype for [Conv__134]
+2025-12-08 12:54:25,974 - tf2onnx.graph - DEBUG - Set dtype of [Conv__134:0] to 1
+2025-12-08 12:54:25,974 - tf2onnx.graph - DEBUG - Set shape of [Conv__134:0] to [-1, 512, 4096, 1]
+2025-12-08 12:54:25,974 - tf2onnx.graph - DEBUG - Made node: Conv__134
+OP=Conv
+Name=Conv__134
+Inputs:
+	point_net_1/seg_l1_512_convolution_layer_1/batch_normalization_17_1/batchnorm/mul_1__87:0=Transpose, [-1, 1088, 4096, 1], 1
+	point_net_1/seg_l1_512_convolution_layer_1/seg_l1_512_convolution_layer_1/convolution/merged_input:0=Const, [512, 1088, 1, 1], 1
+	point_net_1/seg_l1_512_convolution_layer_1/batch_normalization_17_1/batchnorm/sub:0=Const, [512], 1
+Outpus:
+	Conv__134:0=[-1, 512, 4096, 1], 1
+2025-12-08 12:54:25,978 - tf2onnx.graph - DEBUG - Making node: Name=Conv__136, OP=Conv
+2025-12-08 12:54:25,979 - tf2onnx.graph - DEBUG - Infer shape and dtype for [Conv__136]
+2025-12-08 12:54:25,980 - tf2onnx.graph - DEBUG - Set dtype of [Conv__136:0] to 1
+2025-12-08 12:54:25,980 - tf2onnx.graph - DEBUG - Set shape of [Conv__136:0] to [-1, 256, 4096, 1]
+2025-12-08 12:54:25,981 - tf2onnx.graph - DEBUG - Made node: Conv__136
+OP=Conv
+Name=Conv__136
+Inputs:
+	point_net_1/seg_l2_256_convolution_layer_1/batch_normalization_18_1/batchnorm/mul_1__91:0=Transpose, [-1, 512, 4096, 1], 1
+	point_net_1/seg_l2_256_convolution_layer_1/seg_l2_256_convolution_layer_1/convolution/merged_input:0=Const, [256, 512, 1, 1], 1
+	point_net_1/seg_l2_256_convolution_layer_1/batch_normalization_18_1/batchnorm/sub:0=Const, [256], 1
+Outpus:
+	Conv__136:0=[-1, 256, 4096, 1], 1
+2025-12-08 12:54:25,985 - tf2onnx.graph - DEBUG - Making node: Name=Conv__138, OP=Conv
+2025-12-08 12:54:25,986 - tf2onnx.graph - DEBUG - Infer shape and dtype for [Conv__138]
+2025-12-08 12:54:25,987 - tf2onnx.graph - DEBUG - Set dtype of [Conv__138:0] to 1
+2025-12-08 12:54:25,988 - tf2onnx.graph - DEBUG - Set shape of [Conv__138:0] to [-1, 128, 4096, 1]
+2025-12-08 12:54:25,988 - tf2onnx.graph - DEBUG - Made node: Conv__138
+OP=Conv
+Name=Conv__138
+Inputs:
+	point_net_1/seg_l3_128_convolution_layer_1/batch_normalization_19_1/batchnorm/mul_1__95:0=Transpose, [-1, 256, 4096, 1], 1
+	point_net_1/seg_l3_128_convolution_layer_1/seg_l3_128_convolution_layer_1/convolution/merged_input:0=Const, [128, 256, 1, 1], 1
+	point_net_1/seg_l3_128_convolution_layer_1/batch_normalization_19_1/batchnorm/sub:0=Const, [128], 1
+Outpus:
+	Conv__138:0=[-1, 128, 4096, 1], 1
+2025-12-08 12:54:25,993 - tf2onnx.graph - DEBUG - Making node: Name=Conv__140, OP=Conv
+2025-12-08 12:54:25,994 - tf2onnx.graph - DEBUG - Infer shape and dtype for [Conv__140]
+2025-12-08 12:54:25,995 - tf2onnx.graph - DEBUG - Set dtype of [Conv__140:0] to 1
+2025-12-08 12:54:25,995 - tf2onnx.graph - DEBUG - Set shape of [Conv__140:0] to [-1, 128, 4096, 1]
+2025-12-08 12:54:25,995 - tf2onnx.graph - DEBUG - Made node: Conv__140
+OP=Conv
+Name=Conv__140
+Inputs:
+	point_net_1/seg_l4_128_convolution_layer_1/batch_normalization_20_1/batchnorm/mul_1__99:0=Transpose, [-1, 128, 4096, 1], 1
+	point_net_1/seg_l4_128_convolution_layer_1/seg_l4_128_convolution_layer_1/convolution/merged_input:0=Const, [128, 128, 1, 1], 1
+	point_net_1/seg_l4_128_convolution_layer_1/batch_normalization_20_1/batchnorm/sub:0=Const, [128], 1
+Outpus:
+	Conv__140:0=[-1, 128, 4096, 1], 1
+2025-12-08 12:54:26,001 - tf2onnx.graph - DEBUG - Making node: Name=axes_const__107__142, OP=Const
+2025-12-08 12:54:26,001 - tf2onnx.graph - DEBUG - Made node: axes_const__107__142
+OP=Const
+Name=axes_const__107__142
+Outpus:
+	axes_const__107__142=None, 7
+2025-12-08 12:54:26,005 - tf2onnx.optimizer.TransposeOptimizer - DEBUG - cannot move transpose down since it met output node Identity_1_graph_outputs_Identity__9
+2025-12-08 12:54:26,006 - tf2onnx.optimizer.TransposeOptimizer - DEBUG - finish after 43 iteration(s)
+2025-12-08 12:54:26,033 - tf2onnx.optimizer.TransposeOptimizer - VERBOSE - Add -15 (24->9), Const -4 (86->82), Identity -1 (6->5), Transpose -3 (32->29)
+2025-12-08 12:54:26,034 - tf2onnx.optimizer - VERBOSE - Apply remove_redundant_upsample
+2025-12-08 12:54:26,095 - tf2onnx.optimizer.UpsampleOptimizer - VERBOSE - no change
+2025-12-08 12:54:26,096 - tf2onnx.optimizer - VERBOSE - Apply fold_constants
+2025-12-08 12:54:26,133 - tf2onnx.graph - DEBUG - Making node: Name=const_fold_opt__143, OP=Const
+2025-12-08 12:54:26,133 - tf2onnx.graph - DEBUG - Made node: const_fold_opt__143
+OP=Const
+Name=const_fold_opt__143
+Outpus:
+	const_fold_opt__143=None, 7
+2025-12-08 12:54:26,134 - tf2onnx.graph - DEBUG - Making node: Name=const_fold_opt__144, OP=Const
+2025-12-08 12:54:26,134 - tf2onnx.graph - DEBUG - Made node: const_fold_opt__144
+OP=Const
+Name=const_fold_opt__144
+Outpus:
+	const_fold_opt__144=None, 7
+2025-12-08 12:54:26,136 - tf2onnx.graph - DEBUG - Making node: Name=const_fold_opt__145, OP=Const
+2025-12-08 12:54:26,136 - tf2onnx.graph - DEBUG - Made node: const_fold_opt__145
+OP=Const
+Name=const_fold_opt__145
+Outpus:
+	const_fold_opt__145=None, 7
+2025-12-08 12:54:26,137 - tf2onnx.graph - DEBUG - Making node: Name=const_fold_opt__146, OP=Const
+2025-12-08 12:54:26,137 - tf2onnx.graph - DEBUG - Made node: const_fold_opt__146
+OP=Const
+Name=const_fold_opt__146
+Outpus:
+	const_fold_opt__146=None, 7
+2025-12-08 12:54:26,137 - tf2onnx.graph - DEBUG - Making node: Name=const_fold_opt__147, OP=Const
+2025-12-08 12:54:26,138 - tf2onnx.graph - DEBUG - Made node: const_fold_opt__147
+OP=Const
+Name=const_fold_opt__147
+Outpus:
+	const_fold_opt__147=None, 7
+2025-12-08 12:54:26,139 - tf2onnx.graph - DEBUG - Making node: Name=const_fold_opt__148, OP=Const
+2025-12-08 12:54:26,139 - tf2onnx.graph - DEBUG - Made node: const_fold_opt__148
+OP=Const
+Name=const_fold_opt__148
+Outpus:
+	const_fold_opt__148=None, 7
+2025-12-08 12:54:26,140 - tf2onnx.graph - DEBUG - Making node: Name=const_fold_opt__149, OP=Const
+2025-12-08 12:54:26,140 - tf2onnx.graph - DEBUG - Made node: const_fold_opt__149
+OP=Const
+Name=const_fold_opt__149
+Outpus:
+	const_fold_opt__149=None, 7
+2025-12-08 12:54:26,141 - tf2onnx.graph - DEBUG - Making node: Name=const_fold_opt__150, OP=Const
+2025-12-08 12:54:26,141 - tf2onnx.graph - DEBUG - Made node: const_fold_opt__150
+OP=Const
+Name=const_fold_opt__150
+Outpus:
+	const_fold_opt__150=None, 7
+2025-12-08 12:54:26,141 - tf2onnx.graph - DEBUG - Making node: Name=const_fold_opt__151, OP=Const
+2025-12-08 12:54:26,142 - tf2onnx.graph - DEBUG - Made node: const_fold_opt__151
+OP=Const
+Name=const_fold_opt__151
+Outpus:
+	const_fold_opt__151=None, 7
+2025-12-08 12:54:26,142 - tf2onnx.graph - DEBUG - Making node: Name=const_fold_opt__152, OP=Const
+2025-12-08 12:54:26,143 - tf2onnx.graph - DEBUG - Made node: const_fold_opt__152
+OP=Const
+Name=const_fold_opt__152
+Outpus:
+	const_fold_opt__152=None, 7
+2025-12-08 12:54:26,143 - tf2onnx.graph - DEBUG - Making node: Name=const_fold_opt__153, OP=Const
+2025-12-08 12:54:26,143 - tf2onnx.graph - DEBUG - Made node: const_fold_opt__153
+OP=Const
+Name=const_fold_opt__153
+Outpus:
+	const_fold_opt__153=None, 7
+2025-12-08 12:54:26,144 - tf2onnx.graph - DEBUG - Making node: Name=const_fold_opt__154, OP=Const
+2025-12-08 12:54:26,144 - tf2onnx.graph - DEBUG - Made node: const_fold_opt__154
+OP=Const
+Name=const_fold_opt__154
+Outpus:
+	const_fold_opt__154=None, 7
+2025-12-08 12:54:26,145 - tf2onnx.graph - DEBUG - Making node: Name=const_fold_opt__155, OP=Const
+2025-12-08 12:54:26,146 - tf2onnx.graph - DEBUG - Made node: const_fold_opt__155
+OP=Const
+Name=const_fold_opt__155
+Outpus:
+	const_fold_opt__155=None, 7
+2025-12-08 12:54:26,147 - tf2onnx.graph - DEBUG - Making node: Name=const_fold_opt__156, OP=Const
+2025-12-08 12:54:26,147 - tf2onnx.graph - DEBUG - Made node: const_fold_opt__156
+OP=Const
+Name=const_fold_opt__156
+Outpus:
+	const_fold_opt__156=None, 7
+2025-12-08 12:54:26,148 - tf2onnx.graph - DEBUG - Making node: Name=const_fold_opt__157, OP=Const
+2025-12-08 12:54:26,148 - tf2onnx.graph - DEBUG - Made node: const_fold_opt__157
+OP=Const
+Name=const_fold_opt__157
+Outpus:
+	const_fold_opt__157=None, 7
+2025-12-08 12:54:26,149 - tf2onnx.graph - DEBUG - Making node: Name=const_fold_opt__158, OP=Const
+2025-12-08 12:54:26,150 - tf2onnx.graph - DEBUG - Made node: const_fold_opt__158
+OP=Const
+Name=const_fold_opt__158
+Outpus:
+	const_fold_opt__158=None, 7
+2025-12-08 12:54:26,150 - tf2onnx.graph - DEBUG - Making node: Name=const_fold_opt__159, OP=Const
+2025-12-08 12:54:26,151 - tf2onnx.graph - DEBUG - Made node: const_fold_opt__159
+OP=Const
+Name=const_fold_opt__159
+Outpus:
+	const_fold_opt__159=None, 7
+2025-12-08 12:54:26,152 - tf2onnx.graph - DEBUG - Making node: Name=const_fold_opt__160, OP=Const
+2025-12-08 12:54:26,152 - tf2onnx.graph - DEBUG - Made node: const_fold_opt__160
+OP=Const
+Name=const_fold_opt__160
+Outpus:
+	const_fold_opt__160=None, 7
+2025-12-08 12:54:26,153 - tf2onnx.graph - DEBUG - Making node: Name=const_fold_opt__161, OP=Const
+2025-12-08 12:54:26,153 - tf2onnx.graph - DEBUG - Made node: const_fold_opt__161
+OP=Const
+Name=const_fold_opt__161
+Outpus:
+	const_fold_opt__161=None, 7
+2025-12-08 12:54:26,181 - tf2onnx.optimizer.ConstFoldOptimizer - VERBOSE - Cast -11 (11->0), Const -8 (82->74), Reshape -8 (10->2)
+2025-12-08 12:54:26,181 - tf2onnx.optimizer - VERBOSE - Apply const_dequantize_optimizer
+2025-12-08 12:54:26,225 - tf2onnx.optimizer.ConstDequantizeOptimizer - VERBOSE - no change
+2025-12-08 12:54:26,226 - tf2onnx.optimizer - VERBOSE - Apply loop_optimizer
+2025-12-08 12:54:26,271 - tf2onnx.optimizer.LoopOptimizer - VERBOSE - no change
+2025-12-08 12:54:26,271 - tf2onnx.optimizer - VERBOSE - Apply merge_duplication
+2025-12-08 12:54:26,346 - tf2onnx.optimizer.MergeDuplicatedNodesOptimizer - VERBOSE - Const -12 (74->62)
+2025-12-08 12:54:26,346 - tf2onnx.optimizer - VERBOSE - Apply reshape_optimizer
+2025-12-08 12:54:26,393 - tf2onnx.optimizer.ReshapeOptimizer - VERBOSE - no change
+2025-12-08 12:54:26,394 - tf2onnx.optimizer - VERBOSE - Apply global_pool_optimizer
+2025-12-08 12:54:26,421 - tf2onnx.graph - DEBUG - Making node: Name=const_axes__162, OP=Const
+2025-12-08 12:54:26,422 - tf2onnx.graph - DEBUG - Made node: const_axes__162
+OP=Const
+Name=const_axes__162
+Outpus:
+	const_axes__162=None, 7
+2025-12-08 12:54:26,422 - tf2onnx.graph - DEBUG - Making node: Name=point_net_1/feature_transform_1/Max_Squeeze__163, OP=Squeeze
+2025-12-08 12:54:26,422 - tf2onnx.graph - DEBUG - Made node: point_net_1/feature_transform_1/Max_Squeeze__163
+OP=Squeeze
+Name=point_net_1/feature_transform_1/Max_Squeeze__163
+Inputs:
+	point_net_1/feature_transform_1/Max:0=GlobalMaxPool, [-1, 1024, 1], 1
+	const_axes__162=Const, [1], 7
+Outpus:
+	point_net_1/feature_transform_1/Max_Squeeze__163:0=[-1, 1024], 1
+2025-12-08 12:54:26,423 - tf2onnx.graph - DEBUG - Making node: Name=const_axes__164, OP=Const
+2025-12-08 12:54:26,423 - tf2onnx.graph - DEBUG - Made node: const_axes__164
+OP=Const
+Name=const_axes__164
+Outpus:
+	const_axes__164=None, 7
+2025-12-08 12:54:26,423 - tf2onnx.graph - DEBUG - Making node: Name=point_net_1/Max_Squeeze__165, OP=Squeeze
+2025-12-08 12:54:26,424 - tf2onnx.graph - DEBUG - Made node: point_net_1/Max_Squeeze__165
+OP=Squeeze
+Name=point_net_1/Max_Squeeze__165
+Inputs:
+	point_net_1/Max:0=GlobalMaxPool, [-1, 1024, 1], 1
+	const_axes__164=Const, [1], 7
+Outpus:
+	point_net_1/Max_Squeeze__165:0=[-1, 1024], 1
+2025-12-08 12:54:26,424 - tf2onnx.graph - DEBUG - Making node: Name=const_axes__166, OP=Const
+2025-12-08 12:54:26,424 - tf2onnx.graph - DEBUG - Made node: const_axes__166
+OP=Const
+Name=const_axes__166
+Outpus:
+	const_axes__166=None, 7
+2025-12-08 12:54:26,424 - tf2onnx.graph - DEBUG - Making node: Name=point_net_1/input_transform_1/Max_Squeeze__167, OP=Squeeze
+2025-12-08 12:54:26,425 - tf2onnx.graph - DEBUG - Made node: point_net_1/input_transform_1/Max_Squeeze__167
+OP=Squeeze
+Name=point_net_1/input_transform_1/Max_Squeeze__167
+Inputs:
+	point_net_1/input_transform_1/Max:0=GlobalMaxPool, [-1, 1024, 1], 1
+	const_axes__166=Const, [1], 7
+Outpus:
+	point_net_1/input_transform_1/Max_Squeeze__167:0=[-1, 1024], 1
+2025-12-08 12:54:26,442 - tf2onnx.optimizer.GlobalPoolOptimizer - VERBOSE - Const +3 (62->65), GlobalMaxPool +3 (0->3), ReduceMax -3 (3->0), Squeeze +3 (7->10)
+2025-12-08 12:54:26,442 - tf2onnx.optimizer - VERBOSE - Apply q_dq_optimizer
+2025-12-08 12:54:26,482 - tf2onnx.optimizer.QDQOptimizer - VERBOSE - no change
+2025-12-08 12:54:26,483 - tf2onnx.optimizer - VERBOSE - Apply remove_identity
+2025-12-08 12:54:26,534 - tf2onnx.optimizer.IdentityOptimizer - VERBOSE - Identity -5 (5->0)
+2025-12-08 12:54:26,534 - tf2onnx.optimizer - VERBOSE - Apply remove_back_to_back
+2025-12-08 12:54:26,583 - tf2onnx.optimizer.BackToBackOptimizer - VERBOSE - Transpose -22 (29->7)
+2025-12-08 12:54:26,584 - tf2onnx.optimizer - VERBOSE - Apply einsum_optimizer
+2025-12-08 12:54:26,634 - tf2onnx.optimizer.EinsumOptimizer - VERBOSE - no change
+2025-12-08 12:54:26,634 - tf2onnx.optimizer - VERBOSE - Apply optimize_transpose
+2025-12-08 12:54:26,662 - tf2onnx.optimizer.TransposeOptimizer - DEBUG - se3 connects to graph outputs, skip
+2025-12-08 12:54:26,663 - tf2onnx.optimizer.TransposeOptimizer - DEBUG - finish after 0 iteration(s)
+2025-12-08 12:54:26,690 - tf2onnx.optimizer.TransposeOptimizer - VERBOSE - no change
+2025-12-08 12:54:26,691 - tf2onnx.optimizer - VERBOSE - Apply remove_redundant_upsample
+2025-12-08 12:54:26,733 - tf2onnx.optimizer.UpsampleOptimizer - VERBOSE - no change
+2025-12-08 12:54:26,733 - tf2onnx.optimizer - VERBOSE - Apply fold_constants
+2025-12-08 12:54:26,780 - tf2onnx.optimizer.ConstFoldOptimizer - VERBOSE - no change
+2025-12-08 12:54:26,781 - tf2onnx.optimizer - VERBOSE - Apply const_dequantize_optimizer
+2025-12-08 12:54:26,826 - tf2onnx.optimizer.ConstDequantizeOptimizer - VERBOSE - no change
+2025-12-08 12:54:26,826 - tf2onnx.optimizer - VERBOSE - Apply loop_optimizer
+2025-12-08 12:54:26,864 - tf2onnx.optimizer.LoopOptimizer - VERBOSE - no change
+2025-12-08 12:54:26,865 - tf2onnx.optimizer - VERBOSE - Apply merge_duplication
+2025-12-08 12:54:26,922 - tf2onnx.optimizer.MergeDuplicatedNodesOptimizer - VERBOSE - Const -3 (65->62)
+2025-12-08 12:54:26,923 - tf2onnx.optimizer - VERBOSE - Apply reshape_optimizer
+2025-12-08 12:54:26,958 - tf2onnx.optimizer.ReshapeOptimizer - VERBOSE - no change
+2025-12-08 12:54:26,958 - tf2onnx.optimizer - VERBOSE - Apply global_pool_optimizer
+2025-12-08 12:54:27,001 - tf2onnx.optimizer.GlobalPoolOptimizer - VERBOSE - no change
+2025-12-08 12:54:27,001 - tf2onnx.optimizer - VERBOSE - Apply q_dq_optimizer
+2025-12-08 12:54:27,041 - tf2onnx.optimizer.QDQOptimizer - VERBOSE - no change
+2025-12-08 12:54:27,041 - tf2onnx.optimizer - VERBOSE - Apply remove_identity
+2025-12-08 12:54:27,074 - tf2onnx.optimizer.IdentityOptimizer - VERBOSE - no change
+2025-12-08 12:54:27,075 - tf2onnx.optimizer - VERBOSE - Apply remove_back_to_back
+2025-12-08 12:54:27,116 - tf2onnx.optimizer.BackToBackOptimizer - VERBOSE - no change
+2025-12-08 12:54:27,117 - tf2onnx.optimizer - VERBOSE - Apply einsum_optimizer
+2025-12-08 12:54:27,164 - tf2onnx.optimizer.EinsumOptimizer - VERBOSE - no change
+2025-12-08 12:54:27,164 - tf2onnx.optimizer - VERBOSE - Apply optimize_transpose
+2025-12-08 12:54:27,192 - tf2onnx.optimizer.TransposeOptimizer - DEBUG - se3 connects to graph outputs, skip
+2025-12-08 12:54:27,193 - tf2onnx.optimizer.TransposeOptimizer - DEBUG - finish after 0 iteration(s)
+2025-12-08 12:54:27,215 - tf2onnx.optimizer.TransposeOptimizer - VERBOSE - no change
+2025-12-08 12:54:27,216 - tf2onnx.optimizer - VERBOSE - Apply remove_redundant_upsample
+2025-12-08 12:54:27,256 - tf2onnx.optimizer.UpsampleOptimizer - VERBOSE - no change
+2025-12-08 12:54:27,257 - tf2onnx.optimizer - VERBOSE - Apply fold_constants
+2025-12-08 12:54:27,292 - tf2onnx.optimizer.ConstFoldOptimizer - VERBOSE - no change
+2025-12-08 12:54:27,293 - tf2onnx.optimizer - VERBOSE - Apply const_dequantize_optimizer
+2025-12-08 12:54:27,324 - tf2onnx.optimizer.ConstDequantizeOptimizer - VERBOSE - no change
+2025-12-08 12:54:27,325 - tf2onnx.optimizer - VERBOSE - Apply loop_optimizer
+2025-12-08 12:54:27,360 - tf2onnx.optimizer.LoopOptimizer - VERBOSE - no change
+2025-12-08 12:54:27,360 - tf2onnx.optimizer - VERBOSE - Apply merge_duplication
+2025-12-08 12:54:27,412 - tf2onnx.optimizer.MergeDuplicatedNodesOptimizer - VERBOSE - no change
+2025-12-08 12:54:27,412 - tf2onnx.optimizer - VERBOSE - Apply reshape_optimizer
+2025-12-08 12:54:27,458 - tf2onnx.optimizer.ReshapeOptimizer - VERBOSE - no change
+2025-12-08 12:54:27,459 - tf2onnx.optimizer - VERBOSE - Apply global_pool_optimizer
+2025-12-08 12:54:27,498 - tf2onnx.optimizer.GlobalPoolOptimizer - VERBOSE - no change
+2025-12-08 12:54:27,498 - tf2onnx.optimizer - VERBOSE - Apply q_dq_optimizer
+2025-12-08 12:54:27,538 - tf2onnx.optimizer.QDQOptimizer - VERBOSE - no change
+2025-12-08 12:54:27,538 - tf2onnx.optimizer - VERBOSE - Apply remove_identity
+2025-12-08 12:54:27,579 - tf2onnx.optimizer.IdentityOptimizer - VERBOSE - no change
+2025-12-08 12:54:27,579 - tf2onnx.optimizer - VERBOSE - Apply remove_back_to_back
+2025-12-08 12:54:27,621 - tf2onnx.optimizer.BackToBackOptimizer - VERBOSE - no change
+2025-12-08 12:54:27,621 - tf2onnx.optimizer - VERBOSE - Apply einsum_optimizer
+2025-12-08 12:54:27,659 - tf2onnx.optimizer.EinsumOptimizer - VERBOSE - no change
+2025-12-08 12:54:27,665 - tf2onnx.optimizer - INFO - After optimization: Add -15 (24->9), Cast -11 (11->0), Const -24 (86->62), GlobalMaxPool +3 (0->3), Identity -6 (6->0), ReduceMax -3 (3->0), Reshape -8 (10->2), Squeeze +3 (7->10), Transpose -25 (32->7)
