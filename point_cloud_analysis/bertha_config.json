@@ -1,6 +1,6 @@
 {
     "info": {
-        "name": "_bertha_test",
+        "name": "_bertha_single_tnet_test",
         "class_labels": {
             "0": "a-10",
             "1": "b-1b",
@@ -43,22 +43,12 @@
         "training_profiles": {
             "tnet_train": {
                 "datasets": {
-                    "0": "collect_2025.Dec.02_18.31.53.5706279.UTC",
-                    "1": "collect_2025.Dec.02_18.37.25.1269574.UTC",
-                    "2": "collect_2025.Dec.02_18.38.57.4681778.UTC",
-                    "3": "collect_2025.Dec.02_18.42.17.6290737.UTC",
-                    "4": "collect_2025.Dec.02_18.47.39.2497886.UTC",
-                    "5": "collect_2025.Dec.06_01.18.58.7668585.UTC",
-                    "6": "collect_2025.Dec.06_01.27.05.2218470.UTC",
-                    "7": "collect_2025.Dec.06_01.29.33.2005318.UTC",
-                    "8": "collect_2025.Dec.06_01.38.57.6235137.UTC",
-                    "9": "collect_2025.Dec.06_01.46.29.3582439.UTC",
-                    "10":"collect_2025.Dec.06_01.59.46.9381284.UTC"
+                    "0": "collect_2025.Dec.06_01.59.46.9381284.UTC"
                 },
                 "noise": {
-                    "x_stdev_m": 0.1,
-                    "y_stdev_m": 0.1,
-                    "z_stdev_m": 0.1
+                    "x_stdev_m": 0.0,
+                    "y_stdev_m": 0.0,
+                    "z_stdev_m": 0.0
                 },
                 "trainable": {
                     "shared_network": false,
@@ -68,70 +58,8 @@
                 },
                 "loss_weights": {
                     "classification": 0.0,
-                    "segmentation": 1.0,
-                    "rotation": 0.0
-                }
-            },
-            "classification_train": {
-                "datasets": {
-                    "0": "collect_2025.Dec.02_18.31.53.5706279.UTC",
-                    "1": "collect_2025.Dec.02_18.37.25.1269574.UTC",
-                    "2": "collect_2025.Dec.02_18.38.57.4681778.UTC",
-                    "3": "collect_2025.Dec.02_18.42.17.6290737.UTC",
-                    "4": "collect_2025.Dec.02_18.47.39.2497886.UTC",
-                    "5": "collect_2025.Dec.06_01.18.58.7668585.UTC",
-                    "6": "collect_2025.Dec.06_01.27.05.2218470.UTC",
-                    "7": "collect_2025.Dec.06_01.29.33.2005318.UTC",
-                    "8": "collect_2025.Dec.06_01.38.57.6235137.UTC",
-                    "9": "collect_2025.Dec.06_01.46.29.3582439.UTC",
-                    "10":"collect_2025.Dec.06_01.59.46.9381284.UTC"
-                },
-                "noise": {
-                    "x_stdev_m": 0.1,
-                    "y_stdev_m": 0.1,
-                    "z_stdev_m": 0.1
-                },
-                "trainable": {
-                    "shared_network": true,
-                    "input_transform": false,
-                    "classification_head": true,
-                    "segmentation_head": false
-                },
-                "loss_weights": {
-                    "classification": 1.0,
                     "segmentation": 0.0,
-                    "rotation": 0.0
-                }
-            },
-            "segmentation_train": {
-                "datasets": {
-                    "0": "collect_2025.Dec.02_18.31.53.5706279.UTC",
-                    "1": "collect_2025.Dec.02_18.37.25.1269574.UTC",
-                    "2": "collect_2025.Dec.02_18.38.57.4681778.UTC",
-                    "3": "collect_2025.Dec.02_18.42.17.6290737.UTC",
-                    "4": "collect_2025.Dec.02_18.47.39.2497886.UTC",
-                    "5": "collect_2025.Dec.06_01.18.58.7668585.UTC",
-                    "6": "collect_2025.Dec.06_01.27.05.2218470.UTC",
-                    "7": "collect_2025.Dec.06_01.29.33.2005318.UTC",
-                    "8": "collect_2025.Dec.06_01.38.57.6235137.UTC",
-                    "9": "collect_2025.Dec.06_01.46.29.3582439.UTC",
-                    "10":"collect_2025.Dec.06_01.59.46.9381284.UTC"
-                },
-                "noise": {
-                    "x_stdev_m": 0.1,
-                    "y_stdev_m": 0.1,
-                    "z_stdev_m": 0.1
-                },
-                "trainable": {
-                    "shared_network": true,
-                    "input_transform": false,
-                    "classification_head": false,
-                    "segmentation_head": true
-                },
-                "loss_weights": {
-                    "classification": 0.0,
-                    "segmentation": 1.0,
-                    "rotation": 0.0
+                    "rotation": 1.0
                 }
             }
         },
@@ -140,7 +68,7 @@
     "params": {
         "input_width": 4096,
         "epochs": 5000,
-        "patience": 100,
+        "patience": 500,
         "batch_size": 64,
         "learning": {
             "rate": 0.0001,
@@ -148,7 +76,9 @@
             "decay_rate": 0.7
         },
         "random_seed": 42,
-        "debugging": false
+        "debugging": false,
+        "regularize_input_transform": false,
+        "regularize_feature_transform": false
     },
     "file_system": {
         "model_path": "models/",

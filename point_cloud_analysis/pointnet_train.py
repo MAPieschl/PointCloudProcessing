@@ -73,6 +73,8 @@ class TrainProfile:
         self._learning_decay_rate               : float = config['params']['learning']['decay_rate']
         self._random_seed                       : int   = config['params']['random_seed']
         self._debugging                         : bool = config['params']['debugging']
+        self._reg_input_transform               : bool = config['params']['regularize_input_transform']
+        self._reg_feature_transform             : bool = config['params']['regularize_feature_transform']
 
         # filesystem information (relative paths)
         self._model_path                        : str = config['file_system']['model_path']  
@@ -202,10 +204,11 @@ class TrainProfile:
             shutil.copy( self._config_file, f"{self._model_path}{self._training_profiles[prof]['path']}" )
 
             # copy pretrained model into current directory
-            if( os.path.isfile( f"{self._model_path}{self._pretrained_model}" ) ):  shutil.copy( str( f"{self._model_path}{self._pretrained_model}".split("/")[:-1] ), f"{self._model_path}{self._training_profiles[prof]['path']}" )
-
-            self._pretrained_model = f"{self._training_profiles[prof]['path']}{self._name}_{prof}.keras"
+            path_list = f"{self._model_path}{self._pretrained_model}".split("/")[:-1]
+            if( os.path.isdir( f"{self._model_path}{self._pretrained_model}" ) and self._pretrained_model != "" ):  shutil.copytree( '/'.join(path_list), f"{self._model_path}{self._training_profiles[prof]['path']}" )
         
+            self._pretrained_model = f"{self._training_profiles[prof]['path']}{self._name}_{prof}.keras"
+
     def _profile_datasets( self, profile ) -> None:
 
         datasets = PointCloudSet.get_dir_contents( f"{self._data_path}{self._name}_{profile}", self._log.info )
@@ -249,7 +252,9 @@ class TrainProfile:
                                        segmentation_output_width = len( self._part_labels ), 
                                        dropout_rate = 0.3,
                                        random_seed = self._random_seed, 
-                                       debugging = self._debugging )
+                                       debugging = self._debugging,
+                                       regularize_input_transform = self._reg_input_transform,
+                                       regularize_feature_transform = self._reg_feature_transform )
             
             model.build(input_shape = (None, self._input_width, 3))
 

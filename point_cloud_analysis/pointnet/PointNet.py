@@ -82,7 +82,15 @@ from tensorflow.keras import Model, saving, initializers
 
 @saving.register_keras_serializable(package="Project")
 class PointNet(Model):
-    def __init__(self, classification_output_width: int, segmentation_output_width: int, dropout_rate: float, random_seed: int, debugging: bool = False, **kwargs):
+    def __init__(self, 
+                 classification_output_width: int, 
+                 segmentation_output_width: int, 
+                 dropout_rate: float, 
+                 random_seed: int, 
+                 debugging: bool = False, 
+                 regularize_input_transform: bool = False,
+                 regularize_feature_transform: bool = False,
+                 **kwargs):
         '''
         Implements https://github.com/luis-gonzales/pointnet_own/blob/master/src/model.py get_model
 
@@ -97,16 +105,18 @@ class PointNet(Model):
         self._dropout_rate = dropout_rate
         self._random_seed = random_seed
         self._debugging = debugging
+        self._regularize_input_transform = regularize_input_transform
+        self._regularize_feature_transform = regularize_feature_transform
         self._custom_layers = []
         self.input_names = ['pointnet_input']
         self.output_names = ['classification_output', 'segmentation_output', 'se3']
 
-        self.input_transform = TNet(name = 'input_transform', add_regularization = True, random_seed = self._random_seed)
+        self.input_transform = TNet(name = 'input_transform', add_regularization = regularize_input_transform, random_seed = self._random_seed)
 
         self.mlp_1_1 = ConvLayer(filters = 64, name = 's1_l1_64', activation = tf.nn.relu, apply_bn = True, random_seed = self._random_seed)
         self.mlp_1_2 = ConvLayer(filters = 64, name = 's1_l2_64', activation = tf.nn.relu, apply_bn = True, random_seed = self._random_seed)
 
-        self.feature_transform = TNet(name = 'feature_transform', add_regularization = False, random_seed = self._random_seed)
+        self.feature_transform = TNet(name = 'feature_transform', add_regularization = regularize_feature_transform, random_seed = self._random_seed)
 
         self.mlp_2_1 = ConvLayer(filters = 64, name = 's2_l1_64', activation = tf.nn.relu, apply_bn = True, random_seed = self._random_seed)
         self.mlp_2_2 = ConvLayer(filters = 128, name = 's2_l2_128', activation = tf.nn.relu, apply_bn = True, random_seed = self._random_seed)
@@ -331,7 +341,9 @@ class PointNet(Model):
             'segmentation_output_width': self._segmentation_output_width,
             'dropout_rate': self._dropout_rate,
             'random_seed': self._random_seed,
-            'debugging': self._debugging
+            'debugging': self._debugging,
+            'regularize_input_transform': self._regularize_input_transform,
+            'regularize_feature_transform': self._regularize_feature_transform
         })
         return config
 
