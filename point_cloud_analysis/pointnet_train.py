@@ -72,14 +72,14 @@ class TrainProfile:
         self._learning_decay_steps              : int   = config['params']['learning']['decay_steps']
         self._learning_decay_rate               : float = config['params']['learning']['decay_rate']
         self._random_seed                       : int   = config['params']['random_seed']
-        self._debugging                         : bool = config['params']['debugging']
-        self._reg_input_transform               : bool = config['params']['regularize_input_transform']
-        self._reg_feature_transform             : bool = config['params']['regularize_feature_transform']
+        self._debugging                         : bool  = config['params']['debugging']
+        self._reg_input_transform               : bool  = config['params']['regularize_input_transform']
+        self._reg_feature_transform             : bool  = config['params']['regularize_feature_transform']
 
         # filesystem information (relative paths)
-        self._model_path                        : str = config['file_system']['model_path']  
-        self._input_path                        : str = config['file_system']['input_path']
-        self._data_path                         : str = config['file_system']['data_path']
+        self._model_path                        : str   = config['file_system']['model_path']  
+        self._input_path                        : str   = config['file_system']['input_path']
+        self._data_path                         : str   = config['file_system']['data_path']
 
         # leave empty callback list (appended in _build_pointnet)
         self._training_callbacks = []
@@ -134,7 +134,7 @@ class TrainProfile:
                                                                                    jitter_stdev_m = np.array( [ self._training_profiles[prof]['noise']['x_stdev_m'], \
                                                                                                                 self._training_profiles[prof]['noise']['y_stdev_m'], \
                                                                                                                 self._training_profiles[prof]['noise']['z_stdev_m'] ] ),
-                                                                                   batch_size = 2,
+                                                                                   batch_size = self._batch_size,
                                                                                    rand_seed = 42,
                                                                                    description = prof,
                                                                                    print_func = self._log.info,
@@ -238,7 +238,8 @@ class TrainProfile:
                 "PointNetSegmentation": PointNet.PointNet,
                 "TNet": PointNet.TNet,
                 "ConvLayer": PointNet.ConvLayer,
-                "DenseLayer": PointNet.DenseLayer
+                "DenseLayer": PointNet.DenseLayer,
+                "PointCloudNormalization": PointNet.PointCloudNormalization
             }
 
             model = tf.keras.models.load_model(
