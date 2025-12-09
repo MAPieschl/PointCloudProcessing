@@ -1,6 +1,6 @@
 {
     "info": {
-        "name": "_bertha_test",
+        "name": "_bertha_classification_test",
         "class_labels": {
             "0": "a-10",
             "1": "b-1b",
@@ -41,19 +41,10 @@
             "11": "probe"
         },
         "training_profiles": {
-            "tnet_train": {
+            "two_class": {
                 "datasets": {
                     "0": "collect_2025.Dec.02_18.31.53.5706279.UTC",
-                    "1": "collect_2025.Dec.02_18.37.25.1269574.UTC",
-                    "2": "collect_2025.Dec.02_18.38.57.4681778.UTC",
-                    "3": "collect_2025.Dec.02_18.42.17.6290737.UTC",
-                    "4": "collect_2025.Dec.02_18.47.39.2497886.UTC",
-                    "5": "collect_2025.Dec.06_01.18.58.7668585.UTC",
-                    "6": "collect_2025.Dec.06_01.27.05.2218470.UTC",
-                    "7": "collect_2025.Dec.06_01.29.33.2005318.UTC",
-                    "8": "collect_2025.Dec.06_01.38.57.6235137.UTC",
-                    "9": "collect_2025.Dec.06_01.46.29.3582439.UTC",
-                    "10":"collect_2025.Dec.06_01.59.46.9381284.UTC"
+                    "1": "collect_2025.Dec.02_18.37.25.1269574.UTC"
                 },
                 "noise": {
                     "x_stdev_m": 0.01,
@@ -78,7 +69,7 @@
     "params": {
         "input_width": 4096,
         "epochs": 5000,
-        "patience": 500,
+        "patience": 100,
         "batch_size": 64,
         "learning": {
             "rate": 0.001,
@@ -87,7 +78,7 @@
         },
         "random_seed": 42,
         "debugging": false,
-        "regularize_input_transform": false,
+        "regularize_input_transform": true,
         "regularize_feature_transform": false
     },
     "file_system": {
