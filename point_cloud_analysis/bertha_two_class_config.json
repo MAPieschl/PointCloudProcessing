@@ -21,10 +21,9 @@
             "16": "lj-25",
             "17": "mig-29",
             "18": "mq-20",
-            "19": "sr-71",
-            "20": "su-27",
-            "21": "vc-25a",
-            "22": "x-47b" 
+            "19": "su-27",
+            "20": "vc-25a",
+            "21": "x-47b" 
         },
         "part_labels": {
             "0":  "wing",
@@ -52,15 +51,15 @@
                     "z_stdev_m": 0.01
                 },
                 "trainable": {
-                    "shared_network": false,
+                    "shared_network": true,
                     "input_transform": true,
-                    "classification_head": false,
+                    "classification_head": true,
                     "segmentation_head": false
                 },
                 "loss_weights": {
-                    "classification": 0.0,
+                    "classification": 1.0,
                     "segmentation": 0.0,
-                    "rotation": 1.0
+                    "rotation": 0.0
                 }
             }
         },
@@ -70,7 +69,7 @@
         "input_width": 4096,
         "epochs": 5000,
         "patience": 100,
-        "batch_size": 32,
+        "batch_size": 64,
         "learning": {
             "rate": 0.001,
             "decay_steps": 7000,
