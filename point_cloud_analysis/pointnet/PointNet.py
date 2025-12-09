@@ -272,11 +272,7 @@ class PointNet(Model):
 
         X_seg = tf.squeeze(X_seg, axis = 2)
 
-        return { 
-            'classification_output':    X_cls, 
-            'segmentation_output':      X_seg, 
-            'se3':                      R 
-                }
+        return [ X_cls, X_seg, R ]
     
     def freeze_input_transform(self) -> None:
         self.input_transform.freeze()

@@ -228,6 +228,15 @@ class PointCloudSet:
 
         @return None
         '''
+
+        if( shuffle_points ):
+            indices = np.arange( observations.shape[0] )
+            np.random.shuffle( indices )
+            
+            observations = observations[indices]
+            class_labels = class_labels[indices]
+            part_labels = part_labels[indices]
+            se3 = se3[indices]
         
         splits = [( 0, int( np.ceil( observations.shape[0] * self._test_amt ) ) ),
                   ( int( np.ceil( observations.shape[0] * self._test_amt ) ), int( np.ceil( observations.shape[0] * self._test_amt ) ) + int( np.ceil( observations.shape[0] * self._val_amt ) ) ),
@@ -236,17 +245,38 @@ class PointCloudSet:
         if( not os.path.isdir( f"{self._data_path}{self._name}/{set_name}" ) ): os.mkdir( f"{self._data_path}{self._name}/{set_name}" )
 
         with tf.io.TFRecordWriter( f"{self._data_path}{self._name}/{set_name}/test_{self._sets_added}.tfrecord" ) as writer:
-            for i in range( splits[0][0], splits[0][1] ):
+            for i in tqdm( range( splits[0][0], splits[0][1] ) ):
+
+                # Account for class and part occurrences
+                self._data_size['test']['class_count'][class_labels[i]] += 1
+                for lbl in list( self._part_labels.keys() ):
+                    try:        self._data_size['test']['part_count'][lbl] += np.count_nonzero( part_labels[i] == lbl, axis = 0 )
+                    except:     self._data_size['test']['part_count'][lbl] =  np.count_nonzero( part_labels[i] == lbl, axis = 0 )
+
                 writer.write( self._serialize_sample( observations[i], class_labels[i], part_labels[i], se3[i] ) )
                 self._data_size['test']['count'] += 1
 
         with tf.io.TFRecordWriter( f"{self._data_path}{self._name}/{set_name}/val_{self._sets_added}.tfrecord" ) as writer:
-            for i in range( splits[1][0], splits[1][1] ):
+            for i in tqdm( range( splits[1][0], splits[1][1] ) ):
+
+                # Account for class and part occurrences
+                self._data_size['val']['class_count'][class_labels[i]] += 1
+                for lbl in list( self._part_labels.keys() ):
+                    try:        self._data_size['val']['part_count'][lbl] += np.count_nonzero( part_labels[i] == lbl, axis = 0 )
+                    except:     self._data_size['val']['part_count'][lbl] =  np.count_nonzero( part_labels[i] == lbl, axis = 0 )
+
                 writer.write( self._serialize_sample( observations[i], class_labels[i], part_labels[i], se3[i] ) )
                 self._data_size['val']['count'] += 1
                 
         with tf.io.TFRecordWriter( f"{self._data_path}{self._name}/{set_name}/train_{self._sets_added}.tfrecord" ) as writer:
-            for i in range( splits[2][0], splits[2][1] ):
+            for i in tqdm( range( splits[2][0], splits[2][1] ) ):
+
+                # Account for class and part occurrences
+                self._data_size['train']['class_count'][class_labels[i]] += 1
+                for lbl in list( self._part_labels.keys() ):
+                    try:        self._data_size['train']['part_count'][lbl] += np.count_nonzero( part_labels[i] == lbl, axis = 0 )
+                    except:     self._data_size['train']['part_count'][lbl] =  np.count_nonzero( part_labels[i] == lbl, axis = 0 )
+
                 writer.write( self._serialize_sample( observations[i], class_labels[i], part_labels[i], se3[i] ) )
                 self._data_size['train']['count'] += 1
 
@@ -363,33 +393,33 @@ class PointCloudSet:
         out += f"Actual proportion: {self._data_size['train']['count'] / (self._data_size['train']['count'] + self._data_size['val']['count'] + self._data_size['test']['count'])}\n"
         out += f"Total count: {self._data_size['train']['count']}\n"
         out += f'Class count:\n'
-        # for label in self._class_labels:
-        #     out += f"\t{label}: {np.count_nonzero(np.array(self._train['class_labels']) == label)}\n"
+        for label in list( self._class_labels.keys() ):
+            out += f"\t{label}: {self._data_size['train']['class_count']}\n"
         out += f'Part count:\n'
-        # for label in self._part_labels:
-        #     out += f"\t{label}: {np.count_nonzero(np.array(self._train['part_labels']) == label)}\n"
+        for label in list( self._part_labels.keys() ):
+            out += f"\t{label}: {self._data_size['train']['part_count']}\n"
 
         out += f'\n--- Validation Set ---\n'
         out += f'Specified proportion:  {self._val_amt}\n'
         out += f"Actual proportion: {self._data_size['val']['count'] / (self._data_size['train']['count'] + self._data_size['val']['count'] + self._data_size['test']['count'])}\n"
         out += f"Total count: {self._data_size['val']['count']}\n"
         out += f'Class count:\n'
-        # for label in self._class_labels:
-        #     out += f"\t{label}: {np.count_nonzero(np.array(self._val['class_labels']) == label)}\n"
+        for label in list( self._class_labels.keys() ):
+            out += f"\t{label}: {self._data_size['val']['class_count']}\n"
         out += f'Part count:\n'
-        # for label in self._part_labels:
-        #     out += f"\t{label}: {np.count_nonzero(np.array(self._val['part_labels']) == label)}\n"
+        for label in list( self._part_labels.keys() ):
+            out += f"\t{label}: {self._data_size['val']['part_count']}\n"
 
         out += f'\n--- Test Set ---\n'
         out += f'Specified proportion:  {self._test_amt}\n'
         out += f"Actual proportion: {self._data_size['test']['count'] / (self._data_size['train']['count'] + self._data_size['val']['count'] + self._data_size['test']['count'])}\n"
         out += f"Total count: {self._data_size['test']['count']}\n"
         out += f'Class count:\n'
-        # for label in self._class_labels:
-        #     out += f"\t{label}: {np.count_nonzero(np.array(self._test['class_labels']) == label)}\n"
+        for label in list( self._class_labels.keys() ):
+            out += f"\t{label}: {self._data_size['test']['class_count']}\n"
         out += f'Part count:\n'
-        # for label in self._part_labels:
-        #     out += f"\t{label}: {np.count_nonzero(np.array(self._test['part_labels']) == label)}\n"
+        for label in list( self._part_labels.keys() ):
+            out += f"\t{label}: {self._data_size['test']['part_count']}\n"
 
         return out
     
