@@ -52,15 +52,15 @@
                     "z_stdev_m": 0.01
                 },
                 "trainable": {
-                    "shared_network": true,
+                    "shared_network": false,
                     "input_transform": true,
-                    "classification_head": true,
+                    "classification_head": false,
                     "segmentation_head": false
                 },
                 "loss_weights": {
-                    "classification": 1.0,
+                    "classification": 0.0,
                     "segmentation": 0.0,
-                    "rotation": 0.0
+                    "rotation": 1.0
                 }
             }
         },
@@ -70,7 +70,7 @@
         "input_width": 4096,
         "epochs": 5000,
         "patience": 100,
-        "batch_size": 64,
+        "batch_size": 32,
         "learning": {
             "rate": 0.001,
             "decay_steps": 7000,

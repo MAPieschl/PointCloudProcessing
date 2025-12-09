@@ -111,6 +111,8 @@ class PointNet(Model):
         self.input_names = ['pointnet_input']
         self.output_names = ['classification_output', 'segmentation_output', 'se3']
 
+        self.normalize_input = PointCloudNormalization( name = "input_normalization" )
+
         self.input_transform = TNet(name = 'input_transform', add_regularization = regularize_input_transform, random_seed = self._random_seed)
 
         self.mlp_1_1 = ConvLayer(filters = 64, name = 's1_l1_64', activation = tf.nn.relu, apply_bn = True, random_seed = self._random_seed)
@@ -137,21 +139,22 @@ class PointNet(Model):
         self.mlp_seg_5 = ConvLayer(filters = self._segmentation_output_width, name = 'seg_l5_output', activation = tf.nn.softmax, apply_bn = False, random_seed = self._random_seed)
 
         # Save layers in iterable format
-        self._custom_layers.append(self.input_transform)
-        self._custom_layers.append(self.mlp_1_1)
-        self._custom_layers.append(self.mlp_1_2)
-        self._custom_layers.append(self.feature_transform)
-        self._custom_layers.append(self.mlp_2_1)
-        self._custom_layers.append(self.mlp_2_2)
-        self._custom_layers.append(self.mlp_2_3)
-        self._custom_layers.append(self.mlp_cls_1)
-        self._custom_layers.append(self.mlp_cls_2)
-        self._custom_layers.append(self.mlp_cls_3)
-        self._custom_layers.append(self.mlp_seg_1)
-        self._custom_layers.append(self.mlp_seg_2)
-        self._custom_layers.append(self.mlp_seg_3)
-        self._custom_layers.append(self.mlp_seg_4)
-        self._custom_layers.append(self.mlp_seg_5)
+        self._custom_layers.append( self.normalize_input )
+        self._custom_layers.append( self.input_transform )
+        self._custom_layers.append( self.mlp_1_1 )
+        self._custom_layers.append( self.mlp_1_2 )
+        self._custom_layers.append( self.feature_transform )
+        self._custom_layers.append( self.mlp_2_1 )
+        self._custom_layers.append( self.mlp_2_2 )
+        self._custom_layers.append( self.mlp_2_3 )
+        self._custom_layers.append( self.mlp_cls_1 )
+        self._custom_layers.append( self.mlp_cls_2 )
+        self._custom_layers.append( self.mlp_cls_3 )
+        self._custom_layers.append( self.mlp_seg_1 )
+        self._custom_layers.append( self.mlp_seg_2 )
+        self._custom_layers.append( self.mlp_seg_3 )
+        self._custom_layers.append( self.mlp_seg_4 )
+        self._custom_layers.append( self.mlp_seg_5 )
         
     def build(self, input_shape):
         '''
@@ -192,6 +195,9 @@ class PointNet(Model):
     def call(self, pc, training = False):
 
         pc = pc if not self._debugging else tf.debugging.check_numerics( pc, 'Input point cloud contains nan values' )
+
+        # Input Normalization
+        pc, _ = self.normalize_input( pc )
 
         # Input Transform
         R = self.input_transform(pc, training = training)        # (b x 3 x 3)
@@ -330,7 +336,7 @@ class PointNet(Model):
         return trainability_dict
     
     def get_config(self):
-        """Returns the non-layer configuration of the model."""
+        
         config = super(PointNet, self).get_config()
         config.update({
             'classification_output_width': self._classification_output_width,
@@ -341,6 +347,7 @@ class PointNet(Model):
             'regularize_input_transform': self._regularize_input_transform,
             'regularize_feature_transform': self._regularize_feature_transform
         })
+
         return config
 
     @classmethod
@@ -434,6 +441,7 @@ class TNet(Model):
         return X
     
     def get_config(self):
+
         config = super(TNet, self).get_config()
         config.update({
             'name': self.name,
@@ -442,6 +450,8 @@ class TNet(Model):
             'layer_widths': self.layer_widths,
             'random_seed': self.seed
         })
+
+        return config
 
     def freeze(self):
         self.trainable = False
@@ -642,7 +652,7 @@ class DenseLayer(Layer):
             'bn_momentum': self.bn_momentum,
             'random_seed': self.seed})
         
-        return 
+        return config
     
     def freeze(self):
         self.trainable = False
@@ -654,3 +664,36 @@ class DenseLayer(Layer):
 
     def is_trainable(self):
         return self.trainable
+    
+class PointCloudNormalization( Layer ):
+    def __init__( self, **kwargs ):
+        '''
+        PointCloudNormalization should be applied at the input of the PointNet to normalize all points to
+        [-1, 1]. This will help avoid exploding gradients during training. The call function outputs a 
+        tuple -- the first value being the output tensor and the second (centroid, scale).
+        '''
+
+        super( PointCloudNormalization, self ).__init__( **kwargs )
+
+    def call( self, input ):
+        # input shape -> ( batch_size, input width, 3 )
+
+        centroid = tf.reduce_mean( input, axis = 1, keepdims = True )
+        centered_pc = input - centroid
+        dist = tf.sqrt( tf.reduce_sum( tf.square( centered_pc ), axis = -1 ) )
+        max_dist = tf.reduce_max( dist, axis = 1, keepdims = True)
+        max_dist = tf.expand_dims( max_dist , axis = -1)
+        
+        # Avoid division by zero
+        scale = tf.maximum( max_dist, 1e-7 )
+        
+        # 4. Scale to unit sphere
+        normalized = centered_pc / scale
+        
+        return normalized, ( centroid, scale )
+    
+    def get_config( self ):
+        return super( PointCloudNormalization, self ).get_config()
+    
+    def is_trainable( self ):
+        return False

@@ -368,6 +368,8 @@ class PointCloudSet:
 
         dataset = tf.data.TFRecordDataset( files )
 
+        dataset = dataset.shuffle( buffer_size = 2048 )
+        dataset = dataset.repeat()
         dataset = dataset.map( self._parse_function, num_parallel_calls = tf.data.AUTOTUNE )
         dataset = dataset.batch( self._batch_size )
         dataset = dataset.prefetch( tf.data.AUTOTUNE )
@@ -380,6 +382,8 @@ class PointCloudSet:
 
         dataset = tf.data.TFRecordDataset( files )
 
+        dataset = dataset.shuffle( buffer_size = 2048 )
+        dataset = dataset.repeat()
         dataset = dataset.map( self._parse_function, num_parallel_calls = tf.data.AUTOTUNE )
         dataset = dataset.batch( self._batch_size )
         dataset = dataset.prefetch( tf.data.AUTOTUNE )
