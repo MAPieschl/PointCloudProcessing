@@ -49,11 +49,15 @@ class PointCloudSet:
         self._batch_size: int = batch_size
         self._name: str = name
         self._class_labels: dict[str, int] = {}
+        self._class_str: dict[int, str] = {}
         for i, label in enumerate( class_labels ):
             self._class_labels[label] = i
+            self._class_str[i] = label
         self._part_labels: dict[str, int] = {}
+        self._part_str: dict[int, str] = {}
         for i, label in enumerate( part_labels ):
             self._part_labels[label] = i
+            self._part_str[i] = label
         self._network_input_width: int = network_input_width
         self._jitter_stdev_m: np.ndarray = jitter_stdev_m
         self._print: Callable[[str], None] = print_func
@@ -248,10 +252,11 @@ class PointCloudSet:
             for i in tqdm( range( splits[0][0], splits[0][1] ) ):
 
                 # Account for class and part occurrences
-                self._data_size['test']['class_count'][class_labels[i]] += 1
+                try:    self._data_size['test']['class_count'][self._class_str[class_labels[i]]] += 1
+                except: self._data_size['test']['class_count'][self._class_str[class_labels[i]]] =  1
                 for lbl in list( self._part_labels.keys() ):
-                    try:        self._data_size['test']['part_count'][lbl] += np.count_nonzero( part_labels[i] == lbl, axis = 0 )
-                    except:     self._data_size['test']['part_count'][lbl] =  np.count_nonzero( part_labels[i] == lbl, axis = 0 )
+                    try:        self._data_size['test']['part_count'][lbl] += int( np.count_nonzero( part_labels[i] == self._part_labels[lbl], axis = 0 ) )
+                    except:     self._data_size['test']['part_count'][lbl] =  int( np.count_nonzero( part_labels[i] == self._part_labels[lbl], axis = 0 ) )
 
                 writer.write( self._serialize_sample( observations[i], class_labels[i], part_labels[i], se3[i] ) )
                 self._data_size['test']['count'] += 1
@@ -260,10 +265,11 @@ class PointCloudSet:
             for i in tqdm( range( splits[1][0], splits[1][1] ) ):
 
                 # Account for class and part occurrences
-                self._data_size['val']['class_count'][class_labels[i]] += 1
+                try:    self._data_size['val']['class_count'][self._class_str[class_labels[i]]] += 1
+                except: self._data_size['val']['class_count'][self._class_str[class_labels[i]]] =  1
                 for lbl in list( self._part_labels.keys() ):
-                    try:        self._data_size['val']['part_count'][lbl] += np.count_nonzero( part_labels[i] == lbl, axis = 0 )
-                    except:     self._data_size['val']['part_count'][lbl] =  np.count_nonzero( part_labels[i] == lbl, axis = 0 )
+                    try:        self._data_size['val']['part_count'][lbl] += np.count_nonzero( part_labels[i] == self._part_labels[lbl], axis = 0 )
+                    except:     self._data_size['val']['part_count'][lbl] =  np.count_nonzero( part_labels[i] == self._part_labels[lbl], axis = 0 )
 
                 writer.write( self._serialize_sample( observations[i], class_labels[i], part_labels[i], se3[i] ) )
                 self._data_size['val']['count'] += 1
@@ -272,10 +278,11 @@ class PointCloudSet:
             for i in tqdm( range( splits[2][0], splits[2][1] ) ):
 
                 # Account for class and part occurrences
-                self._data_size['train']['class_count'][class_labels[i]] += 1
+                try:    self._data_size['train']['class_count'][self._class_str[class_labels[i]]] += 1
+                except: self._data_size['train']['class_count'][self._class_str[class_labels[i]]] =  1
                 for lbl in list( self._part_labels.keys() ):
-                    try:        self._data_size['train']['part_count'][lbl] += np.count_nonzero( part_labels[i] == lbl, axis = 0 )
-                    except:     self._data_size['train']['part_count'][lbl] =  np.count_nonzero( part_labels[i] == lbl, axis = 0 )
+                    try:        self._data_size['train']['part_count'][lbl] += np.count_nonzero( part_labels[i] == self._part_labels[lbl], axis = 0 )
+                    except:     self._data_size['train']['part_count'][lbl] =  np.count_nonzero( part_labels[i] == self._part_labels[lbl], axis = 0 )
 
                 writer.write( self._serialize_sample( observations[i], class_labels[i], part_labels[i], se3[i] ) )
                 self._data_size['train']['count'] += 1
@@ -394,10 +401,12 @@ class PointCloudSet:
         out += f"Total count: {self._data_size['train']['count']}\n"
         out += f'Class count:\n'
         for label in list( self._class_labels.keys() ):
-            out += f"\t{label}: {self._data_size['train']['class_count']}\n"
+            try:    out += f"\t{label}: {self._data_size['train']['class_count'][label]}\n"
+            except: pass            
         out += f'Part count:\n'
         for label in list( self._part_labels.keys() ):
-            out += f"\t{label}: {self._data_size['train']['part_count']}\n"
+            try:    out += f"\t{label}: {self._data_size['train']['part_count'][label]}\n"
+            except: pass
 
         out += f'\n--- Validation Set ---\n'
         out += f'Specified proportion:  {self._val_amt}\n'
@@ -405,10 +414,12 @@ class PointCloudSet:
         out += f"Total count: {self._data_size['val']['count']}\n"
         out += f'Class count:\n'
         for label in list( self._class_labels.keys() ):
-            out += f"\t{label}: {self._data_size['val']['class_count']}\n"
+            try:    out += f"\t{label}: {self._data_size['val']['class_count'][label]}\n"
+            except: pass
         out += f'Part count:\n'
         for label in list( self._part_labels.keys() ):
-            out += f"\t{label}: {self._data_size['val']['part_count']}\n"
+            try:    out += f"\t{label}: {self._data_size['val']['part_count'][label]}\n"
+            except: pass
 
         out += f'\n--- Test Set ---\n'
         out += f'Specified proportion:  {self._test_amt}\n'
@@ -416,10 +427,12 @@ class PointCloudSet:
         out += f"Total count: {self._data_size['test']['count']}\n"
         out += f'Class count:\n'
         for label in list( self._class_labels.keys() ):
-            out += f"\t{label}: {self._data_size['test']['class_count']}\n"
+            try:    out += f"\t{label}: {self._data_size['test']['class_count'][label]}\n"
+            except: pass
         out += f'Part count:\n'
         for label in list( self._part_labels.keys() ):
-            out += f"\t{label}: {self._data_size['test']['part_count']}\n"
+            try:    out += f"\t{label}: {self._data_size['test']['part_count'][label]}\n"
+            except: pass
 
         return out
     
