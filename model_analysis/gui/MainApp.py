@@ -91,10 +91,10 @@ class MainApp(QMainWindow):
         full_window.addLayout( main_area, 55 )
 
         # Build left toolbar
-        title = QLabel( title )
-        title.setFont( QFont('Arial', 24) )
-        title.setAlignment( Qt.AlignmentFlag.AlignCenter )
-        left_area.addWidget( title, 5 )
+        title_label = QLabel( title )
+        title_label.setFont( QFont('Arial', 24) )
+        title_label.setAlignment( Qt.AlignmentFlag.AlignCenter )
+        left_area.addWidget( title_label, 5 )
 
         # Build separator line
         h_line = QFrame()

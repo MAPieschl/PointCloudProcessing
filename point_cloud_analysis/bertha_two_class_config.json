@@ -41,7 +41,7 @@
             "11": "probe"
         },
         "training_profiles": {
-            "two_class": {
+            "two_class_segmentation": {
                 "datasets": {
                     "0": "collect_2025.Dec.02_18.31.53.5706279.UTC",
                     "1": "collect_2025.Dec.02_18.37.25.1269574.UTC"
@@ -52,24 +52,24 @@
                     "z_stdev_m": 0.01
                 },
                 "trainable": {
-                    "shared_network": false,
-                    "input_transform": true,
-                    "classification_head": false,
-                    "segmentation_head": false
+                    "shared_network": true,
+                    "input_transform": false,
+                    "classification_head": true,
+                    "segmentation_head": true
                 },
                 "loss_weights": {
-                    "classification": 0.0,
-                    "segmentation": 0.0,
-                    "rotation": 1.0
+                    "classification": 0.7,
+                    "segmentation": 0.3,
+                    "rotation": 0.0
                 }
             }
         },
-        "continue_training_model": ""
+        "continue_training_model": "_bertha_classification_test/two_class_classification/_bertha_classification_test_two_class_classification.keras"
     },
     "params": {
         "input_width": 4096,
         "epochs": 5000,
-        "patience": 100,
+        "patience": 30,
         "batch_size": 32,
         "learning": {
             "rate": 0.001,

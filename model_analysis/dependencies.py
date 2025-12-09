@@ -19,7 +19,7 @@ from PyQt6.QtWidgets import (
     QPushButton, QStackedWidget, QToolBar, QLabel, QFileDialog,
     QLineEdit, QFormLayout, QScrollArea, QListWidget, QListWidgetItem,
     QSizePolicy, QComboBox, QLabel, QFrame, QMessageBox, QSlider,
-    QRadioButton
+    QRadioButton, QCheckBox
 )
 from QMarkdownWidget import QMView
 
