@@ -1,0 +1,95 @@
+2025-12-09 17:27:51,719 - root - INFO - Training profile _bertha_classification_test_two_class_segmentation already exists. Using existing profile...
+2025-12-09 17:27:51,742 - root - INFO - The following datasets were found in data/_bertha_classification_test_two_class_segmentation:
+2025-12-09 17:27:51,742 - root - INFO - 	-> collect_2025.Dec.02_18.31.53.5706279.UTC	(not requested, but will included in training profile)
+2025-12-09 17:27:51,743 - root - INFO - 	-> collect_2025.Dec.02_18.37.25.1269574.UTC	(not requested, but will included in training profile)
+2025-12-09 17:27:51,743 - root - INFO - 	-> pc_set.joblib	
+2025-12-09 17:27:51,744 - root - INFO - 
+Datasets added successfully:
+
+2025-12-09 17:27:51,744 - root - INFO - two_class_segmentation
+Random seed: 42
+Class labels: dict_keys(['a-10', 'b-1b', 'b-2', 'c-5', 'c-12', 'c-17a', 'c-32', 'c-130j', 'e-3', 'f-15e', 'f-16', 'f-18e', 'f-22', 'g-iii', 'kc-46', 'kc-135', 'lj-25', 'mig-29', 'mq-20', 'sr-71', 'su-27', 'vc-25a', 'x-47b'])
+Part labels: dict_keys(['wing', 'fuselage', 'engine', 'hstab', 'vstab', 'landing_gear', 'armament', 'boom_wing', 'boom_hull', 'boom_hose', 'dish', 'probe'])
+
+--- Train Set ---
+Specified proportion:  0.75
+Actual proportion: 0.7499749974997499
+Total count: 7499
+Class count:
+	a-10: 3749
+	b-1b: 3750
+Part count:
+	wing: 9992825
+	fuselage: 11503335
+	engine: 3567219
+	hstab: 2249948
+	vstab: 1657905
+	landing_gear: 474906
+	armament: 1269766
+	boom_wing: 0
+	boom_hull: 0
+	boom_hose: 0
+	dish: 0
+	probe: 0
+
+--- Validation Set ---
+Specified proportion:  0.15
+Actual proportion: 0.15001500150015
+Total count: 1500
+Class count:
+	a-10: 750
+	b-1b: 750
+Part count:
+	wing: 1997055
+	fuselage: 2290788
+	engine: 711069
+	hstab: 453171
+	vstab: 329041
+	landing_gear: 101955
+	armament: 260921
+	boom_wing: 0
+	boom_hull: 0
+	boom_hose: 0
+	dish: 0
+	probe: 0
+
+--- Test Set ---
+Specified proportion:  0.1
+Actual proportion: 0.1000100010001
+Total count: 1000
+Class count:
+	a-10: 500
+	b-1b: 500
+Part count:
+	wing: 1323887
+	fuselage: 1549055
+	engine: 479833
+	hstab: 292704
+	vstab: 218456
+	landing_gear: 62545
+	armament: 169520
+	boom_wing: 0
+	boom_hull: 0
+	boom_hose: 0
+	dish: 0
+	probe: 0
+
+2025-12-09 17:27:51,746 - root - INFO - Continuing training on model _bertha_classification_test/two_class_classification/_bertha_classification_test_two_class_classification.keras
+2025-12-09 17:27:55,030 - root - INFO - PointNet Build
+2025-12-09 17:27:55,030 - root - INFO - 	Trainable Layers
+2025-12-09 17:27:55,031 - root - INFO - 		-> input_normalization: False
+2025-12-09 17:27:55,031 - root - INFO - 		-> input_transform: False
+2025-12-09 17:27:55,032 - root - INFO - 		-> s1_l1_64_convolution_layer: True
+2025-12-09 17:27:55,032 - root - INFO - 		-> s1_l2_64_convolution_layer: True
+2025-12-09 17:27:55,032 - root - INFO - 		-> feature_transform: True
+2025-12-09 17:27:55,033 - root - INFO - 		-> s2_l1_64_convolution_layer: True
+2025-12-09 17:27:55,033 - root - INFO - 		-> s2_l2_128_convolution_layer: True
+2025-12-09 17:27:55,034 - root - INFO - 		-> s2_l3_1024_convolution_layer: True
+2025-12-09 17:27:55,034 - root - INFO - 		-> s3_l1_512_dense_layer: True
+2025-12-09 17:27:55,035 - root - INFO - 		-> s3_l2_256_dense_layer: True
+2025-12-09 17:27:55,035 - root - INFO - 		-> output_dense_layer: True
+2025-12-09 17:27:55,035 - root - INFO - 		-> seg_l1_512_convolution_layer: True
+2025-12-09 17:27:55,036 - root - INFO - 		-> seg_l2_256_convolution_layer: True
+2025-12-09 17:27:55,036 - root - INFO - 		-> seg_l3_128_convolution_layer: True
+2025-12-09 17:27:55,037 - root - INFO - 		-> seg_l4_128_convolution_layer: True
+2025-12-09 17:27:55,037 - root - INFO - 		-> seg_l5_output_convolution_layer: True

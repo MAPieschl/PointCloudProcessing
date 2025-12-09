@@ -40,50 +40,55 @@ class TrainingPerformance( QWidget ):
         
         if( len( args ) >= 2 and type( self.plot ) == LinePlot ):
             if( type( args[0] ) == str and type( args[1] ) == bool ):
+
                 if( 'accuracy' in args[0] or 'error' in args[0] ):
                     if( args[1] ):  self.plot.add_y1_trace( np.array( self.data[args[0]] ), args[0] )
                     else:           self.plot.remove_y1_trace( args[0] )
+
+                if( 'loss' in args[0] ):
+                    if( args[1] ):  self.plot.add_y2_trace( np.array( self.data[args[0]] ), args[0] )
+                    else:           self.plot.remove_y2_trace( args[0] )
 
         if( type( self.plot ) == LinePlot ):
             html_plot = pio.to_html( self.plot.get_fig(), full_html = False, include_plotlyjs = 'cdn' )
             self.plot_area.setHtml( html_plot )
     
     def load_training_history( self ):
-        # try:
+        try:
 
-        file_dialog = QFileDialog(self)
-        model_path = file_dialog.getExistingDirectory( self, "Select model training directory", "" )
-        
-        if( os.path.isdir( model_path ) ):
-
-            history = glob.glob( os.path.join( model_path, "*_history.json") )
+            file_dialog = QFileDialog(self)
+            model_path = file_dialog.getExistingDirectory( self, "Select model training directory", "" )
             
-            if( len( history ) < 1 ):
-                self._show_notification( "Please select a directory that contains the model training ..._history.json." )
-                return
-            
-            with open( history[0], 'r' ) as hist:
-                self.data = json.load( hist )
-            
-            self.available_traces.clear()
-            for key in list( self.data.keys() ):
-                cb = QCheckBox( key )
-                self.available_traces[cb] = key
-                cb.stateChanged.connect( lambda x: self.update_( self.available_traces[cb], x == 2 ) )
-                self.available_traces_layout.addWidget( cb )
-                        
-            model_name = model_path.split( '/' )[-1]
+            if( os.path.isdir( model_path ) ):
 
-            self.plot = LinePlot( title = f'Training Performance for {model_name}',
-                                    x_axis_title = 'Epochs',
-                                    y1_axis_title = 'Loss',
-                                    y2_axis_title = 'Metric',
-                                    print_func = self._show_notification )
+                history = glob.glob( os.path.join( model_path, "*_history.json") )
+                
+                if( len( history ) < 1 ):
+                    self._show_notification( "Please select a directory that contains the model training ..._history.json." )
+                    return
+                
+                with open( history[0], 'r' ) as hist:
+                    self.data = json.load( hist )
+                
+                self.available_traces.clear()
+                for key in list( self.data.keys() ):
+                    cb = QCheckBox( key )
+                    self.available_traces[cb] = key
+                    cb.stateChanged.connect( lambda x, s = key: self.update_( s, x == 2 ) )
+                    self.available_traces_layout.addWidget( cb )
+                            
+                model_name = model_path.split( '/' )[-1]
 
-        else:
-            self._show_notification( "Model directory no longer exists." )
+                self.plot = LinePlot( title = f'Training Performance for {model_name}',
+                                        x_axis_title = 'Epochs',
+                                        y1_axis_title = 'Metric',
+                                        y2_axis_title = 'Loss',
+                                        print_func = self._show_notification )
 
-        self.update_()
+            else:
+                self._show_notification( "Model directory no longer exists." )
 
-        # except Exception as e:
-        #     self._show_notification( f"GUI:  Unable to load point cloud due to error:\n\t{type( e ).__name__}: {e}" )
+            self.update_()
+
+        except Exception as e:
+            self._show_notification( f"GUI:  Unable to load point cloud due to error:\n\t{type( e ).__name__}: {e}" )
