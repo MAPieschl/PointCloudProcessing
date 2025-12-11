@@ -40,12 +40,12 @@
             "11": "probe"
         },
         "training_profiles": {
-            "four_class": {
+            "four_class_class": {
                 "datasets": {
                     "0": "collect_2025.Dec.02_18.31.53.5706279.UTC",
                     "1": "collect_2025.Dec.02_18.37.25.1269574.UTC",
                     "2": "collect_2025.Dec.02_18.38.57.4681778.UTC",
-                    "3": "collect_2025.Dec.02_18.42.17.6290737.UTC"
+                    "3": "collect_2025.Dec.02_18.47.39.2497886.UTC"
                 },
                 "noise": {
                     "x_stdev_m": 0.01,
@@ -54,13 +54,37 @@
                 },
                 "trainable": {
                     "shared_network": true,
-                    "input_transform": true,
+                    "input_transform": false,
                     "classification_head": true,
                     "segmentation_head": false
                 },
                 "loss_weights": {
                     "classification": 1.0,
                     "segmentation": 0.0,
+                    "rotation": 0.0
+                }
+            },
+            "four_class_seg": {
+                "datasets": {
+                    "0": "collect_2025.Dec.02_18.31.53.5706279.UTC",
+                    "1": "collect_2025.Dec.02_18.37.25.1269574.UTC",
+                    "2": "collect_2025.Dec.02_18.38.57.4681778.UTC",
+                    "3": "collect_2025.Dec.02_18.47.39.2497886.UTC"
+                },
+                "noise": {
+                    "x_stdev_m": 0.01,
+                    "y_stdev_m": 0.01,
+                    "z_stdev_m": 0.01
+                },
+                "trainable": {
+                    "shared_network": true,
+                    "input_transform": false,
+                    "classification_head": true,
+                    "segmentation_head": true
+                },
+                "loss_weights": {
+                    "classification": 0.7,
+                    "segmentation": 0.3,
                     "rotation": 0.0
                 }
             }
@@ -70,8 +94,8 @@
     "params": {
         "input_width": 4096,
         "epochs": 5000,
-        "patience": 100,
-        "batch_size": 64,
+        "patience": 30,
+        "batch_size": 32,
         "learning": {
             "rate": 0.001,
             "decay_steps": 7000,

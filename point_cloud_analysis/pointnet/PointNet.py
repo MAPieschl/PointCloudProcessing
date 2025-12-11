@@ -399,7 +399,7 @@ class TNet(Model):
     def build(self, input_shape: tuple):
         super(TNet, self).build(input_shape)
         self.K = input_shape[-1]
-        self.w = self.add_weight(shape = (256, self.K ** 2), initializer = tf.zeros_initializer, trainable = True, name = 'w')
+        self.w = self.add_weight(shape = (256, self.K ** 2), initializer = initializers.GlorotUniform( seed = self.seed ), trainable = True, name = 'w')
         self.b = self.add_weight(shape = (self.K, self.K), initializer = 'identity', trainable = True, name = 'b')
 
     def call(self, X, training = False):

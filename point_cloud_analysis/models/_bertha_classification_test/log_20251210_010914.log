@@ -1,0 +1,186 @@
+2025-12-10 01:09:14,667 - root - INFO - Training profile _bertha_classification_test_four_class_class already exists. Using existing profile...
+2025-12-10 01:09:14,690 - root - INFO - The following datasets were found in data/_bertha_classification_test_four_class_class:
+2025-12-10 01:09:14,691 - root - INFO - 	-> collect_2025.Dec.02_18.31.53.5706279.UTC	(not requested, but will included in training profile)
+2025-12-10 01:09:14,691 - root - INFO - 	-> collect_2025.Dec.02_18.37.25.1269574.UTC	(not requested, but will included in training profile)
+2025-12-10 01:09:14,692 - root - INFO - 	-> collect_2025.Dec.02_18.38.57.4681778.UTC	(not requested, but will included in training profile)
+2025-12-10 01:09:14,692 - root - INFO - 	-> collect_2025.Dec.02_18.47.39.2497886.UTC	(not requested, but will included in training profile)
+2025-12-10 01:09:14,693 - root - INFO - 	-> pc_set.joblib	
+2025-12-10 01:09:14,694 - root - INFO - 
+Datasets added successfully:
+
+2025-12-10 01:09:14,695 - root - INFO - four_class_class
+Random seed: 42
+Class labels: dict_keys(['a-10', 'b-1b', 'b-2', 'c-5', 'c-12', 'c-17a', 'c-32', 'c-130j', 'e-3', 'f-15e', 'f-16', 'f-18e', 'f-22', 'g-iii', 'kc-46', 'kc-135', 'lj-25', 'mig-29', 'mq-20', 'su-27', 'vc-25a', 'x-47b'])
+Part labels: dict_keys(['wing', 'fuselage', 'engine', 'hstab', 'vstab', 'landing_gear', 'armament', 'boom_wing', 'boom_hull', 'boom_hose', 'dish', 'probe'])
+
+--- Train Set ---
+Specified proportion:  0.75
+Actual proportion: 0.7499874993749688
+Total count: 14999
+Class count:
+	a-10: 3749
+	b-1b: 3750
+	b-2: 3750
+	kc-46: 3750
+Part count:
+	wing: 26684486
+	fuselage: 21193568
+	engine: 5816190
+	hstab: 3419705
+	vstab: 2389112
+	landing_gear: 485459
+	armament: 1272571
+	boom_wing: 59244
+	boom_hull: 106863
+	boom_hose: 8706
+	dish: 0
+	probe: 0
+
+--- Validation Set ---
+Specified proportion:  0.15
+Actual proportion: 0.15000750037501875
+Total count: 3000
+Class count:
+	a-10: 750
+	b-1b: 750
+	b-2: 750
+	kc-46: 750
+Part count:
+	wing: 5277110
+	fuselage: 4261612
+	engine: 1175457
+	hstab: 688690
+	vstab: 494923
+	landing_gear: 91560
+	armament: 263903
+	boom_wing: 11566
+	boom_hull: 21884
+	boom_hose: 1295
+	dish: 0
+	probe: 0
+
+--- Test Set ---
+Specified proportion:  0.1
+Actual proportion: 0.10000500025001251
+Total count: 2000
+Class count:
+	a-10: 500
+	b-1b: 500
+	b-2: 500
+	kc-46: 500
+Part count:
+	wing: 3571661
+	fuselage: 2839945
+	engine: 766569
+	hstab: 446762
+	vstab: 315602
+	landing_gear: 61515
+	armament: 164378
+	boom_wing: 9071
+	boom_hull: 15202
+	boom_hose: 1295
+	dish: 0
+	probe: 0
+
+2025-12-10 01:09:14,698 - root - INFO - Training profile _bertha_classification_test_four_class_seg already exists. Using existing profile...
+2025-12-10 01:09:14,722 - root - INFO - The following datasets were found in data/_bertha_classification_test_four_class_seg:
+2025-12-10 01:09:14,724 - root - INFO - 	-> collect_2025.Dec.02_18.31.53.5706279.UTC	(not requested, but will included in training profile)
+2025-12-10 01:09:14,724 - root - INFO - 	-> collect_2025.Dec.02_18.37.25.1269574.UTC	(not requested, but will included in training profile)
+2025-12-10 01:09:14,725 - root - INFO - 	-> collect_2025.Dec.02_18.38.57.4681778.UTC	(not requested, but will included in training profile)
+2025-12-10 01:09:14,725 - root - INFO - 	-> collect_2025.Dec.02_18.47.39.2497886.UTC	(not requested, but will included in training profile)
+2025-12-10 01:09:14,726 - root - INFO - 	-> pc_set.joblib	
+2025-12-10 01:09:14,726 - root - INFO - 
+Datasets added successfully:
+
+2025-12-10 01:09:14,727 - root - INFO - four_class_seg
+Random seed: 42
+Class labels: dict_keys(['a-10', 'b-1b', 'b-2', 'c-5', 'c-12', 'c-17a', 'c-32', 'c-130j', 'e-3', 'f-15e', 'f-16', 'f-18e', 'f-22', 'g-iii', 'kc-46', 'kc-135', 'lj-25', 'mig-29', 'mq-20', 'su-27', 'vc-25a', 'x-47b'])
+Part labels: dict_keys(['wing', 'fuselage', 'engine', 'hstab', 'vstab', 'landing_gear', 'armament', 'boom_wing', 'boom_hull', 'boom_hose', 'dish', 'probe'])
+
+--- Train Set ---
+Specified proportion:  0.75
+Actual proportion: 0.7499874993749688
+Total count: 14999
+Class count:
+	a-10: 3749
+	b-1b: 3750
+	b-2: 3750
+	kc-46: 3750
+Part count:
+	wing: 26603963
+	fuselage: 21246541
+	engine: 5827197
+	hstab: 3421725
+	vstab: 2405008
+	landing_gear: 490456
+	armament: 1262958
+	boom_wing: 59503
+	boom_hull: 110152
+	boom_hose: 8401
+	dish: 0
+	probe: 0
+
+--- Validation Set ---
+Specified proportion:  0.15
+Actual proportion: 0.15000750037501875
+Total count: 3000
+Class count:
+	a-10: 750
+	b-1b: 750
+	b-2: 750
+	kc-46: 750
+Part count:
+	wing: 5369988
+	fuselage: 4228604
+	engine: 1153381
+	hstab: 676137
+	vstab: 468165
+	landing_gear: 88313
+	armament: 268984
+	boom_wing: 12491
+	boom_hull: 19853
+	boom_hose: 2084
+	dish: 0
+	probe: 0
+
+--- Test Set ---
+Specified proportion:  0.1
+Actual proportion: 0.10000500025001251
+Total count: 2000
+Class count:
+	a-10: 500
+	b-1b: 500
+	b-2: 500
+	kc-46: 500
+Part count:
+	wing: 3557054
+	fuselage: 2822964
+	engine: 772405
+	hstab: 459506
+	vstab: 329474
+	landing_gear: 61213
+	armament: 167068
+	boom_wing: 7956
+	boom_hull: 13569
+	boom_hose: 791
+	dish: 0
+	probe: 0
+
+2025-12-10 01:09:16,790 - root - INFO - PointNet Build
+2025-12-10 01:09:16,791 - root - INFO - 	Trainable Layers
+2025-12-10 01:09:16,791 - root - INFO - 		-> input_normalization: False
+2025-12-10 01:09:16,792 - root - INFO - 		-> input_transform: False
+2025-12-10 01:09:16,792 - root - INFO - 		-> s1_l1_64_convolution_layer: True
+2025-12-10 01:09:16,792 - root - INFO - 		-> s1_l2_64_convolution_layer: True
+2025-12-10 01:09:16,793 - root - INFO - 		-> feature_transform: True
+2025-12-10 01:09:16,793 - root - INFO - 		-> s2_l1_64_convolution_layer: True
+2025-12-10 01:09:16,793 - root - INFO - 		-> s2_l2_128_convolution_layer: True
+2025-12-10 01:09:16,794 - root - INFO - 		-> s2_l3_1024_convolution_layer: True
+2025-12-10 01:09:16,794 - root - INFO - 		-> s3_l1_512_dense_layer: True
+2025-12-10 01:09:16,794 - root - INFO - 		-> s3_l2_256_dense_layer: True
+2025-12-10 01:09:16,795 - root - INFO - 		-> output_dense_layer: True
+2025-12-10 01:09:16,795 - root - INFO - 		-> seg_l1_512_convolution_layer: False
+2025-12-10 01:09:16,795 - root - INFO - 		-> seg_l2_256_convolution_layer: False
+2025-12-10 01:09:16,796 - root - INFO - 		-> seg_l3_128_convolution_layer: False
+2025-12-10 01:09:16,796 - root - INFO - 		-> seg_l4_128_convolution_layer: False
+2025-12-10 01:09:16,797 - root - INFO - 		-> seg_l5_output_convolution_layer: False
