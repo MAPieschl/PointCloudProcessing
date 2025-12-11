@@ -1,1 +1,0 @@
-python3.10 -m training.pointnet_seg $*
