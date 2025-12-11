@@ -40,7 +40,7 @@
             "11": "probe"
         },
         "training_profiles": {
-            "tnet": {
+            "tnet_reg": {
                 "datasets": {
                     "0": "collect_2025.Dec.02_18.47.39.2497886.UTC"
                 },

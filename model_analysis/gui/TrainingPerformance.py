@@ -70,7 +70,12 @@ class TrainingPerformance( QWidget ):
                 with open( history[0], 'r' ) as hist:
                     self.data = json.load( hist )
                 
+                # Clear out previous model
+                for cb in list( self.available_traces.keys() ):
+                    self.available_traces_layout.removeWidget( cb )
                 self.available_traces.clear()
+
+                # Add new model
                 for key in list( self.data.keys() ):
                     cb = QCheckBox( key )
                     self.available_traces[cb] = key

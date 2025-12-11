@@ -76,7 +76,7 @@
         },
         "random_seed": 42,
         "debugging": false,
-        "regularize_input_transform": true,
+        "regularize_input_transform": false,
         "regularize_feature_transform": false
     },
     "file_system": {
