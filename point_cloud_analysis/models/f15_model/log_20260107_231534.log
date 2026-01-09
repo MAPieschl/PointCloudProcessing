@@ -1,0 +1,8 @@
+2026-01-07 23:15:34,974 - root - INFO - The following datasets were found in data/f15_model_classification_pretrain:
+2026-01-07 23:15:34,975 - root - INFO - 	-> pc_set.joblib	
+2026-01-07 23:15:34,975 - root - INFO - Adding data set 1 of 2
+2026-01-07 23:15:36,198 - root - INFO - Parsing frames in data/collect_2026.Jan.07_20.52.57.0973269.UTC...
+2026-01-07 23:21:47,582 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_10000.txt:
+	FileNotFoundError : [Errno 2] No such file or directory: 'data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_10000.txt'
+2026-01-07 23:21:47,585 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_10001.txt:
+	FileNotFoundError : [Errno 2] No such file or directory: 'data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_10001.txt'

@@ -1,0 +1,1866 @@
+2026-01-07 23:09:42,050 - root - INFO - The following datasets were found in data/f15_model_classification_pretrain:
+2026-01-07 23:09:42,051 - root - INFO - 	-> pc_set.joblib	
+2026-01-07 23:09:42,051 - root - INFO - Adding data set 1 of 2
+2026-01-07 23:09:43,261 - root - INFO - Parsing frames in data/collect_2026.Jan.07_20.52.57.0973269.UTC...
+2026-01-07 23:09:43,280 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_0.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:43,294 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_1.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:43,313 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_2.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:43,327 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_3.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:43,343 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_4.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:43,359 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_5.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:43,378 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_6.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:43,395 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_7.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:43,410 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_8.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:43,425 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_9.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:43,443 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_10.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:43,457 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_11.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:43,472 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_12.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:43,487 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_13.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:43,504 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_14.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:43,520 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_15.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:43,535 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_16.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:43,549 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_17.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:43,564 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_18.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:43,580 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_19.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:43,595 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_20.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:43,610 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_21.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:43,624 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_22.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:43,639 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_23.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:43,653 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_24.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:43,669 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_25.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:43,683 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_26.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:43,698 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_27.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:43,713 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_28.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:43,728 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_29.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:43,741 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_30.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:43,755 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_31.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:43,770 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_32.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:43,786 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_33.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:43,804 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_34.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:43,826 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_35.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:43,842 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_36.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:43,863 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_37.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:43,882 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_38.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:43,896 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_39.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:43,910 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_40.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:43,924 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_41.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:43,940 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_42.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:43,956 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_43.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:43,971 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_44.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:43,986 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_45.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,001 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_46.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,018 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_47.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,034 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_48.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,050 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_49.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,067 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_50.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,084 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_51.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,098 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_52.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,112 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_53.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,126 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_54.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,142 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_55.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,158 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_56.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,172 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_57.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,190 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_58.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,205 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_59.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,220 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_60.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,235 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_61.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,250 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_62.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,266 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_63.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,281 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_64.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,295 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_65.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,309 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_66.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,324 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_67.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,339 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_68.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,357 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_69.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,372 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_70.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,388 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_71.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,404 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_72.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,419 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_73.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,434 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_74.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,449 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_75.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,463 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_76.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,478 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_77.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,492 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_78.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,506 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_79.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,520 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_80.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,536 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_81.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,550 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_82.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,565 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_83.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,582 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_84.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,596 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_85.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,611 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_86.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,625 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_87.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,639 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_88.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,654 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_89.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,668 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_90.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,684 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_91.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,700 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_92.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,714 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_93.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,728 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_94.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,742 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_95.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,755 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_96.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,769 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_97.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,785 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_98.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,799 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_99.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,813 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_100.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,827 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_101.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,841 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_102.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,863 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_103.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,881 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_104.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,897 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_105.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,911 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_106.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,925 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_107.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,939 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_108.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,954 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_109.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,969 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_110.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,983 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_111.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:44,998 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_112.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:45,012 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_113.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:45,030 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_114.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:45,043 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_115.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:45,056 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_116.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:45,070 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_117.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:45,087 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_118.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:45,102 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_119.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:45,116 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_120.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:45,130 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_121.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:45,145 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_122.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:45,158 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_123.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:45,171 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_124.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:45,186 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_125.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:45,201 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_126.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:45,217 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_127.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:45,233 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_128.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:45,248 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_129.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:45,263 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_130.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:45,278 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_131.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:45,291 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_132.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:45,305 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_133.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:45,320 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_134.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:45,336 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_135.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:45,350 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_136.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:45,364 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_137.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:45,379 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_138.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:45,395 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_139.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:45,411 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_140.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:45,425 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_141.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:45,440 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_142.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:45,455 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_143.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:45,469 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_144.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:45,485 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_145.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:45,502 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_146.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:45,520 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_147.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:45,559 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_148.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:45,599 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_149.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:45,618 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_150.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:45,653 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_151.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:45,682 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_152.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:45,727 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_153.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:45,766 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_154.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:45,806 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_155.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:45,832 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_156.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:45,853 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_157.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:45,874 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_158.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:45,894 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_159.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:45,914 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_160.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:45,934 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_161.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:45,947 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_162.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:45,962 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_163.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:45,987 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_164.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:46,031 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_165.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:46,057 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_166.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:46,098 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_167.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:46,122 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_168.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:46,139 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_169.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:46,160 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_170.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:46,177 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_171.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:46,199 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_172.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:46,217 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_173.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:46,237 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_174.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:46,258 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_175.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:46,272 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_176.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:46,288 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_177.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:46,306 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_178.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:46,324 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_179.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:46,341 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_180.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:46,362 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_181.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:46,382 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_182.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:46,397 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_183.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:46,417 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_184.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:46,440 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_185.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:46,461 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_186.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:46,483 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_187.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:46,499 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_188.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:46,518 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_189.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:46,533 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_190.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:46,551 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_191.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:46,574 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_192.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:46,592 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_193.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:46,607 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_194.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:46,623 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_195.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:46,644 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_196.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:46,657 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_197.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:46,678 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_198.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:46,695 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_199.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:46,715 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_200.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:46,739 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_201.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:46,759 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_202.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:46,776 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_203.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:46,793 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_204.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:46,809 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_205.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:46,822 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_206.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:46,836 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_207.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:46,849 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_208.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:46,865 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_209.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:46,880 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_210.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:46,897 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_211.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:46,910 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_212.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:46,923 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_213.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:46,937 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_214.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:46,954 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_215.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:46,969 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_216.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:46,986 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_217.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:47,000 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_218.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:47,014 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_219.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:47,027 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_220.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:47,040 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_221.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:47,055 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_222.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:47,072 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_223.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:47,097 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_224.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:47,112 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_225.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:47,124 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_226.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:47,139 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_227.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:47,153 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_228.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:47,169 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_229.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:47,184 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_230.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:47,197 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_231.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:47,210 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_232.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:47,224 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_233.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:47,237 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_234.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:47,253 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_235.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:47,282 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_236.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:47,299 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_237.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:47,315 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_238.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:47,331 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_239.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:47,344 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_240.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:47,358 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_241.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:47,373 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_242.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:47,425 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_243.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:47,439 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_244.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:47,456 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_245.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:47,473 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_246.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:47,488 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_247.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:47,503 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_248.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:47,516 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_249.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:47,531 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_250.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:47,546 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_251.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:47,560 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_252.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:47,575 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_253.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:47,589 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_254.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:47,607 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_255.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:47,621 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_256.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:47,636 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_257.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:47,653 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_258.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:47,668 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_259.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:47,683 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_260.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:47,697 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_261.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:47,711 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_262.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:47,725 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_263.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:47,739 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_264.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:47,754 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_265.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:47,770 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_266.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:47,785 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_267.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:47,800 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_268.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:47,813 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_269.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:47,827 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_270.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:47,842 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_271.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:47,859 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_272.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:47,874 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_273.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:47,888 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_274.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:47,903 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_275.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:47,918 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_276.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:47,935 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_277.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:47,948 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_278.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:47,963 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_279.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:47,978 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_280.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:47,994 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_281.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:48,008 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_282.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:48,025 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_283.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:48,038 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_284.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:48,055 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_285.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:48,070 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_286.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:48,085 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_287.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:48,100 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_288.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:48,114 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_289.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:48,129 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_290.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:48,142 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_291.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:48,155 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_292.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:48,170 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_293.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:48,187 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_294.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:48,201 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_295.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:48,217 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_296.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:48,231 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_297.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:48,246 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_298.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:48,260 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_299.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:48,276 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_300.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:48,294 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_301.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:48,311 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_302.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:48,325 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_303.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:48,339 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_304.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:48,355 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_305.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:48,370 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_306.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:48,386 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_307.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:48,402 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_308.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:48,418 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_309.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:48,432 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_310.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:48,448 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_311.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:48,463 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_312.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:48,477 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_313.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:48,496 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_314.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:48,514 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_315.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:48,532 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_316.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:48,548 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_317.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:48,562 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_318.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:48,576 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_319.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:48,591 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_320.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:48,606 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_321.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:48,621 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_322.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:48,635 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_323.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:48,649 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_324.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:48,663 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_325.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:48,677 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_326.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:48,691 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_327.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:48,707 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_328.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:48,722 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_329.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:48,738 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_330.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:48,753 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_331.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:48,768 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_332.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:48,782 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_333.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:48,797 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_334.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:48,811 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_335.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:48,826 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_336.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:48,842 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_337.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:48,855 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_338.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:48,871 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_339.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:48,885 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_340.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:48,900 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_341.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:48,913 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_342.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:48,929 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_343.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:48,942 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_344.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:48,985 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_345.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:49,000 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_346.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:49,018 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_347.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:49,036 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_348.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:49,051 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_349.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:49,065 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_350.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:49,079 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_351.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:49,093 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_352.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:49,106 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_353.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:49,120 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_354.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:49,137 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_355.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:49,152 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_356.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:49,165 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_357.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:49,180 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_358.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:49,195 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_359.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:49,210 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_360.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:49,225 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_361.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:49,239 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_362.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:49,256 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_363.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:49,271 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_364.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:49,287 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_365.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:49,304 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_366.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:49,321 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_367.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:49,335 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_368.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:49,349 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_369.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:49,363 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_370.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:49,379 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_371.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:49,393 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_372.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:49,408 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_373.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:49,422 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_374.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:49,437 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_375.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:49,451 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_376.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:49,468 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_377.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:49,485 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_378.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:49,500 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_379.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:49,515 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_380.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:49,531 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_381.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:49,546 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_382.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:49,565 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_383.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:49,580 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_384.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:49,594 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_385.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:49,610 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_386.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:49,624 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_387.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:49,640 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_388.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:49,655 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_389.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:49,670 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_390.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:49,686 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_391.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:49,703 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_392.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:49,720 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_393.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:49,736 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_394.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:49,754 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_395.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:49,772 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_396.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:49,792 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_397.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:49,809 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_398.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:49,825 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_399.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:49,841 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_400.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:49,857 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_401.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:49,874 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_402.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:49,893 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_403.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:49,911 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_404.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:49,929 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_405.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:49,947 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_406.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:49,964 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_407.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:49,980 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_408.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:49,998 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_409.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:50,014 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_410.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:50,031 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_411.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:50,051 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_412.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:50,069 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_413.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:50,090 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_414.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:50,105 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_415.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:50,122 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_416.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:50,138 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_417.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:50,154 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_418.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:50,175 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_419.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:50,193 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_420.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:50,211 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_421.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:50,227 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_422.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:50,243 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_423.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:50,260 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_424.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:50,277 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_425.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:50,293 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_426.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:50,308 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_427.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:50,322 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_428.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:50,340 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_429.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:50,356 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_430.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:50,372 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_431.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:50,387 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_432.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:50,402 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_433.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:50,416 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_434.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:50,430 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_435.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:50,446 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_436.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:50,460 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_437.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:50,476 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_438.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:50,492 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_439.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:50,507 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_440.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:50,522 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_441.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:50,540 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_442.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:50,558 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_443.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:50,574 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_444.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:50,596 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_445.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:50,617 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_446.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:50,633 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_447.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:50,648 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_448.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:50,663 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_449.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:50,677 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_450.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:50,695 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_451.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:50,710 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_452.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:50,725 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_453.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:50,740 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_454.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:50,757 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_455.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:50,773 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_456.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:50,789 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_457.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:50,805 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_458.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:50,819 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_459.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:50,834 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_460.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:50,849 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_461.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:50,866 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_462.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:50,879 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_463.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:50,895 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_464.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:50,909 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_465.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:50,925 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_466.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:50,940 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_467.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:50,956 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_468.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:50,971 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_469.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:50,985 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_470.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:50,999 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_471.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:51,015 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_472.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:51,031 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_473.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:51,046 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_474.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:51,062 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_475.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:51,083 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_476.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:51,102 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_477.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:51,118 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_478.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:51,135 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_479.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:51,150 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_480.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:51,166 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_481.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:51,187 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_482.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:51,205 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_483.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:51,220 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_484.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:51,235 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_485.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:51,252 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_486.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:51,266 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_487.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:51,282 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_488.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:51,297 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_489.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:51,312 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_490.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:51,326 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_491.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:51,341 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_492.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:51,362 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_493.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:51,386 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_494.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:51,404 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_495.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:51,420 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_496.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:51,435 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_497.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:51,449 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_498.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:51,463 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_499.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:51,477 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_500.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:51,492 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_501.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:51,506 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_502.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:51,520 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_503.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:51,535 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_504.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:51,548 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_505.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:51,562 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_506.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:51,576 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_507.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:51,590 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_508.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:51,605 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_509.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:51,623 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_510.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:51,640 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_511.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:51,660 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_512.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:51,675 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_513.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:51,691 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_514.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:51,705 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_515.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:51,720 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_516.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:51,735 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_517.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:51,753 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_518.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:51,767 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_519.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:51,782 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_520.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:51,798 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_521.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:51,813 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_522.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:51,831 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_523.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:51,849 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_524.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:51,865 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_525.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:51,880 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_526.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:51,894 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_527.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:51,909 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_528.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:51,923 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_529.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:51,939 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_530.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:51,955 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_531.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:51,969 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_532.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:51,984 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_533.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:51,998 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_534.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,012 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_535.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,028 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_536.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,042 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_537.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,057 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_538.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,073 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_539.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,091 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_540.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,106 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_541.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,121 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_542.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,139 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_543.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,156 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_544.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,174 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_545.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,191 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_546.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,206 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_547.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,220 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_548.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,234 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_549.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,248 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_550.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,263 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_551.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,280 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_552.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,295 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_553.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,311 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_554.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,325 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_555.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,339 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_556.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,353 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_557.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,367 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_558.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,382 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_559.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,400 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_560.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,416 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_561.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,428 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_562.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,443 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_563.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,456 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_564.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,471 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_565.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,486 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_566.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,500 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_567.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,513 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_568.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,528 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_569.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,541 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_570.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,556 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_571.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,570 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_572.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,585 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_573.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,599 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_574.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,613 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_575.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,629 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_576.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,644 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_577.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,657 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_578.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,673 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_579.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,688 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_580.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,704 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_581.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,720 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_582.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,736 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_583.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,751 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_584.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,766 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_585.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,787 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_586.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,805 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_587.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,821 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_588.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,837 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_589.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,852 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_590.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,868 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_591.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,882 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_592.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,898 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_593.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,918 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_594.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,934 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_595.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,949 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_596.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,964 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_597.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,978 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_598.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:52,992 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_599.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,007 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_600.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,020 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_601.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,035 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_602.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,050 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_603.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,063 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_604.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,077 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_605.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,092 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_606.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,110 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_607.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,126 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_608.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,146 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_609.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,160 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_610.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,175 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_611.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,192 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_612.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,205 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_613.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,219 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_614.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,233 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_615.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,251 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_616.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,266 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_617.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,280 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_618.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,294 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_619.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,308 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_620.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,322 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_621.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,337 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_622.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,353 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_623.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,369 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_624.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,386 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_625.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,400 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_626.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,417 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_627.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,432 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_628.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,446 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_629.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,462 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_630.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,476 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_631.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,492 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_632.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,507 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_633.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,523 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_634.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,537 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_635.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,553 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_636.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,569 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_637.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,583 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_638.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,597 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_639.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,611 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_640.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,626 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_641.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,641 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_642.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,656 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_643.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,673 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_644.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,689 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_645.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,708 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_646.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,724 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_647.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,740 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_648.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,757 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_649.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,772 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_650.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,788 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_651.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,804 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_652.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,819 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_653.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,833 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_654.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,848 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_655.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,862 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_656.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,876 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_657.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,891 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_658.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,910 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_659.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,926 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_660.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,943 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_661.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,958 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_662.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,974 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_663.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:53,990 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_664.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:54,009 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_665.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:54,026 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_666.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:54,041 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_667.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:54,055 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_668.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:54,070 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_669.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:54,087 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_670.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:54,103 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_671.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:54,119 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_672.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:54,134 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_673.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:54,149 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_674.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:54,163 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_675.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:54,184 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_676.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:54,202 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_677.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:54,219 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_678.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:54,238 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_679.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:54,255 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_680.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:54,273 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_681.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:54,289 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_682.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:54,305 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_683.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:54,322 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_684.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:54,338 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_685.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:54,355 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_686.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:54,370 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_687.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:54,388 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_688.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:54,403 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_689.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:54,420 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_690.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:54,438 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_691.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:54,453 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_692.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:54,468 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_693.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:54,483 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_694.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:54,498 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_695.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:54,511 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_696.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:54,525 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_697.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:54,540 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_698.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:54,556 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_699.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:54,572 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_700.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:54,587 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_701.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:54,603 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_702.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:54,616 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_703.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:54,631 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_704.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:54,645 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_705.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:54,658 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_706.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:54,676 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_707.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:54,690 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_708.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:54,711 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_709.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:54,731 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_710.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:54,747 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_711.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:54,769 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_712.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:54,786 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_713.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:54,803 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_714.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:54,819 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_715.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:54,832 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_716.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:54,846 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_717.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:54,863 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_718.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:54,878 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_719.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:54,893 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_720.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:54,909 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_721.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:54,923 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_722.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:54,938 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_723.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:54,953 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_724.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:54,971 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_725.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:54,987 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_726.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,002 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_727.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,019 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_728.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,033 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_729.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,048 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_730.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,062 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_731.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,076 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_732.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,089 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_733.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,105 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_734.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,120 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_735.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,134 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_736.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,150 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_737.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,164 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_738.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,177 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_739.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,192 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_740.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,207 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_741.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,224 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_742.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,238 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_743.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,253 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_744.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,268 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_745.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,285 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_746.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,301 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_747.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,314 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_748.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,329 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_749.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,344 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_750.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,359 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_751.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,373 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_752.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,389 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_753.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,405 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_754.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,420 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_755.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,435 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_756.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,452 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_757.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,493 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_758.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,508 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_759.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,522 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_760.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,536 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_761.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,550 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_762.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,566 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_763.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,582 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_764.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,595 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_765.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,610 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_766.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,628 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_767.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,643 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_768.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,656 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_769.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,671 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_770.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,685 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_771.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,699 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_772.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,713 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_773.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,727 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_774.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,740 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_775.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,754 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_776.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,768 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_777.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,784 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_778.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,803 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_779.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,820 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_780.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,835 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_781.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,850 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_782.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,865 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_783.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,879 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_784.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,894 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_785.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,909 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_786.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,924 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_787.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,939 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_788.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,953 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_789.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,968 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_790.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,981 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_791.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:55,997 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_792.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:56,013 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_793.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:56,027 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_794.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:56,044 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_795.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:56,059 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_796.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:56,074 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_797.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:56,089 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_798.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:56,109 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_800.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:56,125 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_801.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:56,140 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_802.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:56,155 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_803.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:56,170 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_804.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:56,184 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_805.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:56,199 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_806.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:56,214 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_807.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:56,232 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_808.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:56,249 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_809.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:56,264 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_810.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:56,280 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_811.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:56,296 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_812.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:56,310 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_813.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:56,327 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_814.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:56,342 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_815.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:56,358 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_816.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:56,372 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_817.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:56,389 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_818.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:56,404 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_819.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:56,420 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_820.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:56,437 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_821.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:56,452 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_822.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:56,467 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_823.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:56,485 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_824.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:56,500 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_825.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:56,515 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_826.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:56,530 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_827.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:56,545 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_828.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:56,562 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_829.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:56,576 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_830.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:56,590 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_831.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:56,604 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_832.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:56,623 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_833.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:56,637 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_834.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:56,652 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_835.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:56,666 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_836.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:56,679 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_837.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:56,692 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_838.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:56,707 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_839.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:56,724 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_840.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:56,743 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_841.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:56,761 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_842.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:56,777 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_843.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:56,792 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_844.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:56,808 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_845.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:56,822 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_846.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:56,835 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_847.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:56,850 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_848.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:56,869 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_849.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:56,884 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_850.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:56,900 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_851.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:56,914 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_852.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:56,928 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_853.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:56,943 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_854.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:56,961 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_855.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:56,976 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_856.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:56,992 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_857.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:57,009 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_858.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:57,024 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_859.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:57,039 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_860.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:57,054 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_861.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:57,070 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_862.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:57,085 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_863.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:57,102 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_864.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:57,119 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_865.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:57,137 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_866.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:57,153 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_867.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:57,168 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_868.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:57,183 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_869.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:57,200 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_870.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:57,215 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_871.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:57,231 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_872.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:57,244 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_873.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:57,258 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_874.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:57,272 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_875.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:57,287 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_876.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:57,302 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_877.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:57,315 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_878.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:57,329 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_879.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:57,345 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_880.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:57,360 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_881.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:57,385 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_883.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:57,399 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_884.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:57,414 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_885.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:57,428 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_886.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:57,464 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_887.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:57,478 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_888.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:57,491 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_889.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:57,509 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_890.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:57,523 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_891.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:57,538 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_892.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:57,551 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_893.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:57,565 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_894.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:57,579 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_895.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:57,595 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_896.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:57,610 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_897.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:57,625 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_898.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:57,641 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_899.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:57,657 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_900.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:57,672 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_901.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:57,687 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_902.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:57,701 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_903.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:57,714 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_904.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:57,730 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_905.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:57,745 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_906.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:57,760 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_907.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:57,777 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_908.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:57,792 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_909.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:57,806 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_910.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:57,822 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_911.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:57,836 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_912.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:57,852 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_913.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:57,867 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_914.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:57,882 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_915.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:57,899 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_916.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:57,913 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_917.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:57,927 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_918.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:57,942 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_919.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:57,957 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_920.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:57,973 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_921.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:57,988 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_922.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:58,004 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_923.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:58,018 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_924.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:58,032 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_925.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:58,048 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_926.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:58,062 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_927.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:58,078 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_928.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:58,093 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_929.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:58,107 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_930.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:58,125 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_931.txt:
+	Exception : Class label f-15_model not known
+2026-01-07 23:09:58,139 - root - INFO - Failed to add file data/collect_2026.Jan.07_20.52.57.0973269.UTC/Virtual Flash Lidar/frame_932.txt:
+	Exception : Class label f-15_model not known
