@@ -9,6 +9,8 @@ import copy
 import glob
 import numpy as np
 from typing import Callable
+from mcap.reader import make_reader
+from mcap_ros2.decoder import DecoderFactory
 
 ### PYQT ###
 from PyQt6.QtWebEngineWidgets import QWebEngineView

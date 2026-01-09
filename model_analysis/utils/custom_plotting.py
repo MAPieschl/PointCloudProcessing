@@ -116,3 +116,64 @@ class LinePlot:
 
         fig = self.get_fig()
         fig.show()
+
+class PointCloudPlot:
+    def __init__( self,
+                   title: str = "", 
+                   print_func: Callable[[str], None] = print ):
+          
+        self._title = title
+        self._print = print_func
+
+        self._size = 5
+        self._opacity = 1.0
+
+        self._data = np.array( [] )
+        self._colors = np.array( [] )
+
+    def add( self, data: np.ndarray, color: np.ndarray ) -> None:
+
+        self._data = np.concatenate( ( self._data, data ), axis = 0 )
+        self._colors = np.concatenate( ( self._data, data ), axis = 0 )
+
+    def set_size( self, size: int ) -> None:
+
+        self._size = size
+
+    def set_opacity( self, opacity: float ) -> None:
+
+        if( opacity > 1 ):      opacity = 1
+        elif( opacity < 0 ):    opacity = 0
+        
+        self._opacity = opacity
+
+    def get_fig( self ) -> go.Figure:
+        
+        fig = go.Figure()
+
+        if( self._data.shape[0] > 0 ):
+
+            fig.add_trace(
+                go.Scatter3d(
+                    x = self._data[:, 0],
+                    y = self._data[:, 1],
+                    z = self._data[:, 2],
+                    mode = 'markers',
+                    marker = dict(
+                        size = self._size,
+                        color = self._colors,
+                        opacity = self._opacity
+                    )
+                )
+            )
+
+            fig.update_layout(
+                title = self._title
+            ) 
+
+        return fig
+    
+    def show( self ) -> None:
+        
+        fig = self.get_fig()
+        fig.show()
