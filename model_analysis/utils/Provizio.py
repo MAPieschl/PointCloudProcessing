@@ -118,3 +118,30 @@ class Provizio:
         else:
             self._print( f"File {path} does not exist." )
             return {}
+        
+    def to_aftr_frame( self, path: str, points: np.ndarray, labels: np.ndarray = np.array( [] ) ) -> None:
+
+        if( len( points.shape ) != 2 or points.shape[1] != 3 ):
+            self._print( f"Unable to create aftr frame -> points vector must be shape (N, 3), not {points.shape}." )
+            return
+        
+        if( points.shape[0] != labels.shape[0] and labels.shape[0] != 0):
+            self._print( f"Unable to create aftr frame -> if labels are available, the number of labels much match the number of points. Currently there are {points.shape[0]} points and {labels.shape[0]} labels." )
+            return
+        
+        if( os.path.isdir( os.path.dirname( path ) ) ):
+            with open( path, 'w' ) as f:
+                for i, pt in enumerate( points ):
+                    f.write( f'({pt[0]}, {pt[1]}, {pt[2]})' )
+                    if( labels.shape[0] > 0 ):
+                        for lbl in labels[i]:
+                            f.write( f' {lbl}' )
+                    f.write( '\n' )
+
+        else:
+            self._print( "Unable to create aftr frame -> path does not exist." )
+
+vizio = Provizio()
+frames = vizio.parse_mcap( "C:/Users/user/Downloads/20260108_212149_UTC_provizio_ROS2.mcap" )
+for seq in list( frames.keys() ):
+    vizio.to_aftr_frame( f"E:/repos/PointCloudProcessing/model_analysis/data/frame_{seq}.txt", np.array( [ frames[seq]['data']['x'], frames[seq]['data']['y'], frames[seq]['data']['z'] ] ).transpose() )
