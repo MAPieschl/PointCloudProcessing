@@ -1,11 +1,12 @@
 from dependencies import *
 
+from gui.RadarCalibration import RadarCalibration
 from gui.TrainingPerformance import TrainingPerformance
 
 class MainApp(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Model Analysis")
+        self.setWindowTitle( "Point Cloud Toolkit" )
         self.showFullScreen()
         
         # Central widget for managing different views
@@ -13,19 +14,24 @@ class MainApp(QMainWindow):
         self.setCentralWidget(self.stacked_widget)
         
         # Add views to the stacked widget
-        self.scene_view = TrainingPerformance(parent = self)
+        self.radarcalib_view = RadarCalibration( parent = self )
+        self.trainperf_view = TrainingPerformance( parent = self )
         
-        self.stacked_widget.addWidget(self.scene_view)
+        self.stacked_widget.addWidget( self.radarcalib_view )
+        self.stacked_widget.addWidget( self.trainperf_view )
         
         # Create and configure the toolbar
-        self.toolbar = QToolBar("Main Toolbar")
-        self.addToolBar(Qt.ToolBarArea.BottomToolBarArea, self.toolbar)
-        self.toolbar.setMovable(False)
-        self.toolbar.setFloatable(False)
+        self.toolbar = QToolBar( "Main Toolbar" )
+        self.addToolBar( Qt.ToolBarArea.BottomToolBarArea, self.toolbar )
+        self.toolbar.setMovable( False )
+        self.toolbar.setFloatable( False )
         
         # Add view buttons to the left of the toolbar
-        scene_btn = QPushButton('Training Performance')
-        scene_btn.clicked.connect(lambda : self.stacked_widget.setCurrentIndex(0))
+        radarcalib_btn = QPushButton( "Radar Calibration" )
+        trainperf_btn = QPushButton( "Training Performance" )
+
+        radarcalib_btn.clicked.connect( lambda : self.stacked_widget.setCurrentIndex( 0 ) )
+        trainperf_btn.clicked.connect( lambda : self.stacked_widget.setCurrentIndex( 1 ) )
 
         # Use QWidgetAction to align buttons
         left_spacer = QWidget()
@@ -34,27 +40,28 @@ class MainApp(QMainWindow):
             QSizePolicy.Policy.Expanding
         )
 
-        exit_btn = QPushButton("Exit")
+        exit_btn = QPushButton( "Exit" )
         exit_btn.clicked.connect(self.close)
         
-        self.toolbar.addWidget(scene_btn)
-        self.toolbar.addWidget(left_spacer)
-        self.toolbar.addWidget(exit_btn)
+        self.toolbar.addWidget( radarcalib_btn )
+        self.toolbar.addWidget( trainperf_btn )
+        self.toolbar.addWidget( left_spacer )
+        self.toolbar.addWidget( exit_btn )
 
-    def update_(self):
-        for page in range(self.stacked_widget.count()):
-            self.stacked_widget.widget(page).update_()
+    def update_( self ):
+        for page in range( self.stacked_widget.count() ):
+            self.stacked_widget.widget( page ).update_()
 
-    def next_page(self):
-        self.stacked_widget.setCurrentIndex(self.stacked_widget.currentIndex() + 1)
+    def next_page( self ):
+        self.stacked_widget.setCurrentIndex( self.stacked_widget.currentIndex() + 1 )
         self.update_()
         
     def prev_page(self):
-        self.stacked_widget.setCurrentIndex(self.stacked_widget.currentIndex() - 1)
+        self.stacked_widget.setCurrentIndex( self.stacked_widget.currentIndex() - 1 )
         self.update_()
 
-    def goto_page(self, page_num):
-        self.stacked_widget.setCurrentIndex(page_num)
+    def goto_page( self, page_num ):
+        self.stacked_widget.setCurrentIndex( page_num )
         self.update_()
 
     def show_notification( self, msg: str ):
@@ -66,7 +73,7 @@ class MainApp(QMainWindow):
 
         response = popup.exec()
 
-    def get_left_toolbar_layout( self, child, title: str ):
+    def get_left_toolbar_layout( self, child, title: str, main_area_QVBoxLayout: bool = True ):
         '''
         Returns a standard layout with a left toolbar (1/6 of the window) and a main window area (5/6 of the window).
 
@@ -80,7 +87,7 @@ class MainApp(QMainWindow):
 
         # Build main layouts
         left_area = QVBoxLayout( self )
-        main_area = QVBoxLayout( self )
+        main_area = QVBoxLayout( self ) if main_area_QVBoxLayout else QHBoxLayout( self )
 
         # Build separator line
         sep_line = QFrame()

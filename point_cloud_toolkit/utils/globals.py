@@ -9,3 +9,5 @@ MODEL_OUTPUTS = [
     'segmentation_outputs',
     'se3'
 ]
+
+C = 299792458

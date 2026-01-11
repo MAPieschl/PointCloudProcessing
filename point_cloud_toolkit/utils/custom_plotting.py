@@ -134,7 +134,7 @@ class PointCloudPlot:
     def add( self, data: np.ndarray, color: np.ndarray ) -> None:
 
         self._data = np.concatenate( ( self._data, data ), axis = 0 )
-        self._colors = np.concatenate( ( self._data, data ), axis = 0 )
+        self._colors = np.concatenate( ( self._colors, color ), axis = 0 )
 
     def set_size( self, size: int ) -> None:
 
@@ -177,3 +177,30 @@ class PointCloudPlot:
         
         fig = self.get_fig()
         fig.show()
+
+class LineCanvas:
+    def __init__( self, title: str = "", print_func: Callable[[str], None] = print ):
+
+        self._title = title
+        self._print = print_func
+
+        self._lines = np.array( [] )
+        self._colors = np.array( [] )
+
+    def add( self, lines: np.ndarray, colors: np.ndarray ) -> None:
+
+        if( len( lines.shape ) != 2 or len( colors.shape ) != 2 ):
+            self._print( f"LineCanvas requires 2D arrays for lines and colors. Currently, lines has shape {lines.shape} and colors has shape {colors.shape}." )
+
+        if( lines.shape[1] != colors.shape[1] ):
+            self._print( f"LineCanvas data requires that each line be provided a color. Currently, there are {lines.shape[1]} lines and {colors.shape[1]} colors." )
+            return
+
+        self._lines = np.concatenate( ( self._lines, lines ), axis = 0 )
+        self._colors = np.concatenate( ( self._colors, colors ), axis = 0 )
+
+    def get_fig( self ) -> go.Figure:
+        
+        fig = go.Figure
+
+        return fig
