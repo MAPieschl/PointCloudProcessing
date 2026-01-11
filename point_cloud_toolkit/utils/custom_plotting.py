@@ -189,18 +189,39 @@ class LineCanvas:
 
     def add( self, lines: np.ndarray, colors: np.ndarray ) -> None:
 
-        if( len( lines.shape ) != 2 or len( colors.shape ) != 2 ):
-            self._print( f"LineCanvas requires 2D arrays for lines and colors. Currently, lines has shape {lines.shape} and colors has shape {colors.shape}." )
-
-        if( lines.shape[1] != colors.shape[1] ):
+        if( len( lines.shape ) != 3 or len( colors.shape ) != 1 ):
+            self._print( f"LineCanvas requires a 3D array for lines and 1D array for colors. Currently, lines has shape {lines.shape} and colors has shape {colors.shape}." )
+            return
+        
+        if( lines.shape[0] != colors.shape[0] ):
             self._print( f"LineCanvas data requires that each line be provided a color. Currently, there are {lines.shape[1]} lines and {colors.shape[1]} colors." )
             return
 
-        self._lines = np.concatenate( ( self._lines, lines ), axis = 0 )
-        self._colors = np.concatenate( ( self._colors, colors ), axis = 0 )
+        if( self._lines.shape[0] > 0 ):
+            self._lines = np.concatenate( ( self._lines, lines ), axis = 0 )
+            self._colors = np.concatenate( ( self._colors, colors ), axis = 0 )
+        else:
+            self._lines = lines
+            self._colors = colors
 
-    def get_fig( self ) -> go.Figure:
+    def clear( self ):
+
+        self._lines = np.array( [] )
+        self._colors = np.array( [] )
+
+    def get_fig( self, x_lims: list[float], y_lims: list[float] ) -> go.Figure:
         
-        fig = go.Figure
+        fig = go.Figure()
+
+        if( self._lines.shape[0] > 0 and self._lines.shape[0] == self._colors.shape[0] ):
+
+            for i, line in enumerate( self._lines ):
+                fig.add_shape( type = "line", x0 = line[0][0], y0 = line[0][1], x1 = line[1][0], y1 = line[1][1], line = dict( color = self._colors[i] ) )
+
+            fig.update_layout(
+                title = self._title,
+                xaxis_range = x_lims,
+                yaxis_range = y_lims
+            ) 
 
         return fig

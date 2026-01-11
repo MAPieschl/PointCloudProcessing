@@ -1,6 +1,6 @@
 from dependencies import *
 
-from utils.custom_plotting import LinePlot
+from utils.custom_plotting import LineCanvas
 
 class RadarCalibration( QWidget ):
     def __init__( self, parent ):
@@ -14,7 +14,7 @@ class RadarCalibration( QWidget ):
 
         # Calibration tool
         self.calib_area = QVBoxLayout()
-        self.main_area.addLayout( self.calib_area, 10 )
+        self.main_area.addLayout( self.calib_area, 15 )
         
         # Main area separator
         v_line = QFrame()
@@ -31,25 +31,17 @@ class RadarCalibration( QWidget ):
         self.reflector_area.addWidget( title_label, 1 )
 
         # Build plots
-        self.front_plot = LinePlot(
+        self.front_plot = LineCanvas(
             title = 'Corner Reflector - Front View',
-            x_axis_title = '',
-            y1_axis_title = '',
-            y2_axis_title = '',
             print_func = self._show_notification
         )
-        self.front_data = {}
         self.front_plot_area = QWebEngineView()
         self.reflector_area.addWidget( self.front_plot_area, 3 )
 
-        self.top_plot = LinePlot(
+        self.top_plot = LineCanvas(
             title = 'Corner Reflector - Top View',
-            x_axis_title = '',
-            y1_axis_title = '',
-            y2_axis_title = '',
             print_func = self._show_notification
         )
-        self.top_data = {}
         self.top_plot_area = QWebEngineView()
         self.reflector_area.addWidget( self.top_plot_area, 3 )
 
@@ -90,6 +82,7 @@ class RadarCalibration( QWidget ):
         self.roll_layout.addWidget( self.roll_slider )
 
         self.options_layout.addWidget( QLabel( "Move Entry Point" ) )
+        self.SLIDER_SCALE = 1000
 
         self.x_layout = QHBoxLayout()
         self.options_layout.addLayout( self.x_layout , 1)
@@ -98,6 +91,7 @@ class RadarCalibration( QWidget ):
 
         self.x_slider = QSlider( orientation = Qt.Orientation.Horizontal )
         self.x_slider.sliderMoved.connect( self.update_ )
+        self.x_slider.sliderReleased.connect( self.update_ )
         self.x_layout.addWidget( self.x_slider )
 
         self.y_layout = QHBoxLayout()
@@ -107,6 +101,7 @@ class RadarCalibration( QWidget ):
 
         self.y_slider = QSlider( orientation = Qt.Orientation.Horizontal )
         self.y_slider.sliderMoved.connect( self.update_ )
+        self.y_slider.sliderReleased.connect( self.update_ )
         self.y_layout.addWidget( self.y_slider )
 
         self.double_validator = QDoubleValidator( 0, 1000, 3 )
@@ -153,17 +148,91 @@ class RadarCalibration( QWidget ):
         a = edge_length / np.sqrt(2)
         self.rcs_label.setText( f"RCS:  {self.compute_rcs( a, globals.C / ( float( self.freq_entry.text() ) * 1e9 ) ):.3f} m^2" )
 
-        if( type( self.front_plot ) == LinePlot ):
-            html_plot = pio.to_html( self.front_plot.get_fig(), full_html = False, include_plotlyjs = 'cdn' )
+        if( type( self.front_plot ) == LineCanvas and type( self.top_plot ) == LineCanvas ):
+            aspect_ratio = self.front_plot_area.width() / self.front_plot_area.height()
+            y_lims = [-edge_length / 1.5, edge_length / 1.5]
+            x_lims = [y_lims[0] * aspect_ratio, y_lims[1] * aspect_ratio]
+
+            self.x_slider.setRange( int( np.floor( x_lims[0] * self.SLIDER_SCALE ) ), int( np.ceil( x_lims[1] * self.SLIDER_SCALE ) ) )
+            self.y_slider.setRange( int( np.floor( y_lims[0] * self.SLIDER_SCALE ) ), int( np.ceil( y_lims[1] * self.SLIDER_SCALE ) ) )
+
+            reflector_info = self.draw_reflector_pose( edge_length, self.pitch_slider.value(), self.yaw_slider.value(), self.roll_slider.value() )
+            self.draw_reflections( np.array( [self.x_slider.value() / self.SLIDER_SCALE, self.y_slider.value() / self.SLIDER_SCALE, y_lims[1]] ), reflector_info )
+
+            html_plot = pio.to_html( self.front_plot.get_fig( x_lims , y_lims ), full_html = False, include_plotlyjs = 'cdn' )
             self.front_plot_area.setHtml( html_plot )
+
+            html_plot = pio.to_html( self.top_plot.get_fig( x_lims , y_lims ), full_html = False, include_plotlyjs = 'cdn' )
+            self.top_plot_area.setHtml( html_plot )
 
     def compute_rcs( self, a: float, wavelength: float ) -> float:
 
         return ( 4 * np.pi * ( a ** 4 ) ) / ( 3 * ( wavelength ** 2 ) )
     
-    def draw_front_view( self, edge_length: float, roll: float, pitch: float, yaw: float ) -> None:
+    def draw_reflector_pose( self, edge_length: float, roll: float, pitch: float, yaw: float ) -> dict[str, np.ndarray]:
 
         # Radius of incircle
         r = np.sqrt( 3 ) * edge_length / 6
 
-        corners = np.array( [[-0.5 * edge_length, -r], [0.5 * edge_length, -r], [0, 2 * r], [-0.5 * edge_length, -r]] )
+        # Array of corners (CCW)
+        corners = np.array( [[-0.5 * edge_length, -r, 0], [0.5 * edge_length, -r, 0], [0, 2 * r, 0], [-0.5 * edge_length, -r, 0]] )
+        apex = np.array( [0, 0, -edge_length / np.sqrt( 6 )] )
+
+        # Rotation matrix (3D)
+        R = mat_ops.get_dcm( roll, pitch, yaw )
+
+        # Rotate triangle
+        corners = ( R @ corners.T ).T
+        apex = ( R @ apex.T ).T
+
+        # Front view lines
+        front_lines = []
+        for i in range( 3 ):
+            front_lines.append( [corners[i][:2], corners[i + 1][:2]] )
+            front_lines.append( [corners[i][:2], apex[:2]] )
+        
+        self.front_plot.clear()
+        self.front_plot.add( np.array( front_lines ), np.array( ['black' for i in range( len( front_lines ) )] ) )
+        
+        # Top view lines
+        top_lines = []
+        for i in range( 3 ):
+            top_lines.append( [corners[i][[0, 2]], corners[i + 1][[0, 2]]] )
+            top_lines.append( [corners[i][[0, 2]], apex[[0, 2]]] )
+        
+        self.top_plot.clear()
+        self.top_plot.add( np.array( top_lines ), np.array( ['black' for i in range ( len( top_lines ) )] ) )
+
+        return {
+            'corners': corners[:3],
+            'apex': apex
+        }
+
+    def draw_reflections( self, ray_origin: np.ndarray, reflector_info: dict[str, np.ndarray] ):
+
+        ray_vector = np.array( [0, 0, -1] )
+        ultimate_origin = ray_origin
+        rays = np.array( [] )
+        while( True ):
+            reflection = corner_reflector.get_reflection( ray_origin, ray_vector, reflector_info['corners'], reflector_info['apex'], self._show_notification )
+
+            if( reflection == {} ):
+                if( rays.shape[0] < 1 ):
+                    rays = np.array( [[ ray_origin, ray_origin * np.array( [1, 1, -1] ) ]] )
+                else:
+                    rays = np.concatenate( (rays, np.array( [[ray_origin, [ray_origin[0], ray_origin[1], ultimate_origin[2]]]] )), axis = 0 )
+                break
+            
+            if( rays.shape[0] > 0 ):
+                rays = np.concatenate( (rays, np.array( [[ray_origin, reflection['collision_point']]] )), axis = 0 )
+            else:
+                rays = np.array( [[ray_origin, reflection['collision_point']]] )
+            
+            ray_origin = reflection['collision_point']
+            ray_vector = reflection['reflection_vector']
+
+        front_rays = rays[:, :, :2]
+        self.front_plot.add( front_rays, np.array( ['red' for i in range( len( front_rays ) )] ) )
+
+        top_rays = rays[:, :, [0, 2]]
+        self.top_plot.add( top_rays, np.array( ['red' for i in range( len( top_rays ) )] ) )
