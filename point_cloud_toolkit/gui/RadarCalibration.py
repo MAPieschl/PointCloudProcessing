@@ -2,6 +2,20 @@ from dependencies import *
 
 from utils.custom_plotting import LineCanvas, PointCloudPlot
 
+class LineItemRadiobuttonwithSlider(QWidget):
+    def __init__( self, label: str, print_func: Callable[[str], None]):
+        super().__init__()
+
+        self._show_notification = print_func
+
+        self.line_layout = QHBoxLayout( self )
+
+        self.radiobutton = QRadioButton( label )
+        self.line_layout.addWidget( self.radiobutton )
+
+        self.slider = QSlider( orientation = Qt.Orientation.Horizontal )
+        self.line_layout.addWidget( self.slider )
+
 class RadarCalibration( QWidget ):
     def __init__( self, parent ):
         super().__init__( parent )
@@ -44,7 +58,9 @@ class RadarCalibration( QWidget ):
 
         self.loaded_frames_layout = QVBoxLayout( self.loaded_frames_container )
         self.loaded_frames_layout.setAlignment( Qt.AlignmentFlag.AlignTop )
-        self.loaded_frames: dict[QCheckBox, dict] = {}
+        self.loaded_frames: dict[LineItemRadiobuttonwithSlider, dict] = {}
+
+        self.loaded_frames_btn_group = QButtonGroup()
 
         self.left_toolbar.addStretch()
 
@@ -195,17 +211,20 @@ class RadarCalibration( QWidget ):
     def update_radar_calibration( self, *args ) -> None:
         
         if( len( args ) >= 2 and type( self.pc_plot ) == PointCloudPlot ):
-            if( type( args[0] ) == QCheckBox and type( args[1] ) == bool ):
+            if( type( args[0] ) == LineItemRadiobuttonwithSlider and type( args[1] ) == bool ):
                 if( args[1] ):  
-                    print( type( self.loaded_frames[args[0]]['data'][0] ), self.loaded_frames[args[0]]['data'] )
+                    self.pc_plot.clear()
                     self.pc_plot.add(
-                        self.loaded_frames[args[0]]['data'], 
+                        structured_to_unstructured( self.loaded_frames[args[0]]['data'][['x', 'y', 'z']], dtype = np.float32 ), 
                         np.array( [self.loaded_frames[args[0]]['sequence'] for i in range( self.loaded_frames[args[0]]['data'].shape[0] )] ),
                         f"{self.loaded_frames[args[0]]['name']}_{self.loaded_frames[args[0]]['sequence']}"
                     )
 
                 else:           
+
                     self.pc_plot.remove( f"{self.loaded_frames[args[0]]['name']}_{self.loaded_frames[args[0]]['sequence']}" )
+            elif( type( args[0] ) == LineItemRadiobuttonwithSlider and type( args[1] ) == int ):
+                self.pc_plot.filter_by_radius( np.array( [0, 0, 0] ), args[1] )
 
         if( type( self.pc_plot ) == PointCloudPlot ):
             html_plot = pio.to_html( self.pc_plot.get_fig(), full_html = False, include_plotlyjs = 'cdn' )
@@ -231,10 +250,10 @@ class RadarCalibration( QWidget ):
 
             self.dist_traveled_label.setText( f"Ray Distance Measured:  {reflection:0.3f} m | Actual Distance:  {2 * (y_lims[1] - reflector_info['apex'][2]):0.3f} | Error:  {reflection - 2 * (y_lims[1] - reflector_info['apex'][2]):0.3f}" )
 
-            html_plot = pio.to_html( self.front_plot.get_fig( x_lims , y_lims ), full_html = False, include_plotlyjs = 'cdn' )
+            html_plot = pio.to_html( self.front_plot.get_fig( x_lims , y_lims ), full_html = False, include_plotlyjs = True )
             self.front_plot_area.setHtml( html_plot )
 
-            html_plot = pio.to_html( self.top_plot.get_fig( x_lims , y_lims ), full_html = False, include_plotlyjs = 'cdn' )
+            html_plot = pio.to_html( self.top_plot.get_fig( x_lims , y_lims ), full_html = False, include_plotlyjs = True )
             self.top_plot_area.setHtml( html_plot )
 
     def load_mcap_data( self ):
@@ -247,16 +266,19 @@ class RadarCalibration( QWidget ):
                 frames = self._vizio.parse_mcap( file_path )
 
                 # Clear out previous frames
-                for cb in list( self.loaded_frames.keys() ):
-                    self.loaded_frames_layout.removeWidget( cb )
+                for line_item in self.loaded_frames.keys():
+                    self.loaded_frames_layout.removeWidget( line_item )
                 self.loaded_frames.clear()
 
                 # Add new model
                 for key in list( frames.keys() ):
-                    cb = QCheckBox( f"Frame {key}" )
-                    self.loaded_frames[cb] = frames[key]
-                    cb.stateChanged.connect( lambda x, s = cb: self.update_radar_calibration( s, x == 2 ) )
-                    self.loaded_frames_layout.addWidget( cb )
+                    li = LineItemRadiobuttonwithSlider( f"Frame {key}", self._show_notification )
+                    self.loaded_frames[li] = frames[key]
+                    li.radiobutton.toggled.connect( lambda x, s = li: self.update_radar_calibration( s, x ) )
+                    li.slider.sliderMoved.connect( lambda x, s = li : self.update_radar_calibration( s, x ) )
+                    # li.slider.sliderReleased.connect( lambda x, s = li: self.update_radar_calibration( s, x ) )
+                    self.loaded_frames_btn_group.addButton( li.radiobutton )
+                    self.loaded_frames_layout.addWidget( li )
 
             else:
                 self._show_notification( "Model directory no longer exists." )

@@ -134,6 +134,8 @@ class PointCloudPlot:
         self._size = np.array( [] )
         self._opacity = np.array( [] )
 
+        self._filter = None
+
     def add( self, data: np.ndarray, color: np.ndarray, tag: str, size: int = 5, opacity: float = 1.0 ) -> None:
 
         size = np.clip( size, self._size_lims[0], self._size_lims[1], dtype = type( self._size_lims[0] ) )
@@ -160,6 +162,7 @@ class PointCloudPlot:
         self._tags = np.array( [] )
         self._size = np.array( [] )
         self._opacity = np.array( [] )
+        self.clear_filter()
 
     def remove( self, tag: str ):
 
@@ -181,6 +184,14 @@ class PointCloudPlot:
         indices = np.where( self._tags == tag )
         self._opacity[indices] = np.clip( opacity, self._opacity_lims[0], self._opacity_lims[1], dtype = type( self._opacity_lims[0] ) )
 
+    def filter_by_radius( self, center: np.ndarray, radius: float ):
+
+        self._filter = np.where( np.sum( ( self._data - center ) ** 2, axis = 1 ) < radius ** 2 )
+
+    def clear_filter( self ):
+
+        self.filter = None
+
     def get_fig( self ) -> go.Figure:
         
         fig = go.Figure()
@@ -189,16 +200,13 @@ class PointCloudPlot:
 
             fig.add_trace(
                 go.Scatter3d(
-                    # x = self._data[:, 0],
-                    # y = self._data[:, 1],
-                    # z = self._data[:, 2],
-                    x = self._data[:]['x'],
-                    y = self._data[:]['y'],
-                    z = self._data[:]['z'],
+                    x = self._data[:, 0] if self._filter == None else self._data[self._filter, 0],
+                    y = self._data[:, 1] if self._filter == None else self._data[self._filter, 1],
+                    z = self._data[:, 2] if self._filter == None else self._data[self._filter, 2],
                     mode = 'markers',
                     marker = dict(
-                        size = self._size,
-                        color = self._colors,
+                        size = self._size if self._filter == None else self._size[self._filter],
+                        color = self._colors if self._filter == None else self._colors[self._filter],
                         colorscale = 'Viridis',
                     )
                 )

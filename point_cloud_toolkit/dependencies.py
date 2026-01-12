@@ -8,6 +8,7 @@ import pickle
 import copy
 import glob
 import numpy as np
+from numpy.lib.recfunctions import structured_to_unstructured
 from typing import Callable
 from mcap.reader import make_reader
 from mcap_ros2.decoder import DecoderFactory
@@ -21,7 +22,7 @@ from PyQt6.QtWidgets import (
     QPushButton, QStackedWidget, QToolBar, QLabel, QFileDialog,
     QLineEdit, QFormLayout, QScrollArea, QListWidget, QListWidgetItem,
     QSizePolicy, QComboBox, QLabel, QFrame, QMessageBox, QSlider,
-    QRadioButton, QCheckBox
+    QRadioButton, QCheckBox, QButtonGroup
 )
 from QMarkdownWidget import QMView
 
