@@ -125,27 +125,61 @@ class PointCloudPlot:
         self._title = title
         self._print = print_func
 
-        self._size = 5
-        self._opacity = 1.0
+        self._size_lims: list[int] = [1, 10]
+        self._opacity_lims: list[float] = [0.0, 1.0]
 
         self._data = np.array( [] )
         self._colors = np.array( [] )
+        self._tags = np.array( [] )
+        self._size = np.array( [] )
+        self._opacity = np.array( [] )
 
-    def add( self, data: np.ndarray, color: np.ndarray ) -> None:
+    def add( self, data: np.ndarray, color: np.ndarray, tag: str, size: int = 5, opacity: float = 1.0 ) -> None:
 
-        self._data = np.concatenate( ( self._data, data ), axis = 0 )
-        self._colors = np.concatenate( ( self._colors, color ), axis = 0 )
+        size = np.clip( size, self._size_lims[0], self._size_lims[1], dtype = type( self._size_lims[0] ) )
+        opacity = np.clip( opacity, self._opacity_lims[0], self._opacity_lims[1], dtype = type( self._opacity_lims[0] ) )
 
-    def set_size( self, size: int ) -> None:
+        if( self._data.shape[0] < 1 or self._colors.shape[0] < 1 or self._tags.shape[0] < 1 ):
+            self._data = data
+            self._colors = color
+            self._tags = np.array( [tag for i in range( data.shape[0] )] )
+            self._size = np.array( [size for i in range( data.shape[0] )] )
+            self._opacity = np.array( [opacity for i in range( data.shape[0] )] )
 
-        self._size = size
+        else:
+            self._data = np.concatenate( ( self._data, data ), axis = 0 )
+            self._colors = np.concatenate( ( self._colors, color ), axis = 0 )
+            self._tags = np.concatenate( ( self._tags, np.array( [tag for i in range( data.shape[0] )] ) ), axis = 0 )
+            self._size = np.concatenate( ( self._size, np.array( [size for i in range( data.shape[0] )] ) ), axis = 0 )
+            self._opacity = np.concatenate( ( self._opacity, np.array( [opacity for i in range( data.shape[0] )] ) ), axis = 0 )
 
-    def set_opacity( self, opacity: float ) -> None:
+    def clear( self ):
 
-        if( opacity > 1 ):      opacity = 1
-        elif( opacity < 0 ):    opacity = 0
-        
-        self._opacity = opacity
+        self._data = np.array( [] )
+        self._colors = np.array( [] )
+        self._tags = np.array( [] )
+        self._size = np.array( [] )
+        self._opacity = np.array( [] )
+
+    def remove( self, tag: str ):
+
+        indices = np.where( self._tags == tag )
+
+        self._data = np.delete( self._data, indices, axis = 0 )
+        self._colors = np.delete( self._colors, indices, axis = 0 )
+        self._tags = np.delete( self._tags, indices, axis = 0 )
+        self._size = np.delete( self._size, indices, axis = 0 )
+        self._opacity = np.delete( self._opacity, indices, axis = 0 )
+
+    def set_size( self, tag: str, size: int ) -> None:
+
+        indices = np.where( self._tags == tag )
+        self._size[indices] = np.clip( size, self._size_lims[0], self._size_lims[1], dtype = type( self._size_lims[0] ) )
+
+    def set_opacity( self, tag: str, opacity: float ) -> None:
+
+        indices = np.where( self._tags == tag )
+        self._opacity[indices] = np.clip( opacity, self._opacity_lims[0], self._opacity_lims[1], dtype = type( self._opacity_lims[0] ) )
 
     def get_fig( self ) -> go.Figure:
         
@@ -155,14 +189,17 @@ class PointCloudPlot:
 
             fig.add_trace(
                 go.Scatter3d(
-                    x = self._data[:, 0],
-                    y = self._data[:, 1],
-                    z = self._data[:, 2],
+                    # x = self._data[:, 0],
+                    # y = self._data[:, 1],
+                    # z = self._data[:, 2],
+                    x = self._data[:]['x'],
+                    y = self._data[:]['y'],
+                    z = self._data[:]['z'],
                     mode = 'markers',
                     marker = dict(
                         size = self._size,
                         color = self._colors,
-                        opacity = self._opacity
+                        colorscale = 'Viridis',
                     )
                 )
             )
@@ -200,6 +237,7 @@ class LineCanvas:
         if( self._lines.shape[0] > 0 ):
             self._lines = np.concatenate( ( self._lines, lines ), axis = 0 )
             self._colors = np.concatenate( ( self._colors, colors ), axis = 0 )
+            
         else:
             self._lines = lines
             self._colors = colors

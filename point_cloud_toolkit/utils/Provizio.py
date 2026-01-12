@@ -107,7 +107,8 @@ class Provizio:
                             'is_dense': msg['is_dense'],
                             'is_bigendian': msg['is_bigendian'],
                             'fields': np.array( [field.name for field in msg['fields']] ),
-                            'data': np.frombuffer( msg['data'], self._ROS.create_np_dtype_from( msg['fields'], msg['is_bigendian'] ) )
+                            'data': np.frombuffer( msg['data'], self._ROS.create_np_dtype_from( msg['fields'], msg['is_bigendian'] ) ),
+                            'dtype': self._ROS.create_np_dtype_from( msg['fields'], msg['is_bigendian'] )
                         }
                 
                 except Exception as e:
@@ -140,8 +141,3 @@ class Provizio:
 
         else:
             self._print( "Unable to create aftr frame -> path does not exist." )
-
-vizio = Provizio()
-frames = vizio.parse_mcap( "C:/Users/user/Downloads/20260108_212149_UTC_provizio_ROS2.mcap" )
-for seq in list( frames.keys() ):
-    vizio.to_aftr_frame( f"E:/repos/PointCloudProcessing/model_analysis/data/frame_{seq}.txt", np.array( [ frames[seq]['data']['x'], frames[seq]['data']['y'], frames[seq]['data']['z'] ] ).transpose() )
