@@ -1,5 +1,5 @@
-import numpy as np
-from typing import Callable
+from dependencies import *
+import utils.globals as globals
 
 def moller_trumbore(ray_origin, ray_vector, triangle):
     """

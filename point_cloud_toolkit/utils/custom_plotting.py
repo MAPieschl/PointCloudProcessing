@@ -1,4 +1,5 @@
 from dependencies import *
+import utils.globals as globals
 
 class LinePlot:
     def __init__( self,

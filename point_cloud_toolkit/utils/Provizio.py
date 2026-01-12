@@ -1,4 +1,5 @@
 from dependencies import *
+import utils.globals as globals
 
 class ROS:
     def __init__(  self, print_func: Callable[[str], None] ):

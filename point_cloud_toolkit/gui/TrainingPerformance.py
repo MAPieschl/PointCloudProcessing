@@ -1,4 +1,5 @@
 from dependencies import *
+import utils.globals as globals
 
 from utils.custom_plotting import LinePlot
 

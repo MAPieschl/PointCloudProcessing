@@ -1,5 +1,9 @@
 from dependencies import *
+import utils.globals as globals
 
+import utils.mat_ops as mat_ops
+import utils.corner_reflector as corner_reflector
+from utils.Provizio import Provizio
 from utils.custom_plotting import LineCanvas, PointCloudPlot
 
 class LineItemRadiobuttonwithSlider(QWidget):
@@ -24,7 +28,7 @@ class RadarCalibration( QWidget ):
         self._show_notification = parent.show_notification
 
         # Provizio object
-        self._vizio = vizio.Provizio( print_func = self._show_notification )
+        self._vizio = Provizio( print_func = self._show_notification )
 
         # Build GUI
         self.main_layout, self.left_toolbar, self.main_area = parent.get_left_toolbar_layout( self, "Radar Calibration", False )
@@ -250,10 +254,10 @@ class RadarCalibration( QWidget ):
 
             self.dist_traveled_label.setText( f"Ray Distance Measured:  {reflection:0.3f} m | Actual Distance:  {2 * (y_lims[1] - reflector_info['apex'][2]):0.3f} | Error:  {reflection - 2 * (y_lims[1] - reflector_info['apex'][2]):0.3f}" )
 
-            html_plot = pio.to_html( self.front_plot.get_fig( x_lims , y_lims ), full_html = False, include_plotlyjs = True )
+            html_plot = pio.to_html( self.front_plot.get_fig( x_lims , y_lims ), full_html = False, include_plotlyjs = 'cdn' )
             self.front_plot_area.setHtml( html_plot )
 
-            html_plot = pio.to_html( self.top_plot.get_fig( x_lims , y_lims ), full_html = False, include_plotlyjs = True )
+            html_plot = pio.to_html( self.top_plot.get_fig( x_lims , y_lims ), full_html = False, include_plotlyjs = 'cdn' )
             self.top_plot_area.setHtml( html_plot )
 
     def load_mcap_data( self ):
@@ -281,7 +285,7 @@ class RadarCalibration( QWidget ):
                     self.loaded_frames_layout.addWidget( li )
 
             else:
-                self._show_notification( "Model directory no longer exists." )
+                self._show_notification( "MCAP file no longer exists." )
 
             self.update_()
 
@@ -289,7 +293,16 @@ class RadarCalibration( QWidget ):
             self._show_notification( f"GUI:  Unable to load point cloud due to error:\n\t{type( e ).__name__}: {e}" )
     
     def load_optitrack_data( self ):
-        return
+        try:
+
+            file_dialog = QFileDialog( self )
+            file_path, _ = file_dialog.getOpenFileName( self, "Select OptiTrack .log file" )
+
+            if( os.path.isfile( file_path ) ):
+                pass
+
+        except:
+            self._show_notification( "OptiTrack file no longer exists." )
     
     def select_all( self, select: bool ):
         return
