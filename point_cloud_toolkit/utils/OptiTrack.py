@@ -27,7 +27,7 @@ class OptiTrack:
                                 name = line[ 17 * item ]
                                 R = []
                                 for el in range( 16 ):
-                                    R.append( float( el ) )
+                                    R.append( float( line[17 * item + ( el + 1 )] ) )
                                 R = np.array( R ).reshape( ( 4, 4 ) )
 
                                 output[timestamp][name] = R

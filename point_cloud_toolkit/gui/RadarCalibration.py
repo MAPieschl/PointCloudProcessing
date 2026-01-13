@@ -278,7 +278,7 @@ class RadarCalibration( QWidget ):
                 for key in list( frames.keys() ):
                     li = LineItemRadiobuttonwithSlider( f"Frame {key}", self._show_notification )
                     self.loaded_frames[li] = frames[key]
-                    li.radiobutton.toggled.connect( lambda x, s = li: self.update_radar_calibration( s, x ) )
+                    li.radiobutton.toggled.connect( lambda x, s = li : self.update_radar_calibration( s, x ) )
                     li.slider.sliderMoved.connect( lambda x, s = li : self.update_radar_calibration( s, x ) )
                     # li.slider.sliderReleased.connect( lambda x, s = li: self.update_radar_calibration( s, x ) )
                     self.loaded_frames_btn_group.addButton( li.radiobutton )
