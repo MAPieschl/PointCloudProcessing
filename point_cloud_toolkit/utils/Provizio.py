@@ -98,8 +98,8 @@ class Provizio:
                             'topic': channel.topic,
                             'metadata': channel.metadata,
                             'channel_id': channel.id,
-                            'log_time': message.log_time,
-                            'publish_time': message.publish_time,
+                            'log_time': datetime.fromtimestamp( message.log_time / 1e9, tz = timezone.utc ),
+                            'publish_time': datetime.fromtimestamp( message.publish_time / 1e9, tz = timezone.utc ),
                             'sequence': message.sequence,
                             'height': msg['height'],
                             'width': msg['width'],
@@ -107,7 +107,7 @@ class Provizio:
                             'row_step': msg['row_step'],
                             'is_dense': msg['is_dense'],
                             'is_bigendian': msg['is_bigendian'],
-                            'fields': np.array( [field.name for field in msg['fields']] ),
+                            'fields': deque( [field.name for field in msg['fields']] ),
                             'data': np.frombuffer( msg['data'], self._ROS.create_np_dtype_from( msg['fields'], msg['is_bigendian'] ) ),
                             'dtype': self._ROS.create_np_dtype_from( msg['fields'], msg['is_bigendian'] )
                         }

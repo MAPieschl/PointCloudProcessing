@@ -4,6 +4,7 @@ import utils.globals as globals
 import utils.mat_ops as mat_ops
 import utils.corner_reflector as corner_reflector
 from utils.Provizio import Provizio
+from utils.OptiTrack import OptiTrack
 from utils.custom_plotting import LineCanvas, PointCloudPlot
 
 class LineItemRadiobuttonwithSlider(QWidget):
@@ -29,6 +30,7 @@ class RadarCalibration( QWidget ):
 
         # Provizio object
         self._vizio = Provizio( print_func = self._show_notification )
+        self._optitrack = OptiTrack( print_func = self._show_notification )
 
         # Build GUI
         self.main_layout, self.left_toolbar, self.main_area = parent.get_left_toolbar_layout( self, "Radar Calibration", False )
@@ -45,14 +47,6 @@ class RadarCalibration( QWidget ):
         self.selection_layout = QHBoxLayout()
         self.left_toolbar.addLayout( self.selection_layout )
 
-        self.select_all_btn = QPushButton( "Select All" )
-        self.select_all_btn.clicked.connect( lambda : self.select_all( True ) )
-        self.selection_layout.addWidget( self.select_all_btn )
-
-        self.clear_all_btn = QPushButton( "Clear Selection" )
-        self.clear_all_btn.clicked.connect( lambda : self.select_all( False ) )
-        self.selection_layout.addWidget( self.clear_all_btn )
-
         self.loaded_frames_area = QScrollArea()
         self.left_toolbar.addWidget( self.loaded_frames_area )
 
@@ -63,8 +57,16 @@ class RadarCalibration( QWidget ):
         self.loaded_frames_layout = QVBoxLayout( self.loaded_frames_container )
         self.loaded_frames_layout.setAlignment( Qt.AlignmentFlag.AlignTop )
         self.loaded_frames: dict[LineItemRadiobuttonwithSlider, dict] = {}
+        self.truth_data: dict[datetime, dict]
 
         self.loaded_frames_btn_group = QButtonGroup()
+
+        self.current_color_field = None
+        self.color_label = QLabel()
+        self.left_toolbar.addWidget( self.color_label )
+        self.change_color_btn = QPushButton( "Change Color Scheme" )
+        self.change_color_btn.clicked.connect( lambda x, s = self.change_color_btn : self.update_radar_calibration( s, 'next' ) )
+        self.left_toolbar.addWidget( self.change_color_btn )
 
         self.left_toolbar.addStretch()
 
@@ -217,18 +219,44 @@ class RadarCalibration( QWidget ):
         if( len( args ) >= 2 and type( self.pc_plot ) == PointCloudPlot ):
             if( type( args[0] ) == LineItemRadiobuttonwithSlider and type( args[1] ) == bool ):
                 if( args[1] ):  
+                    if( self.current_color_field is None): 
+                        self.current_color_field = self.loaded_frames[args[0]]['fields']
                     self.pc_plot.clear()
                     self.pc_plot.add(
                         structured_to_unstructured( self.loaded_frames[args[0]]['data'][['x', 'y', 'z']], dtype = np.float32 ), 
-                        np.array( [self.loaded_frames[args[0]]['sequence'] for i in range( self.loaded_frames[args[0]]['data'].shape[0] )] ),
+                        np.array( self.loaded_frames[args[0]]['data'][self.current_color_field[0]], dtype = np.float32 ),
                         f"{self.loaded_frames[args[0]]['name']}_{self.loaded_frames[args[0]]['sequence']}"
                     )
 
-                else:           
+                    try:
+                        opti_ts = list( self.truth_data.keys() )
+                        idx = bisect.bisect_left( opti_ts, self.loaded_frames[args[0]]['log_time'] )
 
+                        R_radar = self.truth_data[opti_ts[idx]]['mmwave']
+                        R_corner_reflector = self.truth_data[opti_ts[idx]]['corner_reflector']
+
+                        p_corner_reflector = R_radar[:3, :3] @ R_corner_reflector[3:, :3][0].T + R_radar[3:, :3][0].T
+
+                        self.pc_plot.add_red_point( p_corner_reflector )
+
+                    except Exception as e:
+                        self._show_notification( f"Unable to load truth position:\n\t{type(e)}: {e}" )
+
+                else:           
                     self.pc_plot.remove( f"{self.loaded_frames[args[0]]['name']}_{self.loaded_frames[args[0]]['sequence']}" )
+                    self.current_color_field = None
+
+            elif( type( args[0] ) == QPushButton and args[1] == 'next' and type( self.current_color_field ) == deque ):
+                self.current_color_field.rotate(1)
+                self.loaded_frames_btn_group.checkedButton().toggled.emit( True )
+
             elif( type( args[0] ) == LineItemRadiobuttonwithSlider and type( args[1] ) == int ):
                 self.pc_plot.filter_by_radius( np.array( [0, 0, 0] ), args[1] )
+
+        if( type( self.current_color_field ) == deque ):
+            self.color_label.setText( f"Color Scheme:  {self.current_color_field[0]}" )
+        else:
+            self.color_label.setText( 'Color Scheme:  none' )
 
         if( type( self.pc_plot ) == PointCloudPlot ):
             html_plot = pio.to_html( self.pc_plot.get_fig(), full_html = False, include_plotlyjs = 'cdn' )
@@ -299,10 +327,13 @@ class RadarCalibration( QWidget ):
             file_path, _ = file_dialog.getOpenFileName( self, "Select OptiTrack .log file" )
 
             if( os.path.isfile( file_path ) ):
-                pass
+                self.truth_data = self._optitrack.parse_log( file_path )
 
         except:
             self._show_notification( "OptiTrack file no longer exists." )
+
+    def find_nearest_truth_data( self, t: datetime ):
+        return
     
     def select_all( self, select: bool ):
         return

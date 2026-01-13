@@ -20,6 +20,7 @@ class OptiTrack:
                             
                             # the magic re.sub() simply truncates the OptiTrack time to 6 digits
                             timestamp = datetime.strptime( re.sub(r'(\.\d{6})\d+', r'\1', line.pop( 0 )), "%Y.%b.%d_%H.%M.%S.%f.UTC" )
+                            timestamp = timestamp.replace( tzinfo = timezone.utc )
                             output[timestamp] = {}
                             
                             num_items = int( line.pop( 0 ) )

@@ -267,7 +267,6 @@ class OptiTrackCalibration( QWidget ):
                 self.cb_by_item.clear()
                 self.data.clear()
 
-
                 # Load new data
                 for timestamp in data_by_time.keys():
                     for item in data_by_time[timestamp].keys():

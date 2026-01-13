@@ -135,6 +135,10 @@ class PointCloudPlot:
         self._size = np.array( [] )
         self._opacity = np.array( [] )
 
+        self._red_points = np.array( [] )
+        self._red_tags = np.array( [] )
+        self._red_size = np.array( [] )
+
         self._filter = None
 
     def add( self, data: np.ndarray, color: np.ndarray, tag: str, size: int = 5, opacity: float = 1.0 ) -> None:
@@ -156,6 +160,25 @@ class PointCloudPlot:
             self._size = np.concatenate( ( self._size, np.array( [size for i in range( data.shape[0] )] ) ), axis = 0 )
             self._opacity = np.concatenate( ( self._opacity, np.array( [opacity for i in range( data.shape[0] )] ) ), axis = 0 )
 
+    def add_red_point( self, pt: np.ndarray, tag: str = '', size: int = 5 ):
+
+        size = np.clip( size, self._size_lims[0], self._size_lims[1], dtype = type( self._size_lims[0] ) )
+
+        if( self._red_points.shape[0] < 1 or self._red_tags.shape[0] < 1 or self._red_size.shape[0] < 1 ):
+            self._red_points = np.array( [pt] )
+            self._red_tags = np.array( [tag] )
+            self._red_size = np.array( [size] )
+
+        else:
+            self._red_points = np.concatenate( ( self._red_points, np.array( [pt] ) ), axis = 0 )
+            self._red_tags = np.concatenate( ( self._red_tags, np.array( [tag] ) ), axis = 0 )
+            self._size = np.concatenate( ( self._red_size, np.array( [size] ) ), axis = 0 )
+
+    def clear_red_points( self ):
+        self._red_points = np.array( [] )
+        self._red_tags = np.array( [] )
+        self._red_size = np.array( [] )
+
     def clear( self ):
 
         self._data = np.array( [] )
@@ -164,6 +187,7 @@ class PointCloudPlot:
         self._size = np.array( [] )
         self._opacity = np.array( [] )
         self.clear_filter()
+        self.clear_red_points()
 
     def remove( self, tag: str ):
 
@@ -201,21 +225,35 @@ class PointCloudPlot:
 
             fig.add_trace(
                 go.Scatter3d(
-                    x = self._data[:, 0] if self._filter == None else self._data[self._filter, 0],
-                    y = self._data[:, 1] if self._filter == None else self._data[self._filter, 1],
-                    z = self._data[:, 2] if self._filter == None else self._data[self._filter, 2],
+                    x = self._data[:, 0] if self._filter is None else self._data[self._filter, 0],
+                    y = self._data[:, 1] if self._filter is None else self._data[self._filter, 1],
+                    z = self._data[:, 2] if self._filter is None else self._data[self._filter, 2],
                     mode = 'markers',
                     marker = dict(
-                        size = self._size if self._filter == None else self._size[self._filter],
-                        color = self._colors if self._filter == None else self._colors[self._filter],
-                        colorscale = 'Viridis',
+                        size = self._size if self._filter is None else self._size[self._filter],
+                        color = self._colors if self._filter is None else self._colors[self._filter],
+                        colorscale = 'Viridis'
                     )
                 )
             )
 
-            fig.update_layout(
-                title = self._title
-            ) 
+        if( self._red_points.shape[0] > 0 ):
+            fig.add_trace(
+                go.Scatter3d(
+                    x = self._red_points[:, 0],
+                    y = self._red_points[:, 1],
+                    z = self._red_points[:, 2],
+                    mode = 'markers',
+                    marker = dict(
+                        size = self._red_size,
+                        color = 'red',
+                    )
+                )
+            )
+
+        fig.update_layout(
+            title = self._title
+        ) 
 
         return fig
     
