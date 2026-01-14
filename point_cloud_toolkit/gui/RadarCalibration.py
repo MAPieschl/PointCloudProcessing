@@ -36,6 +36,8 @@ class RadarCalibration( QWidget ):
         self.main_layout, self.left_toolbar, self.main_area = parent.get_left_toolbar_layout( self, "Radar Calibration", False )
 
         # Build toolbar
+        self.double_validator = QDoubleValidator( 0, 1000, 3 )
+
         self.radar_data_btn = QPushButton( "Select MCAP (ROS2) point cloud file" )
         self.radar_data_btn.clicked.connect( self.load_mcap_data )
         self.left_toolbar.addWidget( self.radar_data_btn )
@@ -60,6 +62,7 @@ class RadarCalibration( QWidget ):
         self.truth_data: dict[datetime, dict]
         self.target_truth_position = None
         self.target_filter_center = None
+        self.target_filter_radius = None
 
         self.loaded_frames_btn_group = QButtonGroup()
 
@@ -82,6 +85,7 @@ class RadarCalibration( QWidget ):
 
         self.shift_title_area.addWidget( QLabel( "Shift filter center by " ) )
         self.shift_amount = QLineEdit()
+        self.shift_amount.setValidator( self.double_validator )
         self.shift_title_area.addWidget( self.shift_amount )
 
         self.shift_pos_btn_area = QHBoxLayout()
@@ -91,31 +95,31 @@ class RadarCalibration( QWidget ):
         self.left_toolbar.addLayout( self.shift_neg_btn_area )
 
         self.posx_btn = QPushButton( "+x" )
-        self.posx_btn.clicked.connect( self.update_radar_calibration )
+        self.posx_btn.clicked.connect( lambda : self.set_target_filter_center( np.array( [float( self.shift_amount.text() ), 0, 0] ), True ) )
         self.shift_pos_btn_area.addWidget( self.posx_btn )
 
         self.posx_btn = QPushButton( "+y" )
-        self.posx_btn.clicked.connect( self.update_radar_calibration )
+        self.posx_btn.clicked.connect( lambda : self.set_target_filter_center( np.array( [0, float( self.shift_amount.text() ), 0] ), True ) )
         self.shift_pos_btn_area.addWidget( self.posx_btn )
 
         self.posx_btn = QPushButton( "+z" )
-        self.posx_btn.clicked.connect( self.update_radar_calibration )
+        self.posx_btn.clicked.connect( lambda : self.set_target_filter_center( np.array( [0, 0, float( self.shift_amount.text() )] ), True ) )
         self.shift_pos_btn_area.addWidget( self.posx_btn )
 
         self.posx_btn = QPushButton( "-x" )
-        self.posx_btn.clicked.connect( self.update_radar_calibration )
+        self.posx_btn.clicked.connect( lambda : self.set_target_filter_center( np.array( [-float( self.shift_amount.text() ), 0, 0] ), True ) )
         self.shift_neg_btn_area.addWidget( self.posx_btn )
 
         self.posx_btn = QPushButton( "-y" )
-        self.posx_btn.clicked.connect( self.update_radar_calibration )
+        self.posx_btn.clicked.connect( lambda : self.set_target_filter_center( np.array( [0, -float( self.shift_amount.text() ), 0] ), True ) )
         self.shift_neg_btn_area.addWidget( self.posx_btn )
 
         self.posx_btn = QPushButton( "-z" )
-        self.posx_btn.clicked.connect( self.update_radar_calibration )
+        self.posx_btn.clicked.connect( lambda : self.set_target_filter_center( np.array( [0, 0, -float( self.shift_amount.text() )] ), True ) )
         self.shift_neg_btn_area.addWidget( self.posx_btn )
 
         self.reset_btn = QPushButton( "Reset to Target Truth Position" )
-        self.reset_btn.clicked.connect( self.update_radar_calibration )
+        self.reset_btn.clicked.connect( self.reset_target_filter_center )
         self.left_toolbar.addWidget( self.reset_btn )
 
         self.left_toolbar.addStretch()
@@ -219,8 +223,6 @@ class RadarCalibration( QWidget ):
         self.y_slider.sliderReleased.connect( self.update_corner_reflector )
         self.y_layout.addWidget( self.y_slider )
 
-        self.double_validator = QDoubleValidator( 0, 1000, 3 )
-
         self.edge_entry_layout = QHBoxLayout()
         self.options_layout.addLayout( self.edge_entry_layout, 1 )
 
@@ -303,9 +305,10 @@ class RadarCalibration( QWidget ):
                 self.loaded_frames_btn_group.checkedButton().toggled.emit( True )
 
             elif( type( args[0] ) == LineItemRadiobuttonwithSlider and type( args[1] ) == int ):
-                if( self.target_truth_position is not None ):
-                    self.pc_plot.filter_by_radius( self.target_truth_position, args[1] )
-                    self.loaded_frames_btn_group.checkedButton().toggled.emit( True )
+                if( self.target_filter_center is not None ):
+                    max_radius = self.pc_plot.get_max_radius_from( self.target_filter_center )
+                    self.target_filter_radius = max_radius * ( args[1] / 100 ) ** 2
+                    self.set_target_filter_center( self.target_filter_center, False )
 
             elif( type( args[0] ) == QSlider and type( args[1] ) == int ):
                 self.pc_plot.filter_by_color( args[1], True )
@@ -366,6 +369,7 @@ class RadarCalibration( QWidget ):
                     li = LineItemRadiobuttonwithSlider( f"Frame {key}", self._show_notification )
                     self.loaded_frames[li] = frames[key]
                     li.radiobutton.toggled.connect( lambda x, s = li : self.update_radar_calibration( s, x ) )
+                    li.slider.setRange( 0, 100 )
                     li.slider.sliderMoved.connect( lambda x, s = li : self.update_radar_calibration( s, x ) )
                     # li.slider.sliderReleased.connect( lambda x, s = li: self.update_radar_calibration( s, x ) )
                     self.loaded_frames_btn_group.addButton( li.radiobutton )
@@ -390,6 +394,27 @@ class RadarCalibration( QWidget ):
 
         except:
             self._show_notification( "OptiTrack file no longer exists." )
+
+    def set_target_filter_center( self, value: np.ndarray, is_relative: bool = False ):
+
+        if( value.shape[0] != 3 or len( value.shape ) != 1 ):
+            self._show_notification( "Value provided to set_target_filter_center must be a (3,) numpy vector." )
+            return
+
+        if( is_relative and self.target_filter_center is not None ):
+            self.target_filter_center += value
+        else:
+            self.target_filter_center = value
+        
+        if( self.target_filter_radius is not None ):
+            self.pc_plot.filter_by_radius( self.target_filter_center, self.target_filter_radius )
+            self.loaded_frames_btn_group.checkedButton().toggled.emit( True )
+
+    def reset_target_filter_center( self ):
+        self.target_filter_center = self.target_truth_position
+        if( self.target_filter_center is not None and self.target_filter_radius is not None ):
+            self.pc_plot.filter_by_radius( self.target_filter_center, self.target_filter_radius )
+            self.loaded_frames_btn_group.checkedButton().toggled.emit( True )
 
     def compute_rcs( self, a: float, wavelength: float ) -> float:
 

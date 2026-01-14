@@ -240,6 +240,10 @@ class PointCloudPlot:
     def get_points( self ):
 
         return self._data[self._filter]
+    
+    def get_max_radius_from( self, value: np.ndarray ):
+
+        return np.max( np.sqrt( np.sum( ( self._data - value ) ** 2, axis = 1 ) ) )
 
     def get_fig( self ) -> go.Figure:
         
@@ -250,14 +254,10 @@ class PointCloudPlot:
         y_lims = [-10, 10]
         z_lims = [-10, 10]
 
-        if( self._color_filter is not None and self._radius_filter is not None ):
-            self._filter = self._radius_filter & self._color_filter
-        elif( self._color_filter is not None ):
-            self._filter = self._color_filter
-        elif( self._radius_filter is not None ):
-            self._filter = self._radius_filter
-        else:
-            self._filter = None
+        if( self._color_filter is not None and self._radius_filter is not None ):   self._filter = self._radius_filter & self._color_filter
+        elif( self._color_filter is not None ):                                     self._filter = self._color_filter
+        elif( self._radius_filter is not None ):                                    self._filter = self._radius_filter
+        else:                                                                       self._filter = None
 
         # self._print( f"filter: {self._filter} {self._filter is not None}\nradius_filter: {self._radius_filter} {self._radius_filter is not None}\ncolor_filter: {self._color_filter} {self._color_filter is not None}" )
 
