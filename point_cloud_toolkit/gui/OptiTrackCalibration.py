@@ -11,7 +11,7 @@ class OptiTrackCalibration( QWidget ):
 
         # Define parent functors
         self._show_notification = parent.show_notification
-        self._optitrack = OptiTrack( self._show_notification )
+        self._optitrack = OptiTrack( print_func = self._show_notification )
 
         # Build GUI
         self.main_layout, self.left_toolbar, self.main_area = parent.get_left_toolbar_layout( self, "OptiTrack Calibration" )
@@ -277,7 +277,7 @@ class OptiTrackCalibration( QWidget ):
                             self.available_items_layout.addWidget( self.cb_by_item[item] )
 
                             se3 = data_by_time[timestamp][item]
-                            pos = se3[3:][:3][0]
+                            pos = se3[:3, 3:].T[0]
                             rpy = mat_ops.get_roll_pitch_yaw_deg( se3[:3, :3] )
 
                             self.data[self.cb_by_item[item]] = {
@@ -292,7 +292,7 @@ class OptiTrackCalibration( QWidget ):
                         else:
 
                             se3 = data_by_time[timestamp][item]
-                            pos = se3[3:][:3][0]
+                            pos = se3[:3, 3:].T[0]
                             rpy = mat_ops.get_roll_pitch_yaw_deg( se3[:3, :3] )
 
                             self.data[self.cb_by_item[item]]['x'].append( pos[0] )

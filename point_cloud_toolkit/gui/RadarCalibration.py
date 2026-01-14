@@ -58,6 +58,8 @@ class RadarCalibration( QWidget ):
         self.loaded_frames_layout.setAlignment( Qt.AlignmentFlag.AlignTop )
         self.loaded_frames: dict[LineItemRadiobuttonwithSlider, dict] = {}
         self.truth_data: dict[datetime, dict]
+        self.target_truth_position = None
+        self.target_filter_center = None
 
         self.loaded_frames_btn_group = QButtonGroup()
 
@@ -67,6 +69,54 @@ class RadarCalibration( QWidget ):
         self.change_color_btn = QPushButton( "Change Color Scheme" )
         self.change_color_btn.clicked.connect( lambda x, s = self.change_color_btn : self.update_radar_calibration( s, 'next' ) )
         self.left_toolbar.addWidget( self.change_color_btn )
+
+        self.left_toolbar.addWidget( QLabel( "Filter by Color" ) )
+        self.filter_color_slider = QSlider( Qt.Orientation.Horizontal )
+        self.filter_color_slider.setRange( 0, 100 )
+        self.filter_color_slider.setValue( 0 )
+        self.filter_color_slider.sliderMoved.connect( lambda x, s = self.filter_color_slider : self.update_radar_calibration( s, x ) )
+        self.left_toolbar.addWidget( self.filter_color_slider )
+
+        self.shift_title_area = QHBoxLayout()
+        self.left_toolbar.addLayout( self.shift_title_area )
+
+        self.shift_title_area.addWidget( QLabel( "Shift filter center by " ) )
+        self.shift_amount = QLineEdit()
+        self.shift_title_area.addWidget( self.shift_amount )
+
+        self.shift_pos_btn_area = QHBoxLayout()
+        self.left_toolbar.addLayout( self.shift_pos_btn_area )
+
+        self.shift_neg_btn_area = QHBoxLayout()
+        self.left_toolbar.addLayout( self.shift_neg_btn_area )
+
+        self.posx_btn = QPushButton( "+x" )
+        self.posx_btn.clicked.connect( self.update_radar_calibration )
+        self.shift_pos_btn_area.addWidget( self.posx_btn )
+
+        self.posx_btn = QPushButton( "+y" )
+        self.posx_btn.clicked.connect( self.update_radar_calibration )
+        self.shift_pos_btn_area.addWidget( self.posx_btn )
+
+        self.posx_btn = QPushButton( "+z" )
+        self.posx_btn.clicked.connect( self.update_radar_calibration )
+        self.shift_pos_btn_area.addWidget( self.posx_btn )
+
+        self.posx_btn = QPushButton( "-x" )
+        self.posx_btn.clicked.connect( self.update_radar_calibration )
+        self.shift_neg_btn_area.addWidget( self.posx_btn )
+
+        self.posx_btn = QPushButton( "-y" )
+        self.posx_btn.clicked.connect( self.update_radar_calibration )
+        self.shift_neg_btn_area.addWidget( self.posx_btn )
+
+        self.posx_btn = QPushButton( "-z" )
+        self.posx_btn.clicked.connect( self.update_radar_calibration )
+        self.shift_neg_btn_area.addWidget( self.posx_btn )
+
+        self.reset_btn = QPushButton( "Reset to Target Truth Position" )
+        self.reset_btn.clicked.connect( self.update_radar_calibration )
+        self.left_toolbar.addWidget( self.reset_btn )
 
         self.left_toolbar.addStretch()
 
@@ -235,9 +285,11 @@ class RadarCalibration( QWidget ):
                         R_radar = self.truth_data[opti_ts[idx]]['mmwave']
                         R_corner_reflector = self.truth_data[opti_ts[idx]]['corner_reflector']
 
-                        p_corner_reflector = R_radar[:3, :3] @ R_corner_reflector[3:, :3][0].T + R_radar[3:, :3][0].T
+                        self.target_truth_position = ( R_radar[:3, :3].T @ (R_corner_reflector[:3, 3:] - R_radar[:3, 3:]) ).T[0]
+                        if( self.target_filter_center is None ):
+                            self.target_filter_center = self.target_truth_position
 
-                        self.pc_plot.add_red_point( p_corner_reflector )
+                        self.pc_plot.add_red_point( self.target_truth_position, size = 5 )
 
                     except Exception as e:
                         self._show_notification( f"Unable to load truth position:\n\t{type(e)}: {e}" )
@@ -251,7 +303,13 @@ class RadarCalibration( QWidget ):
                 self.loaded_frames_btn_group.checkedButton().toggled.emit( True )
 
             elif( type( args[0] ) == LineItemRadiobuttonwithSlider and type( args[1] ) == int ):
-                self.pc_plot.filter_by_radius( np.array( [0, 0, 0] ), args[1] )
+                if( self.target_truth_position is not None ):
+                    self.pc_plot.filter_by_radius( self.target_truth_position, args[1] )
+                    self.loaded_frames_btn_group.checkedButton().toggled.emit( True )
+
+            elif( type( args[0] ) == QSlider and type( args[1] ) == int ):
+                self.pc_plot.filter_by_color( args[1], True )
+                self.loaded_frames_btn_group.checkedButton().toggled.emit( True )
 
         if( type( self.current_color_field ) == deque ):
             self.color_label.setText( f"Color Scheme:  {self.current_color_field[0]}" )
@@ -259,6 +317,7 @@ class RadarCalibration( QWidget ):
             self.color_label.setText( 'Color Scheme:  none' )
 
         if( type( self.pc_plot ) == PointCloudPlot ):
+            
             html_plot = pio.to_html( self.pc_plot.get_fig(), full_html = False, include_plotlyjs = 'cdn' )
             self.pc_plot_area.setHtml( html_plot )
 
@@ -331,12 +390,6 @@ class RadarCalibration( QWidget ):
 
         except:
             self._show_notification( "OptiTrack file no longer exists." )
-
-    def find_nearest_truth_data( self, t: datetime ):
-        return
-    
-    def select_all( self, select: bool ):
-        return
 
     def compute_rcs( self, a: float, wavelength: float ) -> float:
 

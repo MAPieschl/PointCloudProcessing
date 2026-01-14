@@ -2,9 +2,30 @@ from dependencies import *
 import utils.globals as globals
 
 class OptiTrack:
-    def __init__( self, print_func: Callable[[str], None] = print ):
+    def __init__(
+        self,
+        object_R: dict[str, np.ndarray] = {
+            'corner_reflector': np.array([
+                [0, 1, 0],
+                [0, 0, 1],
+                [1, 0, 0]
+            ]),
+            'mmwave': np.array([
+                [0, 1, 0],
+                [0, 0, 1],
+                [1, 0, 0]
+            ]),
+            'lidar': np.array([
+                [0, 1, 0],
+                [0, 0, 1],
+                [1, 0, 0]
+            ])
+        },
+        print_func: Callable[[str], None] = print
+    ):
 
         self._print = print_func
+        self._object_R = object_R
 
     def parse_log( self, path: str ) -> dict:
 
@@ -29,7 +50,10 @@ class OptiTrack:
                                 R = []
                                 for el in range( 16 ):
                                     R.append( float( line[17 * item + ( el + 1 )] ) )
-                                R = np.array( R ).reshape( ( 4, 4 ) )
+                                R = np.array( R ).reshape( ( 4, 4 ) ).T
+
+                                if( name in self._object_R.keys() ):
+                                    R[:3, :3] = R[:3, :3] @ self._object_R[name]
 
                                 output[timestamp][name] = R
 

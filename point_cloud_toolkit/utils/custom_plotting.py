@@ -141,6 +141,9 @@ class PointCloudPlot:
 
         self._filter = None
 
+        self._color_filter = None
+        self._radius_filter = None
+
     def add( self, data: np.ndarray, color: np.ndarray, tag: str, size: int = 5, opacity: float = 1.0 ) -> None:
 
         size = np.clip( size, self._size_lims[0], self._size_lims[1], dtype = type( self._size_lims[0] ) )
@@ -179,6 +182,11 @@ class PointCloudPlot:
         self._red_tags = np.array( [] )
         self._red_size = np.array( [] )
 
+    def clear_filter( self ):
+        self._filter = None
+        self._radius_filter = None
+        self._color_filter = None
+
     def clear( self ):
 
         self._data = np.array( [] )
@@ -186,7 +194,7 @@ class PointCloudPlot:
         self._tags = np.array( [] )
         self._size = np.array( [] )
         self._opacity = np.array( [] )
-        self.clear_filter()
+        # self.clear_filter()
         self.clear_red_points()
 
     def remove( self, tag: str ):
@@ -211,17 +219,54 @@ class PointCloudPlot:
 
     def filter_by_radius( self, center: np.ndarray, radius: float ):
 
-        self._filter = np.where( np.sum( ( self._data - center ) ** 2, axis = 1 ) < radius ** 2 )
+        self._radius_filter = np.sum( ( self._data - center ) ** 2, axis = 1 ) < radius ** 2
 
-    def clear_filter( self ):
+    def filter_by_color( self, value: float, show_greater_than: bool = True ):
 
-        self.filter = None
+        if( 0 <= value <= 100 ):
+            _min = min( self._colors )
+            _max = max( self._colors )
+
+            _threshold = ( ( value / 100 ) * ( _max - _min ) + _min )
+            if( show_greater_than ):
+                self._color_filter = self._colors > _threshold
+
+            else:
+                self._color_filter = self._colors <= _threshold
+
+        else:
+            self._print( f"PointCloudPlot:  filter_by_color requires a value in range [0, 100], not {value}" )
+
+    def get_points( self ):
+
+        return self._data[self._filter]
 
     def get_fig( self ) -> go.Figure:
         
         fig = go.Figure()
 
+        # Preliminary scale for empty plot
+        x_lims = [-10, 10]
+        y_lims = [-10, 10]
+        z_lims = [-10, 10]
+
+        if( self._color_filter is not None and self._radius_filter is not None ):
+            self._filter = self._radius_filter & self._color_filter
+        elif( self._color_filter is not None ):
+            self._filter = self._color_filter
+        elif( self._radius_filter is not None ):
+            self._filter = self._radius_filter
+        else:
+            self._filter = None
+
+        # self._print( f"filter: {self._filter} {self._filter is not None}\nradius_filter: {self._radius_filter} {self._radius_filter is not None}\ncolor_filter: {self._color_filter} {self._color_filter is not None}" )
+
         if( self._data.shape[0] > 0 ):
+
+            # Set limits before filtering to maintain plot scale
+            x_lims = [np.min( self._data[:, 0] ), np.max( self._data[:, 0] )]
+            y_lims = [np.min( self._data[:, 1] ), np.max( self._data[:, 1] )]
+            z_lims = [np.min( self._data[:, 2] ), np.max( self._data[:, 2] )]
 
             fig.add_trace(
                 go.Scatter3d(
@@ -238,6 +283,15 @@ class PointCloudPlot:
             )
 
         if( self._red_points.shape[0] > 0 ):
+
+            # Expand limits if required
+            if( np.max( self._red_points[:, 0] ) > x_lims[1] ):   x_lims[1] = np.max( self._red_points[:, 0] )
+            if( np.min( self._red_points[:, 0] ) < x_lims[0] ):   x_lims[0] = np.min( self._red_points[:, 0] )
+            if( np.max( self._red_points[:, 0] ) > y_lims[1] ):   y_lims[1] = np.max( self._red_points[:, 1] )
+            if( np.min( self._red_points[:, 0] ) < y_lims[0] ):   y_lims[0] = np.min( self._red_points[:, 1] )
+            if( np.max( self._red_points[:, 0] ) > z_lims[1] ):   z_lims[1] = np.max( self._red_points[:, 2] )
+            if( np.min( self._red_points[:, 0] ) < z_lims[0] ):   z_lims[0] = np.min( self._red_points[:, 2] )
+
             fig.add_trace(
                 go.Scatter3d(
                     x = self._red_points[:, 0],
@@ -252,7 +306,12 @@ class PointCloudPlot:
             )
 
         fig.update_layout(
-            title = self._title
+            title = self._title,
+            # scene = dict(
+            #     xaxis = dict( range = x_lims ),
+            #     yaxis = dict( range = y_lims ),
+            #     zaxis = dict( range = z_lims )
+            # )
         ) 
 
         return fig
