@@ -80,6 +80,15 @@ class MainApp(QMainWindow):
 
         response = popup.exec()
 
+    def show_yes_no_query( self, msg: str ) -> int:
+        popup = QMessageBox( self )
+        popup.setWindowTitle( "Query" )
+        popup.setText( msg )
+        popup.setIcon( QMessageBox.Icon.Question )
+        popup.setStandardButtons( QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No )
+
+        return popup.exec()
+
     def get_left_toolbar_layout( self, child, title: str, main_area_QVBoxLayout: bool = True ):
         '''
         Returns a standard layout with a left toolbar (1/6 of the window) and a main window area (5/6 of the window).

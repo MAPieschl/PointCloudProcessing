@@ -26,16 +26,39 @@ import onnx
 import joblib
 import logging
 import datetime
+import signal
 
+from typing import Callable
 from tqdm import tqdm
 from tensorflow import keras
 from tensorflow.keras import Model
-from tensorflow.keras.callbacks import EarlyStopping
+from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, Callback
 
 import pointnet.PointNet as PointNet
 import pointcloud.PointCloudSet as PointCloudSet
 
 print( "Package import complete." )
+
+class CtrlC_InterruptHandler( Callback ):
+    def __init__( self, print_func: Callable[[str], None] = print ):
+        super().__init__()
+
+        self._stop_requested = False
+        self._print = print_func
+
+    def stop_signaled( self, sig, frame ):
+
+        if( not self._stop_requested ):
+            self._stop_requested = True
+            self._print( ">>> TRAINING INTERRUPT INITIATED BY USER <<<\nTraining will stop after the current epoch.\nPress Ctrl+C again to force quit." )
+        else:
+            self._print( ">>> FORCE QUIT INITIATED BY USER <<<" )
+            sys.exit( 0 )
+
+    def on_epoch_end( self, epoch, logs = None ):
+        if( self._stop_requested ):
+            self._print( "User stop received by TensorFlow." )
+            self.model.stop_training = True
 
 class TrainProfile:
     def __init__( self, config_file ):
@@ -170,6 +193,29 @@ class TrainProfile:
             for l in list( trainability_summary.keys() ):
                 self._log.info( f"\t\t-> {l}: {trainability_summary[l]}" )
 
+            keyboard_interrupt = CtrlC_InterruptHandler( print_func = self._log.info )
+
+            self._training_callbacks.append( EarlyStopping(
+                monitor = self._training_profiles[prof]['monitor'],
+                mode = 'min',
+                patience = self._patience,
+                verbose = 1,
+                restore_best_weights = True
+            ) )
+
+            self._training_callbacks.append( ModelCheckpoint(
+                filepath = f"{self._model_path}{self._training_profiles[prof]['path']}{self._name}_{prof}.keras",
+                save_best_only = True,
+                monitor = self._training_profiles[prof]['monitor'],
+                mode = 'min',
+                save_freq = 'epoch',
+                verbose = 1
+            ) )
+
+            self._training_callbacks.append( keyboard_interrupt )
+
+            signal.signal( signal.SIGINT, keyboard_interrupt.stop_signaled )
+
             # train model
             history = model.fit( x = self._training_profiles[prof]['pc'].get_train_set(), 
                                  validation_data = self._training_profiles[prof]['pc'].get_val_set(),
@@ -181,7 +227,7 @@ class TrainProfile:
             )
 
             # save Keras model
-            model.save(f"{self._model_path}{self._training_profiles[prof]['path']}{self._name}_{prof}.keras")
+            # model.save(f"{self._model_path}{self._training_profiles[prof]['path']}{self._name}_{prof}.keras")
 
             # output training history
             with open(f"{self._model_path}{self._training_profiles[prof]['path']}{self._name}_{prof}_history.json", 'w') as j:
@@ -301,13 +347,6 @@ class TrainProfile:
                 'se3': [keras.metrics.RootMeanSquaredError()]
             }
         )
-
-        self._training_callbacks.append( EarlyStopping(
-            monitor = 'val_loss',
-            patience = self._patience,
-            verbose = 1,
-            restore_best_weights = True
-        ) )
 
         return model
     

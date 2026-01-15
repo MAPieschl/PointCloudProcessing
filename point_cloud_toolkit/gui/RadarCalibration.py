@@ -3,6 +3,7 @@ import utils.globals as globals
 
 import utils.mat_ops as mat_ops
 import utils.corner_reflector as corner_reflector
+import utils.calibration as calibration
 from utils.Provizio import Provizio
 from utils.OptiTrack import OptiTrack
 from utils.custom_plotting import LineCanvas, PointCloudPlot
@@ -27,6 +28,7 @@ class RadarCalibration( QWidget ):
 
         # Define parent functors
         self._show_notification = parent.show_notification
+        self._show_yes_no_query = parent.show_yes_no_query
 
         # Provizio object
         self._vizio = Provizio( print_func = self._show_notification )
@@ -85,6 +87,7 @@ class RadarCalibration( QWidget ):
 
         self.shift_title_area.addWidget( QLabel( "Shift filter center by " ) )
         self.shift_amount = QLineEdit()
+        self.shift_amount.setText( "0.1" )
         self.shift_amount.setValidator( self.double_validator )
         self.shift_title_area.addWidget( self.shift_amount )
 
@@ -121,6 +124,22 @@ class RadarCalibration( QWidget ):
         self.reset_btn = QPushButton( "Reset to Target Truth Position" )
         self.reset_btn.clicked.connect( self.reset_target_filter_center )
         self.left_toolbar.addWidget( self.reset_btn )
+
+        self.current_frame = None
+        self.current_centroid = None
+        self.collected_pts = {'measured': [], 'truth': []}
+
+        self.compute_centroid_btn = QPushButton( "Compute Centroid" )
+        self.compute_centroid_btn.clicked.connect( self.compute_centroid )
+        self.left_toolbar.addWidget( self.compute_centroid_btn )
+
+        self.add_datum_btn = QPushButton( "Add to Calibration Data" )
+        self.add_datum_btn.clicked.connect( self.add_to_calibration_data )
+        self.left_toolbar.addWidget( self.add_datum_btn )
+
+        self.calibrate_btn = QPushButton( "Compute Extrinsic Calibration" )
+        self.calibrate_btn.clicked.connect( self.calibrate )
+        self.left_toolbar.addWidget( self.calibrate_btn )
 
         self.left_toolbar.addStretch()
 
@@ -273,6 +292,12 @@ class RadarCalibration( QWidget ):
                 if( args[1] ):  
                     if( self.current_color_field is None): 
                         self.current_color_field = self.loaded_frames[args[0]]['fields']
+
+                    if( self.loaded_frames[args[0]]['sequence'] != self.current_frame ):
+                        self.pc_plot.clear_red_points()
+                        self.pc_plot.clear_filter()
+                        self.current_frame = self.loaded_frames[args[0]]['sequence']
+
                     self.pc_plot.clear()
                     self.pc_plot.add(
                         structured_to_unstructured( self.loaded_frames[args[0]]['data'][['x', 'y', 'z']], dtype = np.float32 ), 
@@ -500,3 +525,53 @@ class RadarCalibration( QWidget ):
         self.top_plot.add( top_rays, np.array( ['green' if returned_to_source else 'red' for i in range( len( top_rays ) )] ) )
             
         return float( total_dist )
+    
+    def compute_centroid( self ) -> None:
+
+        if( self.target_truth_position is not None ):
+            vecs = self.pc_plot.get_points()
+            
+            self.current_centroid = {
+                'measured': np.mean( vecs, axis = 0 ),
+                'truth': self.target_truth_position
+            }
+            self._show_notification( f"Centroid computed at ( {self.current_centroid['measured'][0]:.3f}, {self.current_centroid['measured'][1]:.3f}, {self.current_centroid['measured'][1]:.3f} ).\nError from truth: {np.linalg.norm( self.current_centroid['truth'] - self.current_centroid['measured'] )}" )
+        
+        else:
+            self._show_notification( "Will not compute centroid without truth data." )
+        
+    def add_to_calibration_data( self ) -> None:
+
+        if( os.path.isfile( 'data/data_bu.pkl' ) ):
+            if( self._show_yes_no_query( "Would you like to add to the current dataset? Selecting 'No' will delete the previous that dataset." ) == QMessageBox.StandardButton.Yes ):
+                 with open( 'data/data_bu.pkl', 'rb' ) as p:
+                     self.collected_pts = pickle.load( p )
+            else:
+                self.collected_pts = {
+                    'measured': [],
+                    'truth': []
+                }
+        
+        if( self.current_centroid is not None ):
+            self.collected_pts['measured'].append( self.current_centroid['measured'] )
+            self.collected_pts['truth'].append( self.current_centroid['truth'] )
+
+            with open( 'data/data_bu.pkl', 'wb' ) as p:
+                pickle.dump( self.collected_pts, p )
+
+            self._show_notification( f"Point added to dataset. Current dataset contains {len( self.collected_pts['measured'] )} samples" )
+
+        else:
+            self._show_notification( "Cannot add to calibration data until centroid is computed." )
+
+        self.current_centroid = None
+
+    def calibrate( self ):
+
+        if( os.path.isfile( 'data/data_bu.pkl' ) ):
+            with open( 'data/data_bu.pkl', 'rb' ) as p:
+                self.collected_pts = pickle.load( p )
+                self._show_notification( str( calibration.solve_kabsch( np.array( self.collected_pts['truth'] ), np.array( self.collected_pts['measured'] ) ) ) )
+
+        else:
+            self._show_notification( "No points available for calibration." )
