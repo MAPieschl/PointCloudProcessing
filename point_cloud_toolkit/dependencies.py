@@ -9,6 +9,7 @@ import copy
 import glob
 import re
 import bisect
+from tqdm import tqdm
 import numpy as np
 from numpy.lib.recfunctions import structured_to_unstructured
 from typing import Callable, cast
@@ -26,7 +27,7 @@ from PyQt6.QtWidgets import (
     QPushButton, QStackedWidget, QToolBar, QLabel, QFileDialog,
     QLineEdit, QFormLayout, QScrollArea, QListWidget, QListWidgetItem,
     QSizePolicy, QComboBox, QLabel, QFrame, QMessageBox, QSlider,
-    QRadioButton, QCheckBox, QButtonGroup
+    QRadioButton, QCheckBox, QButtonGroup, QProgressBar
 )
 from QMarkdownWidget import QMView
 

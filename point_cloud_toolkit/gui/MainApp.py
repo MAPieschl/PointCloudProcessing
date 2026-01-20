@@ -3,6 +3,7 @@ import utils.globals as globals
 
 from gui.OptiTrackCalibration import OptiTrackCalibration
 from gui.RadarCalibration import RadarCalibration
+from gui.RadarConversion import RadarConversion
 from gui.TrainingPerformance import TrainingPerformance
 
 class MainApp(QMainWindow):
@@ -18,10 +19,12 @@ class MainApp(QMainWindow):
         # Add views to the stacked widget
         self.opticalib_view = OptiTrackCalibration( parent = self )
         self.radarcalib_view = RadarCalibration( parent = self )
+        self.radarconv_view = RadarConversion( parent = self )
         self.trainperf_view = TrainingPerformance( parent = self )
         
         self.stacked_widget.addWidget( self.opticalib_view )
         self.stacked_widget.addWidget( self.radarcalib_view )
+        self.stacked_widget.addWidget( self.radarconv_view )
         self.stacked_widget.addWidget( self.trainperf_view )
         
         # Create and configure the toolbar
@@ -33,11 +36,13 @@ class MainApp(QMainWindow):
         # Add view buttons to the left of the toolbar
         opticalib_btn = QPushButton( "OptiTrack Calibration" )
         radarcalib_btn = QPushButton( "Radar Calibration" )
+        radarconv_btn = QPushButton( "Radar Conversion" )
         trainperf_btn = QPushButton( "Training Performance" )
 
         opticalib_btn.clicked.connect( lambda : self.stacked_widget.setCurrentIndex( 0 ) )
         radarcalib_btn.clicked.connect( lambda : self.stacked_widget.setCurrentIndex( 1 ) )
-        trainperf_btn.clicked.connect( lambda : self.stacked_widget.setCurrentIndex( 2 ) )
+        radarconv_btn.clicked.connect( lambda : self.stacked_widget.setCurrentIndex( 2 ) )
+        trainperf_btn.clicked.connect( lambda : self.stacked_widget.setCurrentIndex( 3 ) )
 
         # Use QWidgetAction to align buttons
         left_spacer = QWidget()
@@ -51,6 +56,7 @@ class MainApp(QMainWindow):
         
         self.toolbar.addWidget( opticalib_btn )
         self.toolbar.addWidget( radarcalib_btn )
+        self.toolbar.addWidget( radarconv_btn )
         self.toolbar.addWidget( trainperf_btn )
         self.toolbar.addWidget( left_spacer )
         self.toolbar.addWidget( exit_btn )

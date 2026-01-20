@@ -1,6 +1,8 @@
 from dependencies import *
 import utils.globals as globals
 
+from utils.TQDMCapture import TQDMCapture
+
 class ROS:
     def __init__(  self, print_func: Callable[[str], None] ):
 
@@ -79,7 +81,7 @@ class Provizio:
         self._topics = topics
         self._ROS = ROS( print_func )
     
-    def parse_mcap( self, path: str ) -> dict:
+    def parse_mcap( self, path: str, progress_capture: TQDMCapture | None = None ) -> dict:
 
         if( os.path.isfile( path ) ):
             with open( path, "rb" ) as f:
@@ -88,7 +90,7 @@ class Provizio:
                 frames = {}
 
                 try:
-                    for schema, channel, message, ros_msg in reader.iter_decoded_messages( topics = self._topics ):
+                    for schema, channel, message, ros_msg in tqdm( reader.iter_decoded_messages( topics = self._topics ), file = progress_capture ):
 
                         msg = { k: getattr( ros_msg, k ) for k in ros_msg.__slots__ }
 
