@@ -1,0 +1,4 @@
+2026-01-22 23:03:45,441 - root - INFO - The following datasets were found in data/f15_scale_lidar_classification_pretrain:
+2026-01-22 23:03:45,442 - root - INFO - 	-> pc_set.joblib	
+2026-01-22 23:03:45,443 - root - INFO - Adding data set 1 of 5
+2026-01-22 23:03:45,541 - matplotlib.pyplot - DEBUG - Loaded backend agg version v2.2.

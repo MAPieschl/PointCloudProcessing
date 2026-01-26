@@ -205,8 +205,8 @@ class RadarConversion( QWidget ):
                     for pt in frame['data']:
                         f.write( f"({pt['x']}, {pt['y']}, {pt['z']})\n" )
 
-                if( not os.path.isfile( f"{self.target_dir_label.text()}/index.txt" ) ):
-                    with open( f"{self.target_dir_label.text()}/index.txt", "w" ) as f:
+                if( not os.path.isfile( f"{self.target_dir_label.text()}/__index.log" ) ):
+                    with open( f"{self.target_dir_label.text()}/__index.log", "w" ) as f:
                         f.write( "# UTC_Time\tFrameID\tfilename\n" )
 
                 with open( f"{self.target_dir_label.text()}/index.txt", "a" ) as f:

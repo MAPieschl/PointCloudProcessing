@@ -140,7 +140,7 @@ class PointCloudSet:
         non_num_found: int = 0
         
         collect_contents: list[str] = get_dir_contents( dir_path, self._print )
-        lidar_contents: list[str] = get_dir_contents( f'{dir_path}/Virtual Flash Lidar', self._print )
+        lidar_contents: list[str] = get_dir_contents( f'{dir_path}/Lidar', self._print )
 
         # treat the log file (containing pose information) as a csv and import into a pandas dataframe
         pose_log: list[str] = [ i for i in collect_contents if '_palindrome_state' in i ]
@@ -153,7 +153,7 @@ class PointCloudSet:
         self._print( f"Parsing frames in {dir_path}..." )
         for i in tqdm( range( len( lidar_contents ) ) ):
             try:
-                with open( f'{dir_path}/Virtual Flash Lidar/frame_{i}.txt', 'r' ) as f:
+                with open( f'{dir_path}/Lidar/frame_{i}.txt', 'r' ) as f:
                     obs = []
                     cl = None
                     pl = []
@@ -211,7 +211,7 @@ class PointCloudSet:
 
             except Exception as e:
                 if( frames_searched == 0 ): frames_searched = i
-                self._print( f"Failed to add file {dir_path}/Virtual Flash Lidar/frame_{i}.txt:\n\t{type( e ).__name__} : {e}" )
+                self._print( f"Failed to add file {dir_path}/Lidar/frame_{i}.txt:\n\t{type( e ).__name__} : {e}" )
 
         self.add_data( dir_path.split("/")[-1], np.array( observations ), np.array( class_labels ), np.array( part_labels ), np.array( se3 ), shuffle_points )
 
