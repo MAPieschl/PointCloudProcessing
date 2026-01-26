@@ -29,6 +29,8 @@ python-dateutil==2.9.0.post0
 PyYAML==6.0.3
 QMarkdownWidget==1.2.1
 QtPy==2.4.3
+scipy==1.17.0
 six==1.17.0
+trimesh==4.11.1
 uc-micro-py==1.0.3
 zstandard==0.25.0
