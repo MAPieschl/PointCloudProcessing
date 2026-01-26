@@ -9,6 +9,7 @@ import copy
 import glob
 import re
 import bisect
+import trimesh
 from tqdm import tqdm
 import numpy as np
 from numpy.lib.recfunctions import structured_to_unstructured

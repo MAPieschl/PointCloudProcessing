@@ -18,7 +18,7 @@ class LinePlot:
         self._data_y1: list[np.ndarray] = []
         self._labels_y1: list[str]      = []
         self._data_y2: list[np.ndarray] = []
-        self._labels_y2:list[str]       = []
+        self._labels_y2: list[str]       = []
 
     def add_y1_trace( self, data: np.ndarray, label: str ) -> None:
 
@@ -320,6 +320,70 @@ class PointCloudPlot:
         
         fig = self.get_fig()
         fig.show()
+
+class QuiverPlot:
+    def __init__( self, title: str = "", print_func: Callable[[str], None] = print ):
+
+        self._title = title
+        self._print = print_func
+
+        self._label_map: dict[str, float] = {}
+
+        self._data: np.ndarray = np.array( [] )     # (N, 6), where the second dimension is ( x, y, z, u, v, w )
+        self._labels: np.ndarray = np.array( [] )    # (N, ), class that determines the color of each point
+
+    def add_data( self, data: np.ndarray, label: str ) -> None:
+
+        if( len( data.shape ) != 2 ):
+            self._print( f"QuiverPlot.add_data:  data parameter must have dimensions (N, 6), not {data.shape}" )
+            return
+
+        if( data.shape[1] != 6 ):
+            self._print( f"QuiverPlot.add_data:  data parameter must have dimensions (N, 6), not {data.shape}" )
+            return
+        
+        if( self._data.shape[0] > 0 and self._labels.shape[0] > 0 ):
+            self._data = np.concatenate( [self._data, data], axis = 0 )
+            self._labels = np.concatenate( [self._labels, np.array( [ label for i in range( data.shape[0] ) ] )], axis = 0 )
+
+        else:
+            self._data = data
+            self._labels = np.array( [ label for i in range( data.shape[0] ) ] )
+
+        if( label not in self._label_map.keys() ):
+            self._label_map[label] = 0
+
+    def clear( self ) -> None:
+
+        self._label_map = {}
+        self._data = np.array( [] )
+        self._labels = np.array( [] )
+
+    def get_fig( self ) -> go.Figure:
+
+        fig = go.Figure()
+
+        for i, lbl in enumerate( self._label_map.keys() ):
+            idx = np.where( self._labels == lbl )
+            self._label_map[lbl] = ( i / len( self._label_map.keys() ) ) * 360
+
+            fig.add_trace( go.Cone(
+                x = self._data[idx, 0],
+                y = self._data[idx, 1],
+                z = self._data[idx, 2],
+                u = self._data[idx, 3],
+                v = self._data[idx, 4],
+                w = self._data[idx, 5],
+                anchor = 'tail',
+                sizemode = 'absolute',
+                sizeref = 0.5,
+                name = lbl,
+                colorscale = [[0, f"hsl({self._label_map[lbl]}, 100%, 100%)"], [1, f"hsl({self._label_map[lbl]}, 100%, 100%)"]]
+            ))
+
+        fig.update_layout( title = self._title )
+
+        return fig
 
 class LineCanvas:
     def __init__( self, title: str = "", print_func: Callable[[str], None] = print ):

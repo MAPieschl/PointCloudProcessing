@@ -1,6 +1,7 @@
 from dependencies import *
 import utils.globals as globals
 
+from gui.SemanticMeshICP import SemanticMeshICP
 from gui.OptiTrackCalibration import OptiTrackCalibration
 from gui.RadarCalibration import RadarCalibration
 from gui.RadarConversion import RadarConversion
@@ -17,11 +18,13 @@ class MainApp(QMainWindow):
         self.setCentralWidget(self.stacked_widget)
         
         # Add views to the stacked widget
+        self.icp_view = SemanticMeshICP( parent = self )
         self.opticalib_view = OptiTrackCalibration( parent = self )
         self.radarcalib_view = RadarCalibration( parent = self )
         self.radarconv_view = RadarConversion( parent = self )
         self.trainperf_view = TrainingPerformance( parent = self )
         
+        self.stacked_widget.addWidget( self.icp_view )
         self.stacked_widget.addWidget( self.opticalib_view )
         self.stacked_widget.addWidget( self.radarcalib_view )
         self.stacked_widget.addWidget( self.radarconv_view )
@@ -34,15 +37,17 @@ class MainApp(QMainWindow):
         self.toolbar.setFloatable( False )
         
         # Add view buttons to the left of the toolbar
+        icp_btn = QPushButton( "SemanticMeshICP" )
         opticalib_btn = QPushButton( "OptiTrack Calibration" )
         radarcalib_btn = QPushButton( "Radar Calibration" )
         radarconv_btn = QPushButton( "Radar Conversion" )
         trainperf_btn = QPushButton( "Training Performance" )
 
-        opticalib_btn.clicked.connect( lambda : self.stacked_widget.setCurrentIndex( 0 ) )
-        radarcalib_btn.clicked.connect( lambda : self.stacked_widget.setCurrentIndex( 1 ) )
-        radarconv_btn.clicked.connect( lambda : self.stacked_widget.setCurrentIndex( 2 ) )
-        trainperf_btn.clicked.connect( lambda : self.stacked_widget.setCurrentIndex( 3 ) )
+        icp_btn.clicked.connect( lambda : self.stacked_widget.setCurrentIndex( 0 ) )
+        opticalib_btn.clicked.connect( lambda : self.stacked_widget.setCurrentIndex( 1 ) )
+        radarcalib_btn.clicked.connect( lambda : self.stacked_widget.setCurrentIndex( 2 ) )
+        radarconv_btn.clicked.connect( lambda : self.stacked_widget.setCurrentIndex( 3 ) )
+        trainperf_btn.clicked.connect( lambda : self.stacked_widget.setCurrentIndex( 4 ) )
 
         # Use QWidgetAction to align buttons
         left_spacer = QWidget()
@@ -54,6 +59,7 @@ class MainApp(QMainWindow):
         exit_btn = QPushButton( "Exit" )
         exit_btn.clicked.connect(self.close)
         
+        self.toolbar.addWidget( icp_btn )
         self.toolbar.addWidget( opticalib_btn )
         self.toolbar.addWidget( radarcalib_btn )
         self.toolbar.addWidget( radarconv_btn )
