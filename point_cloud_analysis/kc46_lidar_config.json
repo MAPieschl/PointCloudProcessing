@@ -111,7 +111,7 @@
     },
     "file_system": {
         "model_path": "models/",
-        "input_path": "/mnt/d/sim_kc46_lidar/",
+        "input_path": "/mnt/d/pieschl_data_collects/sim_kc46_lidar/",
         "data_path": "data/"
     }
 }
