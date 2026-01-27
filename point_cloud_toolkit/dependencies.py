@@ -10,6 +10,7 @@ import glob
 import re
 import bisect
 import trimesh
+import colorsys
 from tqdm import tqdm
 import numpy as np
 from numpy.lib.recfunctions import structured_to_unstructured
@@ -36,3 +37,7 @@ from QMarkdownWidget import QMView
 import plotly.graph_objects as go
 import plotly.io as pio
 import plotly
+import matplotlib
+matplotlib.use( 'QtAgg' )
+from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg, NavigationToolbar2QT
+from matplotlib.figure import Figure

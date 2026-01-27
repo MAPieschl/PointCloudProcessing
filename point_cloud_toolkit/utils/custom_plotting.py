@@ -1,6 +1,15 @@
 from dependencies import *
 import utils.globals as globals
 
+class MatplotlibCanvas( FigureCanvasQTAgg ):
+    def __init__( self, parent, projection = '3d', width = 5, height = 4, dpi = 100 ):
+
+        fig = Figure( figsize = ( width, height ), dpi = dpi )
+        
+        self.axes = fig.add_subplot( 111, projection = projection )
+
+        super( MatplotlibCanvas, self ).__init__( fig )
+
 class LinePlot:
     def __init__( self,
                    title: str = "", 
@@ -359,7 +368,7 @@ class QuiverPlot:
         self._data = np.array( [] )
         self._labels = np.array( [] )
 
-    def get_fig( self ) -> go.Figure:
+    def get_plotly_fig( self ) -> go.Figure:
 
         fig = go.Figure()
 
@@ -384,6 +393,31 @@ class QuiverPlot:
         fig.update_layout( title = self._title )
 
         return fig
+    
+    def draw_matplotlib_fig( self, canvas: MatplotlibCanvas ):
+
+        for i, lbl in enumerate( self._label_map.keys() ):
+
+            idx = np.where( self._labels == lbl )
+            self._label_map[lbl] = i / len( self._label_map.keys() )
+            
+            canvas.axes.quiver(
+                X = self._data[idx, 0],
+                Y = self._data[idx, 1],
+                Z = self._data[idx, 2],
+                U = self._data[idx, 3],
+                V = self._data[idx, 4],
+                W = self._data[idx, 5],
+                color = colorsys.hsv_to_rgb(self._label_map[lbl], 1.0, 1.0), # Pass the tuple here
+                length = 0.2,
+                normalize = True,
+                label = lbl
+            )
+
+        canvas.axes.legend()
+        canvas.axes.set_title( self._title )
+        
+        canvas.draw()
 
 class LineCanvas:
     def __init__( self, title: str = "", print_func: Callable[[str], None] = print ):
