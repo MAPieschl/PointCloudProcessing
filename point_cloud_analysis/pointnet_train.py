@@ -96,6 +96,7 @@ class TrainProfile:
         self._learning_decay_rate               : float = config['params']['learning']['decay_rate']
         self._random_seed                       : int   = config['params']['random_seed']
         self._debugging                         : bool  = config['params']['debugging']
+        self._vanilla                           : bool  = config['params']['vanilla']
         self._reg_input_transform               : bool  = config['params']['regularize_input_transform']
         self._reg_feature_transform             : bool  = config['params']['regularize_feature_transform']
 
@@ -300,6 +301,7 @@ class TrainProfile:
                                        dropout_rate = 0.3,
                                        random_seed = self._random_seed, 
                                        debugging = self._debugging,
+                                       vanilla = self._vanilla,
                                        regularize_input_transform = self._reg_input_transform,
                                        regularize_feature_transform = self._reg_feature_transform )
             

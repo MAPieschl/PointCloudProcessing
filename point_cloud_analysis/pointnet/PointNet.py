@@ -88,6 +88,7 @@ class PointNet(Model):
                  dropout_rate: float, 
                  random_seed: int, 
                  debugging: bool = False, 
+                 vanilla: bool = False,
                  regularize_input_transform: bool = False,
                  regularize_feature_transform: bool = False,
                  **kwargs):
@@ -105,6 +106,7 @@ class PointNet(Model):
         self._dropout_rate = dropout_rate
         self._random_seed = random_seed
         self._debugging = debugging
+        self._vanilla = vanilla
         self._regularize_input_transform = regularize_input_transform
         self._regularize_feature_transform = regularize_feature_transform
         self._custom_layers = []
@@ -113,12 +115,12 @@ class PointNet(Model):
 
         self.normalize_input = PointCloudNormalization( name = "input_normalization" )
 
-        self.input_transform = TNet(name = 'input_transform', add_regularization = regularize_input_transform, random_seed = self._random_seed)
+        self.input_transform = TNet(name = 'input_transform', add_regularization = regularize_input_transform, random_seed = self._random_seed) if( not self._vanilla ) else None
 
         self.mlp_1_1 = ConvLayer(filters = 64, name = 's1_l1_64', activation = tf.nn.relu, apply_bn = True, random_seed = self._random_seed)
         self.mlp_1_2 = ConvLayer(filters = 64, name = 's1_l2_64', activation = tf.nn.relu, apply_bn = True, random_seed = self._random_seed)
 
-        self.feature_transform = TNet(name = 'feature_transform', add_regularization = regularize_feature_transform, random_seed = self._random_seed)
+        self.feature_transform = TNet(name = 'feature_transform', add_regularization = regularize_feature_transform, random_seed = self._random_seed) if( not self._vanilla ) else None
 
         self.mlp_2_1 = ConvLayer(filters = 64, name = 's2_l1_64', activation = tf.nn.relu, apply_bn = True, random_seed = self._random_seed)
         self.mlp_2_2 = ConvLayer(filters = 128, name = 's2_l2_128', activation = tf.nn.relu, apply_bn = True, random_seed = self._random_seed)
@@ -140,10 +142,10 @@ class PointNet(Model):
 
         # Save layers in iterable format
         self._custom_layers.append( self.normalize_input )
-        self._custom_layers.append( self.input_transform )
+        if( not self._vanilla): self._custom_layers.append( self.input_transform )
         self._custom_layers.append( self.mlp_1_1 )
         self._custom_layers.append( self.mlp_1_2 )
-        self._custom_layers.append( self.feature_transform )
+        if( not self._vanilla ): self._custom_layers.append( self.feature_transform )
         self._custom_layers.append( self.mlp_2_1 )
         self._custom_layers.append( self.mlp_2_2 )
         self._custom_layers.append( self.mlp_2_3 )
@@ -165,13 +167,13 @@ class PointNet(Model):
 
         super(PointNet, self).build(input_shape)
         
-        self.input_transform.build(input_shape)
+        if( not self._vanilla ): self.input_transform.build(input_shape)
 
         self.mlp_1_1.build((input_shape[0], input_shape[1], 1, input_shape[2]))
         self.mlp_1_2.build((input_shape[0], input_shape[1], 1, 64))
         
         # Feature transform expects (batch_size, n_points, 64)
-        self.feature_transform.build((input_shape[0], input_shape[1], 64))
+        if( not self._vanilla ): self.feature_transform.build((input_shape[0], input_shape[1], 64))
         
         # Continue building remaining layers
         self.mlp_2_1.build((input_shape[0], input_shape[1], 1, 64))
@@ -200,9 +202,14 @@ class PointNet(Model):
         pc, _ = self.normalize_input( pc )
 
         # Input Transform
-        R = self.input_transform(pc, training = training)        # (b x 3 x 3)
-        X = tf.matmul(pc, R)                                     # (b x n x 3)
-        X = X if not self._debugging else tf.debugging.check_numerics( X, 'Input transform produced nan values.' )
+        if( not self._vanilla ):
+            R = self.input_transform(pc, training = training)        # (b x 3 x 3)
+            X = tf.matmul(pc, R)                                     # (b x n x 3)
+            X = X if not self._debugging else tf.debugging.check_numerics( X, 'Input transform produced nan values.' )
+
+        else:
+            R = tf.eye( num_rows = 3, batch_shape = [ tf.shape( pc )[0] ]) # Give the rotation output an value of expected shape
+            X = pc
         
         # MLP (64, 64)
         X = tf.expand_dims(X, axis = 2)                             # (b x n x 1 x 3)
@@ -216,8 +223,12 @@ class PointNet(Model):
         X = tf.squeeze(X, axis = 2)                                 # (b x n x 64)
 
         # Feature Transform
-        R_64 = self.feature_transform(X, training = training)       # (b x 64 x 64)
-        X_64 = tf.matmul(X, R_64)                                   # (b x n x 64)
+        if( not self._vanilla ):
+            R_64 = self.feature_transform(X, training = training)       # (b x 64 x 64)
+            X_64 = tf.matmul(X, R_64)                                   # (b x n x 64)
+
+        else:
+            X_64 = X
 
         # MLP (64, 128, 1024)
         X = tf.expand_dims(X_64, axis = 2)                          # (b x n x 1 x 64)
@@ -281,10 +292,12 @@ class PointNet(Model):
         return [ X_cls, X_seg, R ]
     
     def freeze_input_transform(self) -> None:
-        self.input_transform.freeze()
+        if( self._vanilla ):    print( "PointNet:  No input transorm available to freeze." )
+        else:                   self.input_transform.freeze()
 
     def thaw_input_transform(self) -> None:
-        self.input_transform.thaw()
+        if( self._vanilla ):    print( "PointNet:  No input transorm available to thaw." )
+        else:                   self.input_transform.thaw()
 
     def freeze_shared_network(self) -> None:
         self.input_transform.freeze()

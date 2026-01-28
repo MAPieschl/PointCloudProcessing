@@ -1,6 +1,6 @@
 {
     "info": {
-        "name": "kc46_lidar",
+        "name": "kc46_lidar_vanilla",
         "class_labels": {
             "0": "f-15_model",
             "1": "a-10",
@@ -106,6 +106,7 @@
         },
         "random_seed": 42,
         "debugging": false,
+        "vanilla": true,
         "regularize_input_transform": false,
         "regularize_feature_transform": false
     },
