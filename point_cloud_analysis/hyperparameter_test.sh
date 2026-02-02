@@ -1,0 +1,12 @@
+python pointnet_train.py kc46_lidar_lr01_5_20_config.json
+python pointnet_train.py kc46_lidar_lr001_5_20_config.json
+python pointnet_train.py kc46_lidar_lr0001_5_20_config.json
+python pointnet_train.py kc46_lidar_lr01_94_2_config.json
+python pointnet_train.py kc46_lidar_lr001_94_2_config.json
+python pointnet_train.py kc46_lidar_lr0001_94_2_config.json
+python pointnet_train.py kc46_lidar_vanilla_lr01_5_20_config.json
+python pointnet_train.py kc46_lidar_vanilla_lr001_5_20_config.json
+python pointnet_train.py kc46_lidar_vanilla_lr0001_5_20_config.json
+python pointnet_train.py kc46_lidar_vanilla_lr01_94_2_config.json
+python pointnet_train.py kc46_lidar_vanilla_lr001_94_2_config.json
+python pointnet_train.py kc46_lidar_vanilla_lr0001_94_2_config.json

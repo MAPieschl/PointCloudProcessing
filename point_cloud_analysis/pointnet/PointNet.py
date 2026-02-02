@@ -300,19 +300,19 @@ class PointNet(Model):
         else:                   self.input_transform.thaw()
 
     def freeze_shared_network(self) -> None:
-        self.input_transform.freeze()
+        if( not self._vanilla ): self.input_transform.freeze()
         self.mlp_1_1.freeze()
         self.mlp_1_2.freeze()
-        self.feature_transform.freeze()
+        if( not self._vanilla ): self.feature_transform.freeze()
         self.mlp_2_1.freeze()
         self.mlp_2_2.freeze()
         self.mlp_2_3.freeze()
 
     def thaw_shared_network(self) -> None:
-        self.input_transform.thaw()
+        if( not self._vanilla ): self.input_transform.thaw()
         self.mlp_1_1.thaw()
         self.mlp_1_2.thaw()
-        self.feature_transform.thaw()
+        if( not self._vanilla ): self.feature_transform.thaw()
         self.mlp_2_1.thaw()
         self.mlp_2_2.thaw()
         self.mlp_2_3.thaw()
@@ -357,6 +357,7 @@ class PointNet(Model):
             'dropout_rate': self._dropout_rate,
             'random_seed': self._random_seed,
             'debugging': self._debugging,
+            'vanilla': self._vanilla,
             'regularize_input_transform': self._regularize_input_transform,
             'regularize_feature_transform': self._regularize_feature_transform
         })
@@ -373,7 +374,7 @@ class PointNet(Model):
         return cls(**config)
     
     def get_last_predicted_dcm(self):
-        return self.input_transform.get_last_predicted_transformation()
+        return self.input_transform.get_last_predicted_transformation() if( not self._vanilla ) else None
 
 @saving.register_keras_serializable(package="Project")
 class TNet(Model):

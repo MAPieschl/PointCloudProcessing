@@ -106,6 +106,7 @@
         },
         "random_seed": 42,
         "debugging": false,
+        "vanilla": true,
         "regularize_input_transform": false,
         "regularize_feature_transform": false
     },

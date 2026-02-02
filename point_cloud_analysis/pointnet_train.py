@@ -281,13 +281,21 @@ class TrainProfile:
 
             self._log.info( f"Continuing training on model {self._pretrained_model}" )
             
-            custom_objects = {
-                "PointNetSegmentation": PointNet.PointNet,
-                "TNet": PointNet.TNet,
-                "ConvLayer": PointNet.ConvLayer,
-                "DenseLayer": PointNet.DenseLayer,
-                "PointCloudNormalization": PointNet.PointCloudNormalization
-            }
+            if( self._vanilla ):
+                custom_objects = {
+                    "PointNetSegmentation": PointNet.PointNet,
+                    "ConvLayer": PointNet.ConvLayer,
+                    "DenseLayer": PointNet.DenseLayer,
+                    "PointCloudNormalization": PointNet.PointCloudNormalization
+                }
+            else:
+                custom_objects = {
+                    "PointNetSegmentation": PointNet.PointNet,
+                    "TNet": PointNet.TNet,
+                    "ConvLayer": PointNet.ConvLayer,
+                    "DenseLayer": PointNet.DenseLayer,
+                    "PointCloudNormalization": PointNet.PointCloudNormalization
+                }
 
             model = tf.keras.models.load_model(
                 f"{self._model_path}{self._pretrained_model}",
