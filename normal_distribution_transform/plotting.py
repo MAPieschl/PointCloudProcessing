@@ -52,6 +52,7 @@ def plot_multivariate_functions( funcs: list[Callable[[float, float], float]],
     for i, y_ in enumerate( y ):
         ax.plot_surface( x1, x2, y_, label = labels[i] )
 
+    ax.set_title( title )
     ax.set_xlabel( x1_label )
     ax.set_ylabel( x2_label )
     ax.set_zlabel( y_label )
