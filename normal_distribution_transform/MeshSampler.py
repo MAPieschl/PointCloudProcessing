@@ -257,11 +257,12 @@ class MeshSampler:
         (private) Initialize mesh
         '''
 
-        mesh = trimesh.load_mesh( self.path )
-        scale_mat = np.eye(4)
-        scale_mat[:3, :3] *= scale
+        mesh = trimesh.load_scene( self.path )
+        print( mesh.geometry.keys() )
+        # scale_mat = np.eye(4)
+        # scale_mat[:3, :3] *= scale
 
-        mesh.apply_transform( scale_mat )
+        # mesh.apply_transform( scale_mat )
 
         return mesh
     

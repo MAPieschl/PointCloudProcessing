@@ -1,6 +1,8 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
+import plotly.graph_objects as go
+
 from mpl_toolkits.mplot3d import Axes3D
 from typing import Callable, cast
 
@@ -57,5 +59,35 @@ def plot_multivariate_functions( funcs: list[Callable[[float, float], float]],
     ax.set_ylabel( x2_label )
     ax.set_zlabel( y_label )
     ax.legend()
+
+    return fig
+
+def plot_sampled_surface( samples: np.ndarray, x_r: tuple[float, float],
+                         y_r: tuple[float, float],
+                         title: str = '', x_label: str = 'x', 
+                         y_label: str = 'y', z_label: str = 'z',
+                         print_func: Callable[[str], None] = print ) -> go.Figure:
+
+    fig = go.Figure()
+
+    x = np.linspace( x_r[0], x_r[1], samples.shape[1] )
+    y = np.linspace( y_r[0], y_r[1], samples.shape[0] )
+
+    fig.add_trace(
+        go.Surface(
+            x = x,
+            y = y,
+            z = samples
+        )
+    )
+
+    fig.update_layout(
+        title = title,
+        scene = dict(
+            xaxis_title = x_label,
+            yaxis_title = y_label,
+            zaxis_title = z_label
+        )
+    )
 
     return fig
