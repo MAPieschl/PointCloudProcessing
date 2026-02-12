@@ -9,6 +9,7 @@ By:     Mike Pieschl
 Date:   30 July 2025
 '''
 
+import os
 import copy
 import trimesh
 import numpy as np
@@ -81,7 +82,7 @@ class MeshSampler:
                 opacity = 1.0
             )])
             
-            fig.update_layout(scene = dict(aspectmode = 'data'))
+            fig.update_layout(title = title, scene = dict(aspectmode = 'data'))
             fig.show()
 
         else:
@@ -191,6 +192,31 @@ class MeshSampler:
         )
         
         fig.show()
+
+    def get_labeled_vertices( self ) -> dict:
+
+        out = {'points': [], 'labels': []}
+        if( os.path.isfile( self.path ) ):
+            current_label: str | None = None
+            with open( self.path, "r" ) as f:
+                for l in f:
+                    l = l.strip()
+                    if( l.find( "o " ) >= 0 ):
+                        current_label = l.replace( 'o ', '' )
+
+                    elif( l.find( 'v ' ) >= 0 ):
+                        pt_l = l.replace( 'v ', '' ).split( ' ' )
+                        assert len( pt_l ) == 3, f'MeshSampler.get_labeled_vertices produced vertex {pt_l} from {l}.'
+                        assert current_label != None, f"Point identified before a valid mesh label was found."
+
+                        pt = [ float(i) for i in pt_l ]
+                        out['points'].append( self._R @ np.array( pt ) + self._p )
+                        out['labels'].append( current_label )
+
+        else:
+            print( f"{self.path} does not exist. Unbale to produce labeled vertices." )
+
+        return out
 
     def create_full_sample_observations( self,
                                          n: int, 
