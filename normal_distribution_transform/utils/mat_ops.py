@@ -38,6 +38,45 @@ def get_roll_pitch_yaw_deg( dcm: np.ndarray ):
 def get_dcm( roll_deg: float, pitch_deg: float, yaw_deg: float ):
     return _roll( _pitch( _yaw( np.eye(3), np.deg2rad(yaw_deg) ), np.deg2rad(pitch_deg) ), np.deg2rad(roll_deg) ).T
 
+def get_vec6_from_se3( dcm: np.ndarray, get_degrees: bool ):
+
+    eul_ang = get_roll_pitch_yaw_deg( dcm )
+
+    if( get_degrees ):
+        return np.ndarray([
+            dcm[0][3],
+            dcm[1][3],
+            dcm[2][3],
+            eul_ang['roll'],
+            eul_ang['pitch'],
+            eul_ang['yaw']
+        ])
+
+    else:
+        return np.ndarray([
+            dcm[0][3],
+            dcm[1][3],
+            dcm[2][3],
+            np.deg2rad( eul_ang['roll'] ),
+            np.deg2rad( eul_ang['pitch'] ),
+            np.deg2rad( eul_ang['yaw'] )
+        ])
+
+def get_se3_from_vec6( vec6: np.ndarray, is_in_degrees: bool ):
+    if( is_in_degrees ):
+        R = get_dcm( vec6[3].squeeze(), vec6[4].squeeze(), vec6[5].squeeze() )
+
+    else:
+        R = get_dcm( np.rad2deg( vec6[3].squeeze() ), np.rad2deg( vec6[4].squeeze() ), np.rad2deg( vec6[5].squeeze() ) )
+
+
+    se3 = np.zeros( ( 4, 4 ) )
+    se3[:3, :3] = R
+    se3[:3, 3:] = vec6[:3]
+    se3[3, 3]   = 1
+
+    return se3
+
 def get_DCM_positive_x_pointing_at_origin( pos: np.ndarray, roll_deg: float = 0.0 ):
     '''
     Computes a DCM for a point at (x, y, z) pointing toward the origin with roll_deg rotation about the x-axis (right = positive)
