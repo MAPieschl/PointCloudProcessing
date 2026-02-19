@@ -8,7 +8,7 @@ class ReferencePointCloud:
         assert y.ndim == 2, f"y must be an (n, 3) vector of points, not {y.shape}"
         assert y.shape[1] == 3, f"y must be an (n, 3) vector of points, not {y.shape}"
 
-        # For ease, divide into 8 voxels
+        # Create depth-1 octree
         self._max = np.array( [ np.max( y[:, 0] ), np.max( y[:, 1] ), np.max( y[:, 2] ) ] )
         self._min = np.array( [ np.min( y[:, 0] ), np.min( y[:, 1] ), np.min( y[:, 2] ) ] )
         self._mid = np.array( ( self._max + self._min ) / 2 )
