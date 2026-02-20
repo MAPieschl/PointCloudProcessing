@@ -27,13 +27,14 @@ def _roll( dcm: np.ndarray, roll_rad: float ):
     
     return R @ dcm
 
-def get_roll_pitch_yaw_deg( dcm: np.ndarray ):
+def get_roll_pitch_yaw_deg( dcm: np.ndarray, vec_3: bool = False ):
 
     yaw = np.arctan2(dcm[0][1], dcm[0][0])
     pitch = -np.arcsin(dcm[0][2])
     roll = np.arctan2(dcm[1][2], dcm[2][2])
 
-    return {'roll': np.rad2deg(roll), 'pitch': np.rad2deg(pitch), 'yaw': np.rad2deg(yaw)}
+    if( vec_3 ):    return np.array( [np.rad2deg(roll), np.rad2deg(pitch), np.rad2deg(yaw)] )
+    else:           return {'roll': np.rad2deg(roll), 'pitch': np.rad2deg(pitch), 'yaw': np.rad2deg(yaw)}
 
 def get_dcm( roll_deg: float, pitch_deg: float, yaw_deg: float ):
     return _roll( _pitch( _yaw( np.eye(3), np.deg2rad(yaw_deg) ), np.deg2rad(pitch_deg) ), np.deg2rad(roll_deg) ).T
@@ -139,3 +140,17 @@ def convert_radar_to_global(rg_az_el: np.ndarray, radar_pos: np.ndarray, radar_r
     ])
 
     return g_R_r @ point + radar_pos
+
+def transform_to_target_P_sensor( target_P_global: np.ndarray, sensor_P_global: np.ndarray ) -> np.ndarray:
+
+    if( target_P_global.shape != ( 4, 4 ) or sensor_P_global.shape != ( 4, 4 ) ):
+        print( f"target_P_global and sensor_P_global must be shape (4, 4), not {target_P_global.shape} or {sensor_P_global.shape}" )
+        return np.zeros( ( 4, 4 ) )
+    
+    target_P_sensor = np.zeros( ( 4, 4 ) )
+
+    target_P_sensor[:3, :3] = sensor_P_global[:3, :3].T @ target_P_global[:3, :3]
+    target_P_sensor[:3, 3:] = sensor_P_global[:3, :3].T @ ( target_P_global[:3, 3:] - sensor_P_global[:3, 3:] )
+    target_P_sensor[3, 3] = 1
+
+    return target_P_sensor
