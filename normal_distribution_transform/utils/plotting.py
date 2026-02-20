@@ -91,3 +91,64 @@ def plot_sampled_surface( samples: np.ndarray, x_r: tuple[float, float],
     )
 
     return fig
+
+def plot_2D_scatter_with_mean_and_std( x: np.ndarray,
+                                      y: np.ndarray, 
+                                      title: str, 
+                                      x_label: str = 'x', 
+                                      y_label: str = 'y', 
+                                      print_func: Callable[[str], None] = print ):
+    
+    fig = go.Figure()
+
+    ## Bin the values to create mean and std deviation data
+    num_bins = x.shape[0] / 10
+    bins = np.linspace( np.min( x ), np.max( x ), num_bins )
+
+    means = []
+    std = []
+    x_val = []
+
+    for i in range( bins.shape[0] ):
+        if( i < num_bins - 1 ):
+            bin_idx = np.where( x >= bins[i] and x < bins[i + 1] )
+            means.append( np.mean( y[bin_idx] ) )
+            std.append( np.std( y[bin_idx] ) )
+            x_val = ( bins[i + 1] - bins[i] ) / 2 + bins[i]
+
+    means = np.array( means )
+    std = np.array( std )
+    x_val = np.array( x_val )
+
+    fig.add_trace( go.Scatter(
+        x = x,
+        y = y,
+        mode = 'markers'
+    ) )
+
+    fig.add_trace( go.Scatter(
+        x = x_val,
+        y = means,
+        mode = 'lines',
+        line = dict( color = 'red' )
+    ) )
+
+    fig.add_trace( go.Scatter(
+        x = x_val,
+        y = means + std,
+        mode = 'lines',
+        line = dict( color = 'blue' )
+    ) )
+
+    fig.add_trace( go.Scatter(
+        x = x_val,
+        y = means - std,
+        mode = 'lines',
+        line = dict( color = 'blue' )
+    ) )
+
+    fig.update_layout(
+        title = title,
+        xaxis_title = x_label,
+        yaxis_title = y_label
+    )

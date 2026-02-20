@@ -8,8 +8,8 @@ from ndt.Parameters import Parameters
 from ndt.Point import Point
 from ndt.Voxel import Voxel
 from ndt.ReferencePointCloud import ReferencePointCloud
-from ndt.TargetPointCloud import TargetPointCloud
-from ndt.Optimization import Optimization
+from ndt.TargetPointCloud import TargetPointCloudP2D
+from ndt.Optimization import OptimizationP2D
 
 from mesh.MeshSampler import MeshSampler
 
@@ -217,7 +217,7 @@ class ParsedAftrLog:
                     else:
                         line = line.replace( '\t', ' ' ).split( ' ' )
                         
-                        # the magic re.sub() simply truncates the OptiTrack time to 6 digits
+                        ## the magic re.sub() simply truncates the OptiTrack time to 6 digits
                         timestamp = datetime.strptime( re.sub(r'(\.\d{6})\d+', r'\1', line.pop( 0 )), "%Y.%b.%d_%H.%M.%S.%f.UTC" )
                         timestamp = timestamp.replace( tzinfo = timezone.utc )
                         self.__optitrack_truth[timestamp] = {}
@@ -235,6 +235,13 @@ class ParsedAftrLog:
 
                                 self.__optitrack_truth[timestamp][name] = R
 
+                        ## Artificially add the camera position in based on the known offset from the lidar
+                        if( 'lidar' in self.__optitrack_truth[timestamp] ):
+                            camera_P_global = np.zeros( ( 4, 4 ) )
+                            camera_P_global[:3, :3] = CAMERA_P_LIDAR[:3, :3] @ self.__optitrack_truth[timestamp]['lidar'][:3, :3]
+                            camera_P_global[:3, 3:] = self.__optitrack_truth[timestamp]['lidar'][:3, :3] @ CAMERA_P_LIDAR[:3, 3:] + self.__optitrack_truth[timestamp]['lidar'][:3, 3:]
+                            camera_P_global[3, 3] = 1
+
             return
         
         else:
@@ -244,38 +251,85 @@ class ParsedAftrLog:
 class AnalyzeAftrLog:
     def __init__( self, parsed_aftr_log: ParsedAftrLog, target_id: str ):
 
-        self.__actual_pos = {}
-        self.__est_pos_lidar = {}
-        self.__est_pos_camera = {}
-        self.__actual_rpy = {}
-        self.__est_rpy_lidar = {}
-        self.__est_rpy_camera = {}
-        self.__res_pos_lidar = {}
-        self.__res_pos_camera = {}
-        self.__res_rpy_lidar = {}
-        self.__res_rpy_camera = {}
+        self.__actual_pos_lidar_frame = {}
+        self.__actual_pos_camera_frame = {}
+        self.__est_pos_lidar_lidar_frame = {}
+        self.__est_pos_camera_camera_frame = {}
+        self.__actual_rpy_lidar_frame = {}
+        self.__actual_rpy_camera_frame = {}
+        self.__est_rpy_lidar_lidar_frame = {}
+        self.__est_rpy_camera_camera_frame = {}
+        self.__res_pos_lidar_lidar_frame = {}
+        self.__res_pos_camera_camera_frame = {}
+        self.__res_rpy_lidar_lidar_frame = {}
+        self.__res_rpy_camera_camera_frame= {}
         self.__precision = {}
         self.__recall = {}
         self.__num_points = {}
 
-        self.__organize_data( parsed_aftr_log, target_id )
+        self.__timestamp_by_distance_lidar = {}
+        self.__timestamp_by_distance_camera = {}
+        self.__timestamp_by_num_points = {}
 
-    def __organize_data( self, parsed_aftr_log: ParsedAftrLog, target_id: str ):
+        self.__parsed_aftr_log = parsed_aftr_log
+        self.__target_id = target_id
 
-        for timestamp in parsed_aftr_log.get_timestamps():
-            self.__actual_pos[timestamp] = parsed_aftr_log.get_optitrack_data_at( timestamp )[target_id][:3, 3:]
-            self.__est_pos_lidar[timestamp] = parsed_aftr_log.get_lidar_estimation_at( timestamp )[:3, 3:]
-            self.__est_pos_camera[timestamp] = parsed_aftr_log.get_camera_estimation_at( timestamp )[:3, 3:]
-            self.__actual_rpy[timestamp] = get_roll_pitch_yaw_deg( parsed_aftr_log.get_optitrack_data_at( timestamp )[target_id][:3, :3] )
-            self.__est_rpy_lidar[timestamp] = get_roll_pitch_yaw_deg( parsed_aftr_log.get_lidar_estimation_at( timestamp )[:3, :3] )
-            self.__est_rpy_camera[timestamp] = get_roll_pitch_yaw_deg( parsed_aftr_log.get_camera_estimation_at( timestamp )[:3, :3] )
-            self.__res_pos_lidar[timestamp] = self.__est_pos_lidar[timestamp] - self.__actual_pos[timestamp]
-            self.__res_pos_camera[timestamp] = self.__est_pos_camera[timestamp] - self.__actual_pos[timestamp]
-            self.__res_rpy_lidar[timestamp] = self.__est_rpy_lidar[timestamp] - self.__actual_rpy[timestamp]
-            self.__res_rpy_camera[timestamp] = self.__est_rpy_camera[timestamp] - self.__actual_rpy[timestamp]
-            self.__precision[timestamp] = parsed_aftr_log.get_lidar_precision_at( timestamp )
-            self.__recall[timestamp] = parsed_aftr_log.get_lidar_recall_at( timestamp )
-            self.__num_points[timestamp] = parsed_aftr_log.get_lidar_num_points_at( timestamp )
+        self.__organize_data()
+
+    def print_6DOF_scatter_plots_by_distance( self, output_path: str, title: str ):
+
+        if( os.path.isdir( output_path ) ):
+            dist_sensor_to_target = np.asarray( self.__timestamp_by_distance.keys() )
+
+            ## Convert to sensor frame for plotting
+            target_P_lidar_act = []
+            target_P_lidar_est = []
+            for dist in list( self.__timestamp_by_distance.keys() ):
+                target_P_global_act = self.__parsed_aftr_log.get_optitrack_data_at( self.__timestamp_by_distance[dist] )[self.__target_id]
+                target_P_global_est = self.__parsed_aftr_log.get_lidar_estimation_at( self.__timestamp_by_distance[dist] )
+
+                lidar_P_global = self.__parsed_aftr_log.get_optitrack_data_at( self.__timestamp_by_distance[dist] )['lidar']
+
+                target_P_lidar.append( np.zeros( ( 4, 4 ) ) )
+                target_P_lidar[-1][:3, :3] = self.__parsed_aftr_log.get_optitrack_data_at( self.__timestamp_by_distance[dist] )['']
+
+            ## x-plot
+            plot_2D_scatter_with_mean_and_std(  )
+
+        else:
+            print( f"{output_path} does not exist" )
+
+    def __organize_data( self ):
+
+        for timestamp in self.__parsed_aftr_log.get_timestamps():
+
+            lidar_P_global_act = self.__parsed_aftr_log.get_optitrack_data_at( timestamp )['lidar']
+            camera_P_global_act = self.__parsed_aftr_log.get_optitrack_data_at( timestamp )['camera']
+            target_P_global_act = self.__parsed_aftr_log.get_optitrack_data_at( timestamp )[self.__target_id]
+
+            target_P_global_est_lidar = self.__parsed_aftr_log.get_lidar_estimation_at( timestamp )
+            target_P_global_est_camera = self.__parsed_aftr_log.get_camera_estimation_at( timestamp )
+
+            self.__actual_pos_lidar_frame[timestamp] = transform_to_target_P_sensor( target_P_global_act, lidar_P_global_act )[:3, 3:]
+            self.__actual_pos_camera_frame[timestamp] = transform_to_target_P_sensor( target_P_global_act, camera_P_global_act )[:3, 3:]
+            self.__est_pos_lidar_lidar_frame[timestamp] = transform_to_target_P_sensor( target_P_global_est_lidar, lidar_P_global_act )[:3, 3:]
+            self.__est_pos_camera_camera_frame[timestamp] = transform_to_target_P_sensor( target_P_global_est_camera, camera_P_global_act )[:3, 3:]
+            self.__actual_rpy_lidar_frame[timestamp] = get_roll_pitch_yaw_deg( transform_to_target_P_sensor( target_P_global_act, lidar_P_global_act ) )
+            self.__actual_rpy_camera_frame[timestamp] = get_roll_pitch_yaw_deg( transform_to_target_P_sensor( target_P_global_act, camera_P_global_act ) )
+            self.__est_rpy_lidar_lidar_frame[timestamp] = get_roll_pitch_yaw_deg( transform_to_target_P_sensor( target_P_global_est_lidar, lidar_P_global_act ) )
+            self.__est_rpy_camera_camera_frame[timestamp] = get_roll_pitch_yaw_deg( transform_to_target_P_sensor( target_P_global_est_camera, camera_P_global_act ) )
+            self.__res_pos_lidar_lidar_frame[timestamp] = self.__est_pos_lidar_lidar_frame[timestamp] - self.__actual_pos_lidar_frame[timestamp]
+            self.__res_pos_camera_camera_frame [timestamp] = self.__est_pos_camera_camera_frame[timestamp] - self.__actual_pos_camera_frame[timestamp]
+            self.__res_rpy_lidar_lidar_frame[timestamp] = self.__est_rpy_lidar_lidar_frame[timestamp] - self.__actual_rpy_lidar_frame[timestamp]
+            self.__res_rpy_camera_camera_frame[timestamp] = self.__est_rpy_camera_camera_frame[timestamp] - self.__actual_rpy_camera_frame[timestamp]
+
+            self.__precision[timestamp] = self.__parsed_aftr_log.get_lidar_precision_at( timestamp )
+            self.__recall[timestamp] = self.__parsed_aftr_log.get_lidar_recall_at( timestamp )
+            self.__num_points[timestamp] = self.__parsed_aftr_log.get_lidar_num_points_at( timestamp )
+
+            self.__timestamp_by_distance_lidar[np.linalg.norm( self.__actual_pos_lidar_frame[timestamp] )] = timestamp
+            self.__timestamp_by_distance_camera[np.linalg.norm( self.__actual_pos_camera_frame[timestamp] )] = timestamp
+            self.__timestamp_by_num_points[self.__num_points[timestamp]] = timestamp
 
 def main( *args ) -> bool:
     
