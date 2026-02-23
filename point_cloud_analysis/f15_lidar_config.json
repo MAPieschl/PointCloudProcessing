@@ -1,6 +1,6 @@
 {
     "info": {
-        "name": "f15_scale_lidar",
+        "name": "f15_scale_vanilla_lidar",
         "class_labels": {
             "0": "f-15_model",
             "1": "a-10",
@@ -102,14 +102,15 @@
         "patience": 30,
         "batch_size": 8,
         "learning": {
-            "rate": 0.0001,
-            "decay_steps": 7000,
-            "decay_rate": 0.7
+            "rate": 0.001,
+            "decay_steps": 3600,
+            "decay_rate": 0.94
         },
         "random_seed": 42,
         "debugging": false,
+        "vanilla": true,
         "regularize_input_transform": false,
-        "regularize_feature_transform": false
+        "regularize_feature_transform": true
     },
     "file_system": {
         "model_path": "models/",
