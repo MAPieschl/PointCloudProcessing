@@ -5,6 +5,7 @@ import plotly.graph_objects as go
 
 from mpl_toolkits.mplot3d import Axes3D
 from typing import Callable, cast
+from datetime import datetime
 
 def plot_univariate_functions( funcs: list[Callable[[float], float]],
                               labels: list[str], x_range: tuple[float, float], 
@@ -97,13 +98,16 @@ def plot_2D_scatter_with_mean_and_std( x: np.ndarray,
                                       title: str, 
                                       x_label: str = 'x', 
                                       y_label: str = 'y', 
-                                      print_func: Callable[[str], None] = print ):
+                                      print_func: Callable[[str], None] = print ) -> go.Figure:
     
     fig = go.Figure()
 
     ## Bin the values to create mean and std deviation data
-    num_bins = x.shape[0] / 10
+    num_bins = int( x.shape[0] / 50 )
     bins = np.linspace( np.min( x ), np.max( x ), num_bins )
+
+    x = x.squeeze()
+    y = y.squeeze()
 
     means = []
     std = []
@@ -111,40 +115,56 @@ def plot_2D_scatter_with_mean_and_std( x: np.ndarray,
 
     for i in range( bins.shape[0] ):
         if( i < num_bins - 1 ):
-            bin_idx = np.where( x >= bins[i] and x < bins[i + 1] )
-            means.append( np.mean( y[bin_idx] ) )
-            std.append( np.std( y[bin_idx] ) )
-            x_val = ( bins[i + 1] - bins[i] ) / 2 + bins[i]
+            bin_idx = np.where( ( x >= bins[i] ) & ( x < bins[i + 1] ) )
+
+            if( len( bin_idx ) > 0 ):
+                means.append( np.mean( y[bin_idx] ) )
+                std.append( np.std( y[bin_idx] ) )
+                x_val.append( ( bins[i + 1] - bins[i] ) / 2 + bins[i] )
 
     means = np.array( means )
     std = np.array( std )
     x_val = np.array( x_val )
 
+    if( not ( np.all( np.isfinite( means ) ) and np.all( np.isfinite( std ) ) and np.all( np.isfinite( x_val ) ) ) ):
+        print( 'Infinite values detected in mean and/or stdev calculations.' )
+        return fig
+
     fig.add_trace( go.Scatter(
         x = x,
         y = y,
-        mode = 'markers'
+        mode = 'markers',
+        marker = dict( color = 'rgba(0, 0, 191, 0.5)' ),
+        name = 'residuals'
     ) )
 
     fig.add_trace( go.Scatter(
         x = x_val,
         y = means,
         mode = 'lines',
-        line = dict( color = 'red' )
+        line = dict( color = 'red' ),
+        name = 'mean',
+        connectgaps = True
     ) )
 
     fig.add_trace( go.Scatter(
         x = x_val,
         y = means + std,
         mode = 'lines',
-        line = dict( color = 'blue' )
+        line = dict( color = 'blue' ),
+        name = 'stdev - upper',
+        connectgaps = True
     ) )
 
     fig.add_trace( go.Scatter(
         x = x_val,
         y = means - std,
         mode = 'lines',
-        line = dict( color = 'blue' )
+        line = dict( color = 'blue' ),
+        name = 'stdev - lower',
+        connectgaps = True,
+        fill = 'tonexty',
+        fillcolor = 'rgba(0, 0, 255, 0.4)'
     ) )
 
     fig.update_layout(
@@ -152,3 +172,96 @@ def plot_2D_scatter_with_mean_and_std( x: np.ndarray,
         xaxis_title = x_label,
         yaxis_title = y_label
     )
+
+    return fig
+
+def plot_class_precision_recall_hist( precision_data: dict[datetime, dict[str, float]],
+                                     recall_data: dict[datetime, dict[str, float]],
+                                     title:  str, print_func: Callable[[str], None] = print ) -> go.Figure:
+    
+    fig = go.Figure()
+
+    classes = []
+    precision_tuple = []
+    recall_tuple = []
+
+    for ts in list( precision_data.keys() ):
+        for cl in list( precision_data[ts].keys() ):
+            if( cl not in classes ):
+                classes.append( cl )
+                precision_tuple.append( [ 1, precision_data[ts][cl] ] )
+                recall_tuple.append( [ 1, recall_data[ts][cl] ] )
+            
+            idx = classes.index( cl )
+
+            precision_tuple[idx][0] += 1
+            precision_tuple[idx][1] += precision_data[ts][cl]
+            
+            recall_tuple[idx][0] += 1
+            recall_tuple[idx][1] += recall_data[ts][cl]
+
+    precision = [ i[1] / i[0] for i in precision_tuple ]
+    recall = [ i[1] / i[0] for i in recall_tuple ]
+
+    fig.add_trace( go.Bar(
+        x = classes,
+        y = precision,
+        name = 'precision',
+        marker_color = 'blue',
+        text = precision,
+        textposition = 'outside'
+    ) )
+
+    fig.add_trace( go.Bar(
+        x = classes,
+        y = recall,
+        name = 'recall',
+        marker_color = 'red',
+        text = recall,
+        textposition = 'outside'
+    ) )
+
+    fig.update_layout(
+        barmode = 'group',
+        title = title,
+        xaxis_title = 'part classes',
+        yaxis_title = ''
+    )
+
+    return fig
+
+def plot_class_precision_recall_scatter( precision_data: dict[str, np.ndarray],
+                                         recall_data: dict[str, np.ndarray],
+                                         title: str,
+                                         x_label: str,
+                                         print_func: Callable[[str], None] = print ) -> go.Figure:
+    
+    fig = go.Figure()
+
+    for cl in list( precision_data.keys() ):
+
+        fig.add_trace( go.Scatter(
+            x = precision_data[cl][0, :],
+            y = precision_data[cl][1, :],
+            mode = 'lines',
+            line = dict( color = 'blue' ),
+            name = f'{cl} precision',
+            connectgaps = True
+        ))
+
+        fig.add_trace( go.Scatter(
+            x = recall_data[cl][0, :],
+            y = recall_data[cl][1, :],
+            mode = 'lines',
+            line = dict( color = 'red' ),
+            name = f'{cl} recall',
+            connectgaps = True
+        ))
+
+    fig.update_layout(
+        title = title,
+        xaxis_title = x_label,
+        yaxis_title = ''
+    )
+
+    return fig

@@ -2,6 +2,8 @@ import sys
 import os
 import json
 import re
+import pandas as pd
+
 from datetime import datetime, timezone
 
 from ndt.Parameters import Parameters
@@ -136,13 +138,6 @@ class ParsedAftrLog:
                             if( timestamp not in list( self.__optitrack_truth.keys() ) ):
                                 print( f"Camera estimation at time {timestamp} provided without truth data." )
                                 return
-                            
-                            # lidar_P_global = self.__optitrack_truth[timestamp]['lidar']
-
-                            # camera_P_global = np.zeros( ( 4, 4 ) )
-                            # camera_P_global[:3, :3] = CAMERA_P_LIDAR[:3, :3] @ lidar_P_global[:3, :3]
-                            # camera_P_global[:3, 3:] = lidar_P_global[:3, :3] @ CAMERA_P_LIDAR[:3, 3:] + lidar_P_global[:3, 3:]
-                            # camera_P_global[3, 3] = 1
 
                             self.__camera_est[timestamp] = R
                             
@@ -242,6 +237,8 @@ class ParsedAftrLog:
                             camera_P_global[:3, 3:] = self.__optitrack_truth[timestamp]['lidar'][:3, :3] @ CAMERA_P_LIDAR[:3, 3:] + self.__optitrack_truth[timestamp]['lidar'][:3, 3:]
                             camera_P_global[3, 3] = 1
 
+                            self.__optitrack_truth[timestamp]['camera'] = camera_P_global
+
             return
         
         else:
@@ -276,28 +273,136 @@ class AnalyzeAftrLog:
 
         self.__organize_data()
 
-    def print_6DOF_scatter_plots_by_distance( self, output_path: str, title: str ):
+    def get_6DOF_residual_scatter_plots_by_distance( self, output_path: str ):
 
         if( os.path.isdir( output_path ) ):
-            dist_sensor_to_target = np.asarray( self.__timestamp_by_distance.keys() )
 
-            ## Convert to sensor frame for plotting
-            target_P_lidar_act = []
-            target_P_lidar_est = []
-            for dist in list( self.__timestamp_by_distance.keys() ):
-                target_P_global_act = self.__parsed_aftr_log.get_optitrack_data_at( self.__timestamp_by_distance[dist] )[self.__target_id]
-                target_P_global_est = self.__parsed_aftr_log.get_lidar_estimation_at( self.__timestamp_by_distance[dist] )
+            ## LiDAR
 
-                lidar_P_global = self.__parsed_aftr_log.get_optitrack_data_at( self.__timestamp_by_distance[dist] )['lidar']
+            dists = []
+            pos_res = []
+            rpy_res = []
 
-                target_P_lidar.append( np.zeros( ( 4, 4 ) ) )
-                target_P_lidar[-1][:3, :3] = self.__parsed_aftr_log.get_optitrack_data_at( self.__timestamp_by_distance[dist] )['']
+            for dist in list( self.__timestamp_by_distance_lidar.keys() ):
+                dists.append( dist )
+                pos_res.append( self.__res_pos_lidar_lidar_frame[self.__timestamp_by_distance_lidar[dist]] )
+                rpy_res.append( self.__res_rpy_lidar_lidar_frame[self.__timestamp_by_distance_lidar[dist]] )
 
-            ## x-plot
-            plot_2D_scatter_with_mean_and_std(  )
+            plot_2D_scatter_with_mean_and_std( np.array( dists ), 
+                                                      np.array( pos_res )[:, 0], 
+                                                      'x-translation residuals in LiDAR sensor frame',
+                                                      'actual distance - sensor to target (m)', 
+                                                      'residual (m)' ).write_image( f'{output_path}/res_x_lidar.png', width = 800, height = 400 )
+
+            plot_2D_scatter_with_mean_and_std( np.array( dists ), 
+                                                      np.array( pos_res )[:, 1], 
+                                                      'y-translation residuals in LiDAR sensor frame',
+                                                      'actual distance - sensor to target (m)', 
+                                                      'residual (m)' ).write_image( f'{output_path}/res_y_lidar.png', width = 800, height = 400 )
+
+            plot_2D_scatter_with_mean_and_std( np.array( dists ), 
+                                                      np.array( pos_res )[:, 2], 
+                                                      'z-translation residuals in LiDAR sensor frame',
+                                                      'actual distance - sensor to target (m)', 
+                                                      'residual (m)' ).write_image( f'{output_path}/res_z_lidar.png', width = 800, height = 400 )
+
+            plot_2D_scatter_with_mean_and_std( np.array( dists ), 
+                                                      np.array( rpy_res )[:, 0], 
+                                                      'roll-rotation residuals in LiDAR sensor frame',
+                                                      'actual distance - sensor to target (m)', 
+                                                      'residual (deg)' ).write_image( f'{output_path}/res_roll_lidar.png', width = 800, height = 400 )
+
+            plot_2D_scatter_with_mean_and_std( np.array( dists ), 
+                                                      np.array( rpy_res )[:, 1], 
+                                                      'pitch-rotation residuals in LiDAR sensor frame',
+                                                      'actual distance - sensor to target (m)', 
+                                                      'residual (deg)' ).write_image( f'{output_path}/res_pitch_lidar.png', width = 800, height = 400 )
+
+            plot_2D_scatter_with_mean_and_std( np.array( dists ), 
+                                                      np.array( rpy_res )[:, 2], 
+                                                      'yaw-rotation residuals in LiDAR sensor frame',
+                                                      'actual distance - sensor to target (m)', 
+                                                      'residual (deg)' ).write_image( f'{output_path}/res_yaw_lidar.png', width = 800, height = 400 )
+            
+            if( len( self.__timestamp_by_distance_camera.keys() ) > 0 ):
+                ## Camera
+
+                dists = []
+                pos_res = []
+                rpy_res = []
+
+                for dist in list( self.__timestamp_by_distance_camera.keys() ):
+                    dists.append( dist )
+                    pos_res.append( self.__res_pos_camera_camera_frame[self.__timestamp_by_distance_camera[dist]] )
+                    rpy_res.append( self.__res_rpy_camera_camera_frame[self.__timestamp_by_distance_camera[dist]] )
+
+                plot_2D_scatter_with_mean_and_std( np.array( dists ), 
+                                                        np.array( pos_res )[:, 0], 
+                                                        'x-translation residuals in camera sensor frame',
+                                                        'actual distance - sensor to target (m)', 
+                                                        'residual (m)' ).write_image( f'{output_path}/res_x_camera.png', width = 800, height = 400 )
+
+                plot_2D_scatter_with_mean_and_std( np.array( dists ), 
+                                                        np.array( pos_res )[:, 1], 
+                                                        'y-translation residuals in camera sensor frame',
+                                                        'actual distance - sensor to target (m)', 
+                                                        'residual (m)' ).write_image( f'{output_path}/res_y_camera.png', width = 800, height = 400 )
+
+                plot_2D_scatter_with_mean_and_std( np.array( dists ), 
+                                                        np.array( pos_res )[:, 2], 
+                                                        'z-translation residuals in camera sensor frame',
+                                                        'actual distance - sensor to target (m)', 
+                                                        'residual (m)' ).write_image( f'{output_path}/res_z_camera.png', width = 800, height = 400 )
+
+                plot_2D_scatter_with_mean_and_std( np.array( dists ), 
+                                                        np.array( pos_res )[:, 0], 
+                                                        'roll-rotation residuals in camera sensor frame',
+                                                        'actual distance - sensor to target (m)', 
+                                                        'residual (deg)' ).write_image( f'{output_path}/res_rl_camera.png', width = 800, height = 400 )
+
+                plot_2D_scatter_with_mean_and_std( np.array( dists ), 
+                                                        np.array( pos_res )[:, 1], 
+                                                        'pitch-rotation residuals in camera sensor frame',
+                                                        'actual distance - sensor to target (m)', 
+                                                        'residual (deg)' ).write_image( f'{output_path}/res_pt_camera.png', width = 800, height = 400 )
+
+                plot_2D_scatter_with_mean_and_std( np.array( dists ), 
+                                                        np.array( pos_res )[:, 2], 
+                                                        'yaw-rotation residuals in camera sensor frame',
+                                                        'actual distance - sensor to target (m)', 
+                                                        'residual (deg)' ).write_image( f'{output_path}/res_yw_camera.png', width = 800, height = 400 )
 
         else:
             print( f"{output_path} does not exist" )
+
+    def get_segmentation_performance_hist( self, output_path: str ):
+
+        plot_class_precision_recall_hist( self.__precision, self.__recall, 'average part segmentation performance' ).write_image( f'{output_path}/seg_perf_hist.png', width = 800, height = 400 )
+
+    def get_segmentation_performance_plots_by_range( self, output_path: str ):
+
+        if( os.path.isdir( output_path ) ):
+
+            dists = []
+            precision = {}
+            recall = {}
+
+            for dist in list( self.__timestamp_by_distance_lidar.keys() ):
+                dists.append( dist )
+
+                for cl in self.__precision[self.__timestamp_by_distance_lidar[dist]]:
+                    if( cl not in list( precision.keys() ) ):
+                        precision[cl] = [[dist, self.__precision[self.__timestamp_by_distance_lidar[dist]][cl]]]
+                        recall[cl] = [[dist, self.__recall[self.__timestamp_by_distance_lidar[dist]][cl]]]
+                    else:
+                        precision[cl].append( [dist, self.__precision[self.__timestamp_by_distance_lidar[dist]][cl]] )
+                        recall[cl].append( [dist, self.__recall[self.__timestamp_by_distance_lidar[dist]][cl]] )
+
+            for cl in list( precision.keys() ):
+                precision[cl] = np.array( precision[cl] ).T
+                recall[cl] = np.array( recall[cl] ).T
+
+                plot_class_precision_recall_scatter( { cl: precision[cl] }, { cl: recall[cl] }, 'part segmentation performance by distance', 'actual distance - sensor to target (m)' ).write_image( f'{output_path}/seg_perf_dist_{cl}.png', width = 800, height = 400 )
 
     def __organize_data( self ):
 
@@ -308,27 +413,35 @@ class AnalyzeAftrLog:
             target_P_global_act = self.__parsed_aftr_log.get_optitrack_data_at( timestamp )[self.__target_id]
 
             target_P_global_est_lidar = self.__parsed_aftr_log.get_lidar_estimation_at( timestamp )
-            target_P_global_est_camera = self.__parsed_aftr_log.get_camera_estimation_at( timestamp )
 
             self.__actual_pos_lidar_frame[timestamp] = transform_to_target_P_sensor( target_P_global_act, lidar_P_global_act )[:3, 3:]
-            self.__actual_pos_camera_frame[timestamp] = transform_to_target_P_sensor( target_P_global_act, camera_P_global_act )[:3, 3:]
             self.__est_pos_lidar_lidar_frame[timestamp] = transform_to_target_P_sensor( target_P_global_est_lidar, lidar_P_global_act )[:3, 3:]
-            self.__est_pos_camera_camera_frame[timestamp] = transform_to_target_P_sensor( target_P_global_est_camera, camera_P_global_act )[:3, 3:]
-            self.__actual_rpy_lidar_frame[timestamp] = get_roll_pitch_yaw_deg( transform_to_target_P_sensor( target_P_global_act, lidar_P_global_act ) )
-            self.__actual_rpy_camera_frame[timestamp] = get_roll_pitch_yaw_deg( transform_to_target_P_sensor( target_P_global_act, camera_P_global_act ) )
-            self.__est_rpy_lidar_lidar_frame[timestamp] = get_roll_pitch_yaw_deg( transform_to_target_P_sensor( target_P_global_est_lidar, lidar_P_global_act ) )
-            self.__est_rpy_camera_camera_frame[timestamp] = get_roll_pitch_yaw_deg( transform_to_target_P_sensor( target_P_global_est_camera, camera_P_global_act ) )
+            self.__actual_rpy_lidar_frame[timestamp] = get_roll_pitch_yaw_deg( transform_to_target_P_sensor( target_P_global_act, lidar_P_global_act ), True )
+            self.__est_rpy_lidar_lidar_frame[timestamp] = get_roll_pitch_yaw_deg( transform_to_target_P_sensor( target_P_global_est_lidar, lidar_P_global_act ), True )
             self.__res_pos_lidar_lidar_frame[timestamp] = self.__est_pos_lidar_lidar_frame[timestamp] - self.__actual_pos_lidar_frame[timestamp]
-            self.__res_pos_camera_camera_frame [timestamp] = self.__est_pos_camera_camera_frame[timestamp] - self.__actual_pos_camera_frame[timestamp]
             self.__res_rpy_lidar_lidar_frame[timestamp] = self.__est_rpy_lidar_lidar_frame[timestamp] - self.__actual_rpy_lidar_frame[timestamp]
-            self.__res_rpy_camera_camera_frame[timestamp] = self.__est_rpy_camera_camera_frame[timestamp] - self.__actual_rpy_camera_frame[timestamp]
+
+            try:
+                target_P_global_est_camera = self.__parsed_aftr_log.get_camera_estimation_at( timestamp )
+
+                self.__actual_pos_camera_frame[timestamp] = transform_to_target_P_sensor( target_P_global_act, camera_P_global_act )[:3, 3:]
+                self.__est_pos_camera_camera_frame[timestamp] = transform_to_target_P_sensor( target_P_global_est_camera, camera_P_global_act )[:3, 3:]
+                self.__actual_rpy_camera_frame[timestamp] = get_roll_pitch_yaw_deg( transform_to_target_P_sensor( target_P_global_act, camera_P_global_act ), True )
+                self.__est_rpy_camera_camera_frame[timestamp] = get_roll_pitch_yaw_deg( transform_to_target_P_sensor( target_P_global_est_camera, camera_P_global_act ), True )
+                self.__res_pos_camera_camera_frame [timestamp] = self.__est_pos_camera_camera_frame[timestamp] - self.__actual_pos_camera_frame[timestamp]
+                self.__res_rpy_camera_camera_frame[timestamp] = self.__est_rpy_camera_camera_frame[timestamp] - self.__actual_rpy_camera_frame[timestamp]
+                
+                self.__timestamp_by_distance_camera[np.linalg.norm( self.__actual_pos_camera_frame[timestamp] )] = timestamp
+
+            except KeyError:
+                ## Camera data not required - the above block will throw a KeyError if no camera data were provided
+                pass
 
             self.__precision[timestamp] = self.__parsed_aftr_log.get_lidar_precision_at( timestamp )
             self.__recall[timestamp] = self.__parsed_aftr_log.get_lidar_recall_at( timestamp )
             self.__num_points[timestamp] = self.__parsed_aftr_log.get_lidar_num_points_at( timestamp )
 
             self.__timestamp_by_distance_lidar[np.linalg.norm( self.__actual_pos_lidar_frame[timestamp] )] = timestamp
-            self.__timestamp_by_distance_camera[np.linalg.norm( self.__actual_pos_camera_frame[timestamp] )] = timestamp
             self.__timestamp_by_num_points[self.__num_points[timestamp]] = timestamp
 
 def main( *args ) -> bool:
@@ -336,6 +449,11 @@ def main( *args ) -> bool:
     if( not os.path.isdir( args[0][1] ) ): return False
 
     aftr_log = ParsedAftrLog( args[0][1] )
+    analysis = AnalyzeAftrLog( aftr_log, 'f15_cart' )
+
+    analysis.get_6DOF_residual_scatter_plots_by_distance( 'output/' )
+    analysis.get_segmentation_performance_hist( 'output/' )
+    analysis.get_segmentation_performance_plots_by_range( 'output/' )
 
     return True
 
