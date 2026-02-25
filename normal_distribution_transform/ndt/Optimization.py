@@ -21,7 +21,7 @@ class OptimizationP2D:
 
         course_se3 = np.eye( 4 )
 
-        initial_pos = np.mean( np.array( [p.pos for p in target_pc.get_points()] ), axis = 0 )
+        initial_pos = -np.mean( np.array( [p.pos for p in target_pc.get_points()] ), axis = 0 )
         t = ( initial_se3[:3, :3] @ initial_pos + initial_se3[:3, 3:].reshape( (3, 1) ) ).reshape( ( 3, 1 ) )
         
         course_se3[:3, :3] = initial_se3[:3, :3]

@@ -1,6 +1,6 @@
 ### PYQT ###
 from PyQt6.QtWebEngineWidgets import QWebEngineView
-from PyQt6.QtCore import Qt, QObject, QThread, pyqtSignal
+from PyQt6.QtCore import Qt, QObject, QThread, pyqtSignal, QUrl
 from PyQt6.QtGui import QDoubleValidator, QIntValidator, QFont
 from PyQt6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
