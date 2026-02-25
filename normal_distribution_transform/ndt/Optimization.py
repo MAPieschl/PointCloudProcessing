@@ -29,11 +29,14 @@ class OptimizationP2D:
 
         return course_se3
 
-    def gradient_descent( self, target_pc: TargetPointCloudP2D, initial_se3: np.ndarray, learning_rate: float, epsilon: float = 0.00001, max_iterations: int = 100 ):
+    def gradient_descent( self, target_pc: TargetPointCloudP2D, initial_se3: np.ndarray, learning_rate: float, epsilon: float = 0.00001, max_iterations: int = 100 ) -> list[np.ndarray]:
+
+        target_pc.set_pose( get_vec6_from_se3( initial_se3, get_degrees = False ) )
 
         delta_s: float = epsilon * 10
-        p_n: np.ndarray = initial_se3
         iterations: int = max_iterations
+
+        step_se3 = []
         
         while( delta_s > epsilon and iterations > 0 ):
 
@@ -45,12 +48,12 @@ class OptimizationP2D:
             target_pc.move_relative( delta_p )
             s_n1 = self.f( target_pc.get_points() )
 
+            step_se3.append( target_pc.get_pose() )
+
             delta_s = abs( s_n - s_n1 )
             iterations -= 1
 
-            print( f"Ending step {max_iterations - iterations} / {max_iterations} at {target_pc.p.to_string()} - score -> {s_n1}" )
-
-        return p_n
+        return step_se3
 
     def newtons_method( self, target_pc: TargetPointCloudP2D, initial_se3: np.ndarray, epsilon: float = 0.00001, max_iterations: int = 100 ):
 
@@ -130,10 +133,11 @@ class OptimizationP2D:
             for x_i in x:
                 v: Voxel | None = x_i.is_contained_by()
                 if( type( v ) == Voxel ):
-                    q: np.ndarray = x_i.pos - v.mu.reshape( ( 3, 1 ) )
-                    
-                    g[i] += ( self.d1( v.determinant ) * self.d2() * q.transpose() @ v.info_matrix @ J_E( q )[:, i].reshape( ( 3, 1 ) ) * np.exp( (-self.d2() / 2) * q.transpose() @ v.info_matrix @ q ) ).squeeze()
-        
+                    if( not v.is_empty ):
+                        q: np.ndarray = x_i.pos - v.mu.reshape( ( 3, 1 ) )
+                        
+                        g[i] += ( self.d1( v.determinant ) * self.d2() * q.transpose() @ v.info_matrix @ J_E( q )[:, i].reshape( ( 3, 1 ) ) * np.exp( (-self.d2() / 2) * q.transpose() @ v.info_matrix @ q ) ).squeeze()
+            
         return g
 
     def f_dd( self, x: list[Point], J_E: Callable[[np.ndarray], np.ndarray], H_E: Callable[[np.ndarray], np.ndarray], verify_H: Callable[[np.ndarray], np.ndarray | None] ) -> np.ndarray | None:

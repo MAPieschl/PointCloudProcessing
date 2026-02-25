@@ -75,7 +75,8 @@ def main( *args ) -> bool:
     # Align point cloud
     target_se3 = [ np.eye( 4 ) ]
     target_se3.append( opt.course_align( tar_pc ) )
-    target_se3.append( opt.gradient_descent( tar_pc, target_se3[-1], 0.001 ) )
+    convergence_steps = opt.gradient_descent( tar_pc, target_se3[-1], 0.001 )
+    target_se3 += convergence_steps
 
     ## Plot point cloud registration ###
     app = QApplication(sys.argv)

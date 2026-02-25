@@ -39,6 +39,13 @@ class Parameters:
     def get_position( self ) -> np.ndarray:
         return np.array( [self.x, self.y, self.z] ).reshape( ( 3, 1 ) )
     
+    def get_pose( self ) -> np.ndarray:
+        se3 = np.eye( 4 )
+        se3[:3, :3] = self.get_dcm()
+        se3[:3, 3:] = self.get_position()
+
+        return se3
+    
     def to_string( self ) -> str:
         return f"Position:  ( {float( self.x ):.3f}, {float( self.y ):.3f}, {float( self.z ):.3f} ) | Roll: {float( np.rad2deg( self.r_x ) ):.1f} | Pitch: {float( np.rad2deg( self.r_y ) ):.1f} | Yaw: {float( np.rad2deg( self.r_z ) ):.1f}"
     

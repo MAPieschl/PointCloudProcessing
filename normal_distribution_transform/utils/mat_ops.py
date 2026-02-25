@@ -52,7 +52,7 @@ def get_vec6_from_se3( dcm: np.ndarray, get_degrees: bool ):
             eul_ang['roll'],
             eul_ang['pitch'],
             eul_ang['yaw']
-        ])
+        ]).reshape( ( 6, 1 ) )
 
     else:
         return np.array([
@@ -62,7 +62,7 @@ def get_vec6_from_se3( dcm: np.ndarray, get_degrees: bool ):
             np.deg2rad( eul_ang['roll'] ),
             np.deg2rad( eul_ang['pitch'] ),
             np.deg2rad( eul_ang['yaw'] )
-        ])
+        ]).reshape( ( 6, 1 ) )
 
 def get_se3_from_vec6( vec6: np.ndarray, is_in_degrees: bool ):
     if( is_in_degrees ):

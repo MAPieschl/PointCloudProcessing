@@ -33,6 +33,9 @@ class TargetPointCloudP2D:
 
         return voxels
     
+    def get_pose( self ) -> np.ndarray:
+        return self.p.get_pose()
+    
     def add( self, pt: Point ):
         self.points.append( pt )
 
