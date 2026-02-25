@@ -1,10 +1,11 @@
 import numpy as np
 
+from ndt.Parameters import Parameters
 from typing import Callable
 from utils.mat_ops import *
 
 class Voxel:
-    def __init__( self, y: np.ndarray, initial_vec6: np.ndarray = np.zeros( ( 6, 1 ) ) ):
+    def __init__( self, y: np.ndarray ):
         
         if( y.shape[0] < 5 ): 
             self.is_empty = True
@@ -15,11 +16,13 @@ class Voxel:
         if( y.shape[1] != 3 or y.ndim != 2 ):
             raise ValueError( f"y must be shape (N, 3), not {y.shape}" )
 
+        self.__y = y ## self.__y should be const! .transform always applies a transformation bsed on the original pose
+
         self.mu = np.mean( y, axis = 0 )
         self.sigma = 1 / ( y.shape[0] - 1 ) * ( ( y - self.mu ).transpose() @ ( y - self.mu ) )
         self.info_matrix = np.linalg.inv( self.sigma )
         self.determinant = np.linalg.det( self.sigma )
-        self.vec6 = initial_vec6
+        self.se3 = np.eye( 4, 4 )
 
     def get_score_P2D( self, x_i: np.ndarray, d1: Callable[[float], float], d2: Callable[[], float] ) -> float:
 
@@ -41,18 +44,24 @@ class Voxel:
 
         # mu_ij = R @ mu_i + t_i - mu_j --> the equation below assumes the rotatation has already been applied to v_i
         mu_ij = ( v_i.mu - self.mu ).reshape( ( 3, 1 ) )
-        R = get_se3_from_vec6( v_i.vec6, is_in_degrees = False )[:3, :3]
+
+        M = self.se3[:3, :3].T @ v_i.sigma @ self.se3[:3, :3] + self.sigma
+        if( not np.all( np.linalg.eigvals( M ) > 1e-6 ) ):
+            print( np.linalg.eigvals( M ) )
         
-        return float( d1( self.determinant ) * np.exp( -( d2() * mu_ij.T @ np.linalg.inv( R.T @ v_i.sigma @ R + self.sigma ) @ mu_ij ) / 2 ).squeeze() )
+        return float( d1( self.determinant ) * np.exp( -( d2( 1 ) * mu_ij.T @ np.linalg.inv( M ) @ mu_ij ) / 2 ).squeeze() )
 
-    def transform( self, delta_vec6: np.ndarray ):
+    def transform( self, p: Parameters ):
         if( not self.is_empty ):
-            se3 = get_se3_from_vec6( delta_vec6, is_in_degrees = False )
-            R = se3[:3, :3]
-            t = se3[:3, 3:]
 
-            self.mu = R @ self.mu + t.reshape( ( 3, ) )
-            self.sigma = R @ self.sigma
+            self.se3 = p.se3
+
+            R = self.se3[:3, :3]
+            t = self.se3[:3, 3:]
+
+            new_y = ( R @ self.__y.T + t ).T
+
+            self.mu = np.mean( new_y, axis = 0 )
+            self.sigma = 1 / ( new_y.shape[0] - 1 ) * ( ( new_y - self.mu ).transpose() @ ( new_y - self.mu ) )
             self.info_matrix = np.linalg.inv( self.sigma )
             self.determinant = np.linalg.det( self.sigma )
-            self.vec6 += delta_vec6

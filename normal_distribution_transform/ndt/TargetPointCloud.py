@@ -132,14 +132,14 @@ class TargetPointCloudP2D:
         ])
     
 class TargetPointCloudD2D:
-    def __init__( self, p: Parameters, x: list[np.ndarray] ):
+    def __init__( self, p: Parameters, x: np.ndarray ):
 
         assert len( x ) > 0, f"TargetPointCloudD2D failed to initialize - x is empty"
-        assert x[0].ndim == 2 and x[0].shape[1] == 3, f"x must be shape (N, 3), not {x.shape}"
+        assert x.ndim == 2 and x.shape[1] == 3, f"TargetPointCloudD2D:  x must be shape (N, 3), not {x.shape}"
+            
+        pts = x
 
         self.p: Parameters = p
-
-        pts = np.vstack( x )
 
         # Create depth-1 octree
         self._max = np.array( [ np.max( pts[:, 0] ), np.max( pts[:, 1] ), np.max( pts[:, 2] ) ] )
@@ -167,14 +167,7 @@ class TargetPointCloudD2D:
 
         self.p.update( delta_vec6 )
         for vx in self.voxels:
-            vx.transform( delta_vec6 )
-
-    def get_transformed_points( final_vec6 ):
-        se3 = get_se3_from_vec6( final_vec6, is_in_degrees = False )
-        R = se3[:3, :3]
-        t = se3[:3, 3:]
-
-        # TODO  finish
+            vx.transform( self.p )
 
     def get_voxel_list( self ):
         return self.voxels

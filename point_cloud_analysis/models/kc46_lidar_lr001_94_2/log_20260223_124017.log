@@ -1,0 +1,300 @@
+2026-02-23 12:40:17,750 - root - INFO - Training profile kc46_lidar_lr001_94_2_classification_pretrain already exists. Using existing profile...
+2026-02-23 12:40:17,763 - root - INFO - The following datasets were found in data/kc46_lidar_lr001_94_2_classification_pretrain:
+2026-02-23 12:40:17,765 - root - INFO - 	-> collect_2026.Jan.22_23.51.26.8719556.UTC	(not requested, but will included in training profile)
+2026-02-23 12:40:17,766 - root - INFO - 	-> collect_2026.Jan.22_23.53.34.5658074.UTC	(not requested, but will included in training profile)
+2026-02-23 12:40:17,768 - root - INFO - 	-> collect_2026.Jan.23_00.00.26.2538193.UTC	(not requested, but will included in training profile)
+2026-02-23 12:40:17,770 - root - INFO - 	-> collect_2026.Jan.23_00.04.35.9506687.UTC	(not requested, but will included in training profile)
+2026-02-23 12:40:17,773 - root - INFO - 	-> pc_set.joblib	
+2026-02-23 12:40:17,775 - root - INFO - 
+Datasets added successfully:
+
+2026-02-23 12:40:17,777 - root - INFO - classification_pretrain
+Random seed: 42
+Class labels: dict_keys(['f-15_model', 'a-10', 'b-1b', 'b-2', 'c-5', 'c-12', 'c-17a', 'c-32', 'c-130j', 'e-3', 'f-15e', 'f-16', 'f-18e', 'f-22', 'g-iii', 'kc-46', 'kc-135', 'lj-25', 'mig-29', 'mq-20', 'su-27', 'vc-25a', 'x-47b'])
+Part labels: dict_keys(['wing', 'fuselage', 'engine', 'hstab', 'vstab', 'landing_gear', 'armament', 'boom_wing', 'boom_hull', 'boom_hose', 'dish', 'probe'])
+
+--- Train Set ---
+Specified proportion:  0.75
+Actual proportion: 0.7499100765633832
+Total count: 14594
+Class count:
+	kc-46: 14594
+Part count:
+	wing: 36896251
+	fuselage: 51958980
+	engine: 8612131
+	hstab: 10775937
+	vstab: 8627093
+	landing_gear: 0
+	armament: 0
+	boom_wing: 1020818
+	boom_hull: 1530915
+	boom_hose: 131923
+	dish: 0
+	probe: 0
+
+--- Validation Set ---
+Specified proportion:  0.15
+Actual proportion: 0.15004367709778532
+Total count: 2920
+Class count:
+	kc-46: 2920
+Part count:
+	wing: 7220514
+	fuselage: 10485493
+	engine: 1730082
+	hstab: 2167035
+	vstab: 1768522
+	landing_gear: 0
+	armament: 0
+	boom_wing: 206275
+	boom_hull: 315701
+	boom_hose: 27018
+	dish: 0
+	probe: 0
+
+--- Test Set ---
+Specified proportion:  0.1
+Actual proportion: 0.10004624633883151
+Total count: 1947
+Class count:
+	kc-46: 1947
+Part count:
+	wing: 4951236
+	fuselage: 6922518
+	engine: 1145180
+	hstab: 1466967
+	vstab: 1096838
+	landing_gear: 0
+	armament: 0
+	boom_wing: 139050
+	boom_hull: 209278
+	boom_hose: 18757
+	dish: 0
+	probe: 0
+
+2026-02-23 12:40:17,781 - root - INFO - Training profile kc46_lidar_lr001_94_2_final already exists. Using existing profile...
+2026-02-23 12:40:17,792 - root - INFO - The following datasets were found in data/kc46_lidar_lr001_94_2_final:
+2026-02-23 12:40:17,794 - root - INFO - 	-> collect_2026.Jan.22_23.51.26.8719556.UTC	(not requested, but will included in training profile)
+2026-02-23 12:40:17,795 - root - INFO - 	-> collect_2026.Jan.22_23.53.34.5658074.UTC	(not requested, but will included in training profile)
+2026-02-23 12:40:17,797 - root - INFO - 	-> collect_2026.Jan.23_00.00.26.2538193.UTC	(not requested, but will included in training profile)
+2026-02-23 12:40:17,798 - root - INFO - 	-> collect_2026.Jan.23_00.04.35.9506687.UTC	(not requested, but will included in training profile)
+2026-02-23 12:40:17,799 - root - INFO - 	-> pc_set.joblib	
+2026-02-23 12:40:17,800 - root - INFO - 
+Datasets added successfully:
+
+2026-02-23 12:40:17,802 - root - INFO - final
+Random seed: 42
+Class labels: dict_keys(['f-15_model', 'a-10', 'b-1b', 'b-2', 'c-5', 'c-12', 'c-17a', 'c-32', 'c-130j', 'e-3', 'f-15e', 'f-16', 'f-18e', 'f-22', 'g-iii', 'kc-46', 'kc-135', 'lj-25', 'mig-29', 'mq-20', 'su-27', 'vc-25a', 'x-47b'])
+Part labels: dict_keys(['wing', 'fuselage', 'engine', 'hstab', 'vstab', 'landing_gear', 'armament', 'boom_wing', 'boom_hull', 'boom_hose', 'dish', 'probe'])
+
+--- Train Set ---
+Specified proportion:  0.75
+Actual proportion: 0.7499100765633832
+Total count: 14594
+Class count:
+	kc-46: 14594
+Part count:
+	wing: 36793753
+	fuselage: 52078188
+	engine: 8606518
+	hstab: 10804520
+	vstab: 8568738
+	landing_gear: 0
+	armament: 0
+	boom_wing: 1025384
+	boom_hull: 1543197
+	boom_hose: 133750
+	dish: 0
+	probe: 0
+
+--- Validation Set ---
+Specified proportion:  0.15
+Actual proportion: 0.15004367709778532
+Total count: 2920
+Class count:
+	kc-46: 2920
+Part count:
+	wing: 7346216
+	fuselage: 10421248
+	engine: 1707942
+	hstab: 2145537
+	vstab: 1769986
+	landing_gear: 0
+	armament: 0
+	boom_wing: 199246
+	boom_hull: 303733
+	boom_hose: 26732
+	dish: 0
+	probe: 0
+
+--- Test Set ---
+Specified proportion:  0.1
+Actual proportion: 0.10004624633883151
+Total count: 1947
+Class count:
+	kc-46: 1947
+Part count:
+	wing: 4920916
+	fuselage: 6873511
+	engine: 1172695
+	hstab: 1455886
+	vstab: 1156498
+	landing_gear: 0
+	armament: 0
+	boom_wing: 141453
+	boom_hull: 211570
+	boom_hose: 17295
+	dish: 0
+	probe: 0
+
+2026-02-23 12:48:33,989 - root - INFO - Training profile kc46_lidar_lr001_94_2_classification_pretrain already exists. Using existing profile...
+2026-02-23 12:48:34,000 - root - INFO - The following datasets were found in data/kc46_lidar_lr001_94_2_classification_pretrain:
+2026-02-23 12:48:34,003 - root - INFO - 	-> collect_2026.Jan.22_23.51.26.8719556.UTC	(not requested, but will included in training profile)
+2026-02-23 12:48:34,008 - root - INFO - 	-> collect_2026.Jan.22_23.53.34.5658074.UTC	(not requested, but will included in training profile)
+2026-02-23 12:48:34,013 - root - INFO - 	-> collect_2026.Jan.23_00.00.26.2538193.UTC	(not requested, but will included in training profile)
+2026-02-23 12:48:34,016 - root - INFO - 	-> collect_2026.Jan.23_00.04.35.9506687.UTC	(not requested, but will included in training profile)
+2026-02-23 12:48:34,019 - root - INFO - 	-> pc_set.joblib	
+2026-02-23 12:48:34,022 - root - INFO - 
+Datasets added successfully:
+
+2026-02-23 12:48:34,025 - root - INFO - classification_pretrain
+Random seed: 42
+Class labels: dict_keys(['f-15_model', 'a-10', 'b-1b', 'b-2', 'c-5', 'c-12', 'c-17a', 'c-32', 'c-130j', 'e-3', 'f-15e', 'f-16', 'f-18e', 'f-22', 'g-iii', 'kc-46', 'kc-135', 'lj-25', 'mig-29', 'mq-20', 'su-27', 'vc-25a', 'x-47b'])
+Part labels: dict_keys(['wing', 'fuselage', 'engine', 'hstab', 'vstab', 'landing_gear', 'armament', 'boom_wing', 'boom_hull', 'boom_hose', 'dish', 'probe'])
+
+--- Train Set ---
+Specified proportion:  0.75
+Actual proportion: 0.7499100765633832
+Total count: 14594
+Class count:
+	kc-46: 14594
+Part count:
+	wing: 36896251
+	fuselage: 51958980
+	engine: 8612131
+	hstab: 10775937
+	vstab: 8627093
+	landing_gear: 0
+	armament: 0
+	boom_wing: 1020818
+	boom_hull: 1530915
+	boom_hose: 131923
+	dish: 0
+	probe: 0
+
+--- Validation Set ---
+Specified proportion:  0.15
+Actual proportion: 0.15004367709778532
+Total count: 2920
+Class count:
+	kc-46: 2920
+Part count:
+	wing: 7220514
+	fuselage: 10485493
+	engine: 1730082
+	hstab: 2167035
+	vstab: 1768522
+	landing_gear: 0
+	armament: 0
+	boom_wing: 206275
+	boom_hull: 315701
+	boom_hose: 27018
+	dish: 0
+	probe: 0
+
+--- Test Set ---
+Specified proportion:  0.1
+Actual proportion: 0.10004624633883151
+Total count: 1947
+Class count:
+	kc-46: 1947
+Part count:
+	wing: 4951236
+	fuselage: 6922518
+	engine: 1145180
+	hstab: 1466967
+	vstab: 1096838
+	landing_gear: 0
+	armament: 0
+	boom_wing: 139050
+	boom_hull: 209278
+	boom_hose: 18757
+	dish: 0
+	probe: 0
+
+2026-02-23 12:48:34,030 - root - INFO - Training profile kc46_lidar_lr001_94_2_final already exists. Using existing profile...
+2026-02-23 12:48:34,041 - root - INFO - The following datasets were found in data/kc46_lidar_lr001_94_2_final:
+2026-02-23 12:48:34,043 - root - INFO - 	-> collect_2026.Jan.22_23.51.26.8719556.UTC	(not requested, but will included in training profile)
+2026-02-23 12:48:34,046 - root - INFO - 	-> collect_2026.Jan.22_23.53.34.5658074.UTC	(not requested, but will included in training profile)
+2026-02-23 12:48:34,048 - root - INFO - 	-> collect_2026.Jan.23_00.00.26.2538193.UTC	(not requested, but will included in training profile)
+2026-02-23 12:48:34,050 - root - INFO - 	-> collect_2026.Jan.23_00.04.35.9506687.UTC	(not requested, but will included in training profile)
+2026-02-23 12:48:34,052 - root - INFO - 	-> pc_set.joblib	
+2026-02-23 12:48:34,056 - root - INFO - 
+Datasets added successfully:
+
+2026-02-23 12:48:34,059 - root - INFO - final
+Random seed: 42
+Class labels: dict_keys(['f-15_model', 'a-10', 'b-1b', 'b-2', 'c-5', 'c-12', 'c-17a', 'c-32', 'c-130j', 'e-3', 'f-15e', 'f-16', 'f-18e', 'f-22', 'g-iii', 'kc-46', 'kc-135', 'lj-25', 'mig-29', 'mq-20', 'su-27', 'vc-25a', 'x-47b'])
+Part labels: dict_keys(['wing', 'fuselage', 'engine', 'hstab', 'vstab', 'landing_gear', 'armament', 'boom_wing', 'boom_hull', 'boom_hose', 'dish', 'probe'])
+
+--- Train Set ---
+Specified proportion:  0.75
+Actual proportion: 0.7499100765633832
+Total count: 14594
+Class count:
+	kc-46: 14594
+Part count:
+	wing: 36793753
+	fuselage: 52078188
+	engine: 8606518
+	hstab: 10804520
+	vstab: 8568738
+	landing_gear: 0
+	armament: 0
+	boom_wing: 1025384
+	boom_hull: 1543197
+	boom_hose: 133750
+	dish: 0
+	probe: 0
+
+--- Validation Set ---
+Specified proportion:  0.15
+Actual proportion: 0.15004367709778532
+Total count: 2920
+Class count:
+	kc-46: 2920
+Part count:
+	wing: 7346216
+	fuselage: 10421248
+	engine: 1707942
+	hstab: 2145537
+	vstab: 1769986
+	landing_gear: 0
+	armament: 0
+	boom_wing: 199246
+	boom_hull: 303733
+	boom_hose: 26732
+	dish: 0
+	probe: 0
+
+--- Test Set ---
+Specified proportion:  0.1
+Actual proportion: 0.10004624633883151
+Total count: 1947
+Class count:
+	kc-46: 1947
+Part count:
+	wing: 4920916
+	fuselage: 6873511
+	engine: 1172695
+	hstab: 1455886
+	vstab: 1156498
+	landing_gear: 0
+	armament: 0
+	boom_wing: 141453
+	boom_hull: 211570
+	boom_hose: 17295
+	dish: 0
+	probe: 0
+

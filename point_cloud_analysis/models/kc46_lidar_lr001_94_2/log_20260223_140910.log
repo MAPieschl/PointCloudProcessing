@@ -1,0 +1,188 @@
+2026-02-23 14:09:10,242 - root - INFO - The following datasets were found in data/kc46_lidar_lr001_94_2_classification_pretrain:
+2026-02-23 14:09:10,244 - root - INFO - 	-> pc_set.joblib	
+2026-02-23 14:09:10,247 - root - INFO - Adding data set 1 of 4
+2026-02-23 14:09:10,784 - root - INFO - Parsing frames in /mnt/d/sim_kc46_lidar/collect_2026.Jan.22_23.51.26.8719556.UTC...
+2026-02-23 14:11:24,882 - root - INFO - Failed to add file /mnt/d/sim_kc46_lidar/collect_2026.Jan.22_23.51.26.8719556.UTC/Lidar/frame_5000.txt:
+	FileNotFoundError : [Errno 2] No such file or directory: '/mnt/d/sim_kc46_lidar/collect_2026.Jan.22_23.51.26.8719556.UTC/Lidar/frame_5000.txt'
+2026-02-23 14:11:24,886 - root - INFO - Failed to add file /mnt/d/sim_kc46_lidar/collect_2026.Jan.22_23.51.26.8719556.UTC/Lidar/frame_5001.txt:
+	FileNotFoundError : [Errno 2] No such file or directory: '/mnt/d/sim_kc46_lidar/collect_2026.Jan.22_23.51.26.8719556.UTC/Lidar/frame_5001.txt'
+2026-02-23 14:11:44,345 - root - INFO - Adding data set 2 of 4
+2026-02-23 14:11:44,916 - root - INFO - Parsing frames in /mnt/d/sim_kc46_lidar/collect_2026.Jan.22_23.53.34.5658074.UTC...
+2026-02-23 14:13:21,555 - root - INFO - Failed to add file /mnt/d/sim_kc46_lidar/collect_2026.Jan.22_23.53.34.5658074.UTC/Lidar/frame_5000.txt:
+	FileNotFoundError : [Errno 2] No such file or directory: '/mnt/d/sim_kc46_lidar/collect_2026.Jan.22_23.53.34.5658074.UTC/Lidar/frame_5000.txt'
+2026-02-23 14:13:21,559 - root - INFO - Failed to add file /mnt/d/sim_kc46_lidar/collect_2026.Jan.22_23.53.34.5658074.UTC/Lidar/frame_5001.txt:
+	FileNotFoundError : [Errno 2] No such file or directory: '/mnt/d/sim_kc46_lidar/collect_2026.Jan.22_23.53.34.5658074.UTC/Lidar/frame_5001.txt'
+2026-02-23 14:13:41,333 - root - INFO - Adding data set 3 of 4
+2026-02-23 14:13:42,041 - root - INFO - Parsing frames in /mnt/d/sim_kc46_lidar/collect_2026.Jan.23_00.00.26.2538193.UTC...
+2026-02-23 14:15:20,237 - root - INFO - Failed to add file /mnt/d/sim_kc46_lidar/collect_2026.Jan.23_00.00.26.2538193.UTC/Lidar/frame_5000.txt:
+	FileNotFoundError : [Errno 2] No such file or directory: '/mnt/d/sim_kc46_lidar/collect_2026.Jan.23_00.00.26.2538193.UTC/Lidar/frame_5000.txt'
+2026-02-23 14:15:20,241 - root - INFO - Failed to add file /mnt/d/sim_kc46_lidar/collect_2026.Jan.23_00.00.26.2538193.UTC/Lidar/frame_5001.txt:
+	FileNotFoundError : [Errno 2] No such file or directory: '/mnt/d/sim_kc46_lidar/collect_2026.Jan.23_00.00.26.2538193.UTC/Lidar/frame_5001.txt'
+2026-02-23 14:15:38,831 - root - INFO - Adding data set 4 of 4
+2026-02-23 14:15:39,441 - root - INFO - Parsing frames in /mnt/d/sim_kc46_lidar/collect_2026.Jan.23_00.04.35.9506687.UTC...
+2026-02-23 14:18:09,878 - root - INFO - Failed to add file /mnt/d/sim_kc46_lidar/collect_2026.Jan.23_00.04.35.9506687.UTC/Lidar/frame_5000.txt:
+	FileNotFoundError : [Errno 2] No such file or directory: '/mnt/d/sim_kc46_lidar/collect_2026.Jan.23_00.04.35.9506687.UTC/Lidar/frame_5000.txt'
+2026-02-23 14:18:09,881 - root - INFO - Failed to add file /mnt/d/sim_kc46_lidar/collect_2026.Jan.23_00.04.35.9506687.UTC/Lidar/frame_5001.txt:
+	FileNotFoundError : [Errno 2] No such file or directory: '/mnt/d/sim_kc46_lidar/collect_2026.Jan.23_00.04.35.9506687.UTC/Lidar/frame_5001.txt'
+2026-02-23 14:18:30,217 - root - INFO - 
+Datasets added successfully:
+
+2026-02-23 14:18:30,219 - root - INFO - classification_pretrain
+Random seed: 42
+Class labels: dict_keys(['f-15_model', 'a-10', 'b-1b', 'b-2', 'c-5', 'c-12', 'c-17a', 'c-32', 'c-130j', 'e-3', 'f-15e', 'f-16', 'f-18e', 'f-22', 'g-iii', 'kc-46', 'kc-135', 'lj-25', 'mig-29', 'mq-20', 'su-27', 'vc-25a', 'x-47b'])
+Part labels: dict_keys(['wing', 'fuselage', 'engine', 'hstab', 'vstab', 'landing_gear', 'armament', 'boom_wing', 'boom_hull', 'boom_hose', 'dish', 'probe'])
+
+--- Train Set ---
+Specified proportion:  0.75
+Actual proportion: 0.7499100765633832
+Total count: 14594
+Class count:
+	kc-46: 14594
+Part count:
+	wing: 36859919
+	fuselage: 52011532
+	engine: 8657311
+	hstab: 10832839
+	vstab: 8511795
+	landing_gear: 0
+	armament: 0
+	boom_wing: 1009840
+	boom_hull: 1537941
+	boom_hose: 132871
+	dish: 0
+	probe: 0
+
+--- Validation Set ---
+Specified proportion:  0.15
+Actual proportion: 0.15004367709778532
+Total count: 2920
+Class count:
+	kc-46: 2920
+Part count:
+	wing: 7375251
+	fuselage: 10424063
+	engine: 1727227
+	hstab: 2126847
+	vstab: 1743105
+	landing_gear: 0
+	armament: 0
+	boom_wing: 195134
+	boom_hull: 303401
+	boom_hose: 25612
+	dish: 0
+	probe: 0
+
+--- Test Set ---
+Specified proportion:  0.1
+Actual proportion: 0.10004624633883151
+Total count: 1947
+Class count:
+	kc-46: 1947
+Part count:
+	wing: 4871187
+	fuselage: 6957066
+	engine: 1180344
+	hstab: 1423978
+	vstab: 1152612
+	landing_gear: 0
+	armament: 0
+	boom_wing: 137720
+	boom_hull: 208421
+	boom_hose: 18496
+	dish: 0
+	probe: 0
+
+2026-02-23 14:18:30,234 - root - INFO - The following datasets were found in data/kc46_lidar_lr001_94_2_final:
+2026-02-23 14:18:30,236 - root - INFO - 	-> pc_set.joblib	
+2026-02-23 14:18:30,237 - root - INFO - Adding data set 1 of 4
+2026-02-23 14:18:30,730 - root - INFO - Parsing frames in /mnt/d/sim_kc46_lidar/collect_2026.Jan.22_23.51.26.8719556.UTC...
+2026-02-23 14:20:02,355 - root - INFO - Failed to add file /mnt/d/sim_kc46_lidar/collect_2026.Jan.22_23.51.26.8719556.UTC/Lidar/frame_5000.txt:
+	FileNotFoundError : [Errno 2] No such file or directory: '/mnt/d/sim_kc46_lidar/collect_2026.Jan.22_23.51.26.8719556.UTC/Lidar/frame_5000.txt'
+2026-02-23 14:20:02,360 - root - INFO - Failed to add file /mnt/d/sim_kc46_lidar/collect_2026.Jan.22_23.51.26.8719556.UTC/Lidar/frame_5001.txt:
+	FileNotFoundError : [Errno 2] No such file or directory: '/mnt/d/sim_kc46_lidar/collect_2026.Jan.22_23.51.26.8719556.UTC/Lidar/frame_5001.txt'
+2026-02-23 14:20:25,267 - root - INFO - Adding data set 2 of 4
+2026-02-23 14:20:25,806 - root - INFO - Parsing frames in /mnt/d/sim_kc46_lidar/collect_2026.Jan.22_23.53.34.5658074.UTC...
+2026-02-23 14:21:10,615 - root - INFO - Failed to add file /mnt/d/sim_kc46_lidar/collect_2026.Jan.22_23.53.34.5658074.UTC/Lidar/frame_5000.txt:
+	FileNotFoundError : [Errno 2] No such file or directory: '/mnt/d/sim_kc46_lidar/collect_2026.Jan.22_23.53.34.5658074.UTC/Lidar/frame_5000.txt'
+2026-02-23 14:21:10,620 - root - INFO - Failed to add file /mnt/d/sim_kc46_lidar/collect_2026.Jan.22_23.53.34.5658074.UTC/Lidar/frame_5001.txt:
+	FileNotFoundError : [Errno 2] No such file or directory: '/mnt/d/sim_kc46_lidar/collect_2026.Jan.22_23.53.34.5658074.UTC/Lidar/frame_5001.txt'
+2026-02-23 14:21:29,200 - root - INFO - Adding data set 3 of 4
+2026-02-23 14:21:29,721 - root - INFO - Parsing frames in /mnt/d/sim_kc46_lidar/collect_2026.Jan.23_00.00.26.2538193.UTC...
+2026-02-23 14:22:14,483 - root - INFO - Failed to add file /mnt/d/sim_kc46_lidar/collect_2026.Jan.23_00.00.26.2538193.UTC/Lidar/frame_5000.txt:
+	FileNotFoundError : [Errno 2] No such file or directory: '/mnt/d/sim_kc46_lidar/collect_2026.Jan.23_00.00.26.2538193.UTC/Lidar/frame_5000.txt'
+2026-02-23 14:22:14,486 - root - INFO - Failed to add file /mnt/d/sim_kc46_lidar/collect_2026.Jan.23_00.00.26.2538193.UTC/Lidar/frame_5001.txt:
+	FileNotFoundError : [Errno 2] No such file or directory: '/mnt/d/sim_kc46_lidar/collect_2026.Jan.23_00.00.26.2538193.UTC/Lidar/frame_5001.txt'
+2026-02-23 14:22:34,498 - root - INFO - Adding data set 4 of 4
+2026-02-23 14:22:35,024 - root - INFO - Parsing frames in /mnt/d/sim_kc46_lidar/collect_2026.Jan.23_00.04.35.9506687.UTC...
+2026-02-23 14:24:18,373 - root - INFO - Failed to add file /mnt/d/sim_kc46_lidar/collect_2026.Jan.23_00.04.35.9506687.UTC/Lidar/frame_5000.txt:
+	FileNotFoundError : [Errno 2] No such file or directory: '/mnt/d/sim_kc46_lidar/collect_2026.Jan.23_00.04.35.9506687.UTC/Lidar/frame_5000.txt'
+2026-02-23 14:24:18,377 - root - INFO - Failed to add file /mnt/d/sim_kc46_lidar/collect_2026.Jan.23_00.04.35.9506687.UTC/Lidar/frame_5001.txt:
+	FileNotFoundError : [Errno 2] No such file or directory: '/mnt/d/sim_kc46_lidar/collect_2026.Jan.23_00.04.35.9506687.UTC/Lidar/frame_5001.txt'
+2026-02-23 14:24:42,055 - root - INFO - 
+Datasets added successfully:
+
+2026-02-23 14:24:42,057 - root - INFO - final
+Random seed: 42
+Class labels: dict_keys(['f-15_model', 'a-10', 'b-1b', 'b-2', 'c-5', 'c-12', 'c-17a', 'c-32', 'c-130j', 'e-3', 'f-15e', 'f-16', 'f-18e', 'f-22', 'g-iii', 'kc-46', 'kc-135', 'lj-25', 'mig-29', 'mq-20', 'su-27', 'vc-25a', 'x-47b'])
+Part labels: dict_keys(['wing', 'fuselage', 'engine', 'hstab', 'vstab', 'landing_gear', 'armament', 'boom_wing', 'boom_hull', 'boom_hose', 'dish', 'probe'])
+
+--- Train Set ---
+Specified proportion:  0.75
+Actual proportion: 0.7499100765633832
+Total count: 14594
+Class count:
+	kc-46: 14594
+Part count:
+	wing: 36910406
+	fuselage: 51972376
+	engine: 8670958
+	hstab: 10799216
+	vstab: 8534804
+	landing_gear: 0
+	armament: 0
+	boom_wing: 1007452
+	boom_hull: 1526390
+	boom_hose: 132446
+	dish: 0
+	probe: 0
+
+--- Validation Set ---
+Specified proportion:  0.15
+Actual proportion: 0.15004367709778532
+Total count: 2920
+Class count:
+	kc-46: 2920
+Part count:
+	wing: 7353781
+	fuselage: 10429143
+	engine: 1736763
+	hstab: 2142578
+	vstab: 1729101
+	landing_gear: 0
+	armament: 0
+	boom_wing: 195587
+	boom_hull: 308597
+	boom_hose: 25090
+	dish: 0
+	probe: 0
+
+--- Test Set ---
+Specified proportion:  0.1
+Actual proportion: 0.10004624633883151
+Total count: 1947
+Class count:
+	kc-46: 1947
+Part count:
+	wing: 4842170
+	fuselage: 6991142
+	engine: 1157161
+	hstab: 1441870
+	vstab: 1143607
+	landing_gear: 0
+	armament: 0
+	boom_wing: 139655
+	boom_hull: 214776
+	boom_hose: 19443
+	dish: 0
+	probe: 0
+

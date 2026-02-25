@@ -1,50 +1,51 @@
 import numpy as np
 import plotly.graph_objects as go
 
+from copy import deepcopy
 from plotly.subplots import make_subplots
 
 def _yaw( dcm: np.ndarray, yaw_rad: float ):
 
-    R = np.array([[ np.cos(yaw_rad),    np.sin(yaw_rad),    0.0 ], 
-                  [ -np.sin(yaw_rad),   np.cos(yaw_rad),    0.0 ],
+    R = np.array([[ np.cos(yaw_rad),    -np.sin(yaw_rad),    0.0 ], 
+                  [ np.sin(yaw_rad),   np.cos(yaw_rad),    0.0 ],
                   [ 0.0,                0.0,                1.0 ]])
     
     return R @ dcm
 
 def _pitch( dcm: np.ndarray, pitch_rad: float ):
 
-    R = np.array([[ np.cos(pitch_rad),  0.0,    -np.sin(pitch_rad)  ], 
+    R = np.array([[ np.cos(pitch_rad),  0.0,    np.sin(pitch_rad)  ], 
                   [ 0.0,                1.0,    0.0                 ],
-                  [ np.sin(pitch_rad),  0.0,    np.cos(pitch_rad)   ]])
+                  [ -np.sin(pitch_rad),  0.0,    np.cos(pitch_rad)   ]])
     
     return R @ dcm
 
 def _roll( dcm: np.ndarray, roll_rad: float ):
 
     R = np.array([[ 1.0,    0.0,                0.0                 ], 
-                  [ 0.0,    np.cos(roll_rad),   np.sin(roll_rad)    ],
-                  [ 0.0,    -np.sin(roll_rad),  np.cos(roll_rad)    ]])
+                  [ 0.0,    np.cos(roll_rad),   -np.sin(roll_rad)   ],
+                  [ 0.0,    np.sin(roll_rad),   np.cos(roll_rad)    ]])
     
     return R @ dcm
 
 def get_roll_pitch_yaw_deg( dcm: np.ndarray, vec_3: bool = False ):
 
-    yaw = np.arctan2(dcm[0][1], dcm[0][0])
-    pitch = -np.arcsin(dcm[0][2])
-    roll = np.arctan2(dcm[1][2], dcm[2][2])
+    yaw = np.arctan2(dcm[1][0], dcm[0][0])
+    pitch = -np.arcsin(dcm[2][0])
+    roll = np.arctan2(dcm[2][1], dcm[2][2])
 
     if( vec_3 ):    return np.array( [np.rad2deg(roll), np.rad2deg(pitch), np.rad2deg(yaw)] )
     else:           return {'roll': np.rad2deg(roll), 'pitch': np.rad2deg(pitch), 'yaw': np.rad2deg(yaw)}
 
 def get_dcm( roll_deg: float, pitch_deg: float, yaw_deg: float ):
-    return _roll( _pitch( _yaw( np.eye(3), np.deg2rad(yaw_deg) ), np.deg2rad(pitch_deg) ), np.deg2rad(roll_deg) ).T
+    return _yaw( _pitch( _roll( np.eye(3), np.deg2rad(roll_deg) ), np.deg2rad(pitch_deg) ), np.deg2rad(yaw_deg) )
 
 def get_vec6_from_se3( dcm: np.ndarray, get_degrees: bool ):
 
     eul_ang = get_roll_pitch_yaw_deg( dcm )
 
     if( get_degrees ):
-        return np.ndarray([
+        return np.array([
             dcm[0][3],
             dcm[1][3],
             dcm[2][3],
@@ -54,7 +55,7 @@ def get_vec6_from_se3( dcm: np.ndarray, get_degrees: bool ):
         ])
 
     else:
-        return np.ndarray([
+        return np.array([
             dcm[0][3],
             dcm[1][3],
             dcm[2][3],
@@ -73,7 +74,7 @@ def get_se3_from_vec6( vec6: np.ndarray, is_in_degrees: bool ):
 
     se3 = np.zeros( ( 4, 4 ) )
     se3[:3, :3] = R
-    se3[:3, 3:] = vec6[:3]
+    se3[:3, 3:] = vec6[:3].reshape( ( 3, 1 ) )
     se3[3, 3]   = 1
 
     return se3
@@ -154,3 +155,25 @@ def transform_to_target_P_sensor( target_P_global: np.ndarray, sensor_P_global: 
     target_P_sensor[3, 3] = 1
 
     return target_P_sensor
+
+def get_transformation_error( truth_pose: np.ndarray, estimated_pose: np.ndarray, degrees: bool = False ) -> tuple[float, float]:
+    '''
+    This function returns a tuple of (rotation_error, translation_error). The rotation_error is the computed
+    angle between the truth_pose and estimated pose using the axis-angle representation of the error. The
+    translation error is simply the L2 translation error.
+    '''
+
+    T_error = truth_pose.T @ estimated_pose
+
+    error_R = np.arccos( ( np.trace( T_error[:3, :3] ) - 1 ) / 2 )
+    error_t = float( np.linalg.norm( T_error[:3, 3:].reshape( ( 3, ) ) ) )
+
+    if( degrees ): return ( np.rad2deg( error_R ), error_t )
+    else: return ( error_R, error_t )
+
+def transform_pc( point_cloud: np.ndarray, se3: np.ndarray ) -> np.ndarray:
+
+    assert point_cloud.ndim == 2 and point_cloud.shape[1] == 3, f'point_cloud must have shape (N, 3), not {point_cloud.shape}'
+    assert se3.shape == ( 4, 4 ), f'se3 must has shape ( 4, 4 ), not {se3.shape}'
+
+    return ( se3[:3, :3] @ point_cloud.T + se3[:3, 3:] ).T

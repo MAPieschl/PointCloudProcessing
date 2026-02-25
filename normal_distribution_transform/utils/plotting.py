@@ -152,7 +152,7 @@ def plot_2D_scatter_with_mean_and_std( x: np.ndarray,
         y = means + std,
         mode = 'lines',
         line = dict( color = 'blue' ),
-        name = 'stdev - upper',
+        name = 'stdev - lower',
         connectgaps = True
     ) )
 
@@ -161,7 +161,7 @@ def plot_2D_scatter_with_mean_and_std( x: np.ndarray,
         y = means - std,
         mode = 'lines',
         line = dict( color = 'blue' ),
-        name = 'stdev - lower',
+        name = 'stdev - upper',
         connectgaps = True,
         fill = 'tonexty',
         fillcolor = 'rgba(0, 0, 255, 0.4)'
@@ -208,8 +208,9 @@ def plot_class_precision_recall_hist( precision_data: dict[datetime, dict[str, f
         y = precision,
         name = 'precision',
         marker_color = 'blue',
-        text = precision,
-        textposition = 'outside'
+        texttemplate = "%{y:.2f}",
+        # textposition = 'outside',
+        textfont_size = 16
     ) )
 
     fig.add_trace( go.Bar(
@@ -217,8 +218,9 @@ def plot_class_precision_recall_hist( precision_data: dict[datetime, dict[str, f
         y = recall,
         name = 'recall',
         marker_color = 'red',
-        text = recall,
-        textposition = 'outside'
+        texttemplate = "%{y:.2f}",
+        # textposition = 'outside',
+        textfont_size = 16
     ) )
 
     fig.update_layout(
@@ -243,19 +245,17 @@ def plot_class_precision_recall_scatter( precision_data: dict[str, np.ndarray],
         fig.add_trace( go.Scatter(
             x = precision_data[cl][0, :],
             y = precision_data[cl][1, :],
-            mode = 'lines',
-            line = dict( color = 'blue' ),
-            name = f'{cl} precision',
-            connectgaps = True
+            mode = 'markers',
+            marker = dict( color = 'blue' ),
+            name = f'{cl} precision'
         ))
 
         fig.add_trace( go.Scatter(
             x = recall_data[cl][0, :],
             y = recall_data[cl][1, :],
-            mode = 'lines',
-            line = dict( color = 'red' ),
-            name = f'{cl} recall',
-            connectgaps = True
+            mode = 'markers',
+            marker = dict( color = 'red' ),
+            name = f'{cl} recall'
         ))
 
     fig.update_layout(
@@ -265,3 +265,82 @@ def plot_class_precision_recall_scatter( precision_data: dict[str, np.ndarray],
     )
 
     return fig
+
+def plot_histogram( data: np.ndarray,
+                   num_bins: int,
+                   title: str = '',
+                   x_label: str = '',
+                   y_label: str = '',
+                   print_func: Callable[[str], None] = print ) -> go.Figure:
+    
+    fig = go.Figure()
+
+    bins = np.linspace( np.min( data ), np.max( data ), num_bins )
+    bin_count = np.zeros( bins.shape )
+    for bin in range( len( bins ) - 1 ):
+        for d in data:
+            if( d >= bins[bin] and d < bins[bin + 1] ):
+                bin_count[bin] += 1
+
+    fig.add_trace( go.Bar(
+        x = bins,
+        y = bin_count,
+        marker_color = 'blue'
+     ) )
+    
+    fig.add_annotation(
+        x = np.mean( data ),
+        y = np.max( bin_count ),
+        text = f"Mean: {np.mean( data )}\nStDev: {np.std( data )}"
+    )
+    
+    fig.update_layout(
+        barmode = 'group',
+        title = title,
+        xaxis_title = x_label,
+        yaxis_title = y_label
+    )
+
+    return fig
+
+def display_point_clouds( clouds: list, labels: list, title: str = 'Point Cloud' ) -> go.Figure:
+        '''
+        Displays a point cloud as a 3D scatter plot
+
+        @param clouds    (list) of ndarrays     -> [cloud][points]
+        @param labels    (list) parallel array  -> [cloud]
+        @param title     (str)  plot title   
+        '''
+
+        assert len( clouds ) == len( labels ), "display_point_clouds:  ensure there is a label for each cloud"
+
+        plots = []
+        for i, cloud in enumerate( clouds ):
+
+            if( cloud.shape[0] < 1 ): continue
+            
+            plots.append( go.Scatter3d(
+                x = cloud[:, 0],
+                y = cloud[:, 1],
+                z = cloud[:, 2],
+                mode = 'markers',
+                marker = dict(
+                    size = 2,
+                    opacity = 1.0
+                ),
+                name = labels[i]
+            ))
+
+        fig = go.Figure( data = plots )
+
+        fig.update_layout( scene = dict(
+            xaxis_title = 'X',
+            yaxis_title = 'Y',
+            zaxis_title = 'Z',
+            aspectmode = 'data'
+        ),
+        title = title,
+        margin = dict( l = 0, r = 0, b = 0, t = 40 )
+        )
+
+        return fig

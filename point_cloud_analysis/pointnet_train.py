@@ -256,6 +256,31 @@ class TrainProfile:
         
             self._pretrained_model = f"{self._training_profiles[prof]['path']}{self._name}_{prof}.keras"
 
+    def test( self, profile: str = 'final' ):
+
+        keras_model = f"{self._model_path}{self._training_profiles[profile]['path']}{self._name}_{profile}.keras"
+        if( os.path.isfile( keras_model ) ):
+            loaded_model = keras.models.load_model( keras_model )
+
+            pc = self._training_profiles[profile]['pc']
+
+            test_set = pc.get_test_set()
+
+            truth = []
+            preds = []
+            for x_batch, y_dict in tqdm( test_set ):
+                preds.append( loaded_model.predict_on_batch( x_batch )[1] )
+                truth.append( y_dict['segmentation_output'].numpy() )
+
+            truth_labels = np.concatenate( truth, axis = 0 )
+            pred_probs = np.concatenate( preds, axis = 0 )
+            pred_labels = np.argmax( pred_probs, axis = -1 )
+
+            return { 'predictions': pred_labels, 'truth': truth_labels }
+        else:
+            self._log.info( f"No .keras model found for {profile}.\n\t{keras_model} not found." )
+            return None
+
     def _profile_datasets( self, profile ) -> None:
 
         datasets = PointCloudSet.get_dir_contents( f"{self._data_path}{self._name}_{profile}", self._log.info )

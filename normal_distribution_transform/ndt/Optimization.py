@@ -17,6 +17,41 @@ class OptimizationP2D:
         self.lbda: float = initial_lambda
         self.lbda_step: float = lambda_step
 
+    def course_align( self, target_pc: TargetPointCloudP2D, initial_se3: np.ndarray = np.eye( 4 ) ):
+
+        course_se3 = np.eye( 4 )
+
+        initial_pos = np.mean( np.array( [p.pos for p in target_pc.get_points()] ), axis = 0 )
+        t = ( initial_se3[:3, :3] @ initial_pos + initial_se3[:3, 3:].reshape( (3, 1) ) ).reshape( ( 3, 1 ) )
+        
+        course_se3[:3, :3] = initial_se3[:3, :3]
+        course_se3[:3, 3:] = t
+
+        return course_se3
+
+    def gradient_descent( self, target_pc: TargetPointCloudP2D, initial_se3: np.ndarray, learning_rate: float, epsilon: float = 0.00001, max_iterations: int = 100 ):
+
+        delta_s: float = epsilon * 10
+        p_n: np.ndarray = initial_se3
+        iterations: int = max_iterations
+        
+        while( delta_s > epsilon and iterations > 0 ):
+
+            g = self.f_d( target_pc.get_points(), target_pc.J_E )
+            s_n = self.f( target_pc.get_points() )
+
+            delta_p = -learning_rate * g
+
+            target_pc.move_relative( delta_p )
+            s_n1 = self.f( target_pc.get_points() )
+
+            delta_s = abs( s_n - s_n1 )
+            iterations -= 1
+
+            print( f"Ending step {max_iterations - iterations} / {max_iterations} at {target_pc.p.to_string()} - score -> {s_n1}" )
+
+        return p_n
+
     def newtons_method( self, target_pc: TargetPointCloudP2D, initial_se3: np.ndarray, epsilon: float = 0.00001, max_iterations: int = 100 ):
 
         delta_s: float = epsilon * 10
@@ -31,8 +66,7 @@ class OptimizationP2D:
                 g = self.f_d( target_pc.get_points(), target_pc.J_E )
                 s_n = self.f( target_pc.get_points() )
 
-                # delta_p = -np.linalg.inv( H ) @ g
-                delta_p = 0.0001 * g
+                delta_p = -np.linalg.inv( H ) @ g
 
                 target_pc.move_relative( delta_p )
                 s_n1 = self.f( target_pc.get_points() )
@@ -153,7 +187,7 @@ class OptimizationD2D:
     def __init__( self, initial_lambda: float = 0.001, lambda_step: float = 10, zaganidis_d1: bool = False ):
         
         self.d1: Callable[[float], float] = cast( Callable[[float], float], lambda det: 1 / np.sqrt( ((2 * np.pi) ** 3) * det ) ) if zaganidis_d1 else cast( Callable[[float], float], lambda det: 1 )
-        self.d2 = lambda : 1
+        self.d2 = lambda x : 1
 
         self.lbda: float = initial_lambda
         self.lbda_step: float = lambda_step

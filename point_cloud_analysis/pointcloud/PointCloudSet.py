@@ -322,7 +322,7 @@ class PointCloudSet:
         example_proto = tf.train.Example(features=tf.train.Features(feature=feature))
         return example_proto.SerializeToString()
     
-    def _parse_function( self, example_proto ):
+    def _parse_function( self, example_proto, training: bool = False ):
         # 1. Decode the binary blob
         ex = tf.io.parse_single_example(example_proto, self._feature_description)
 
@@ -333,8 +333,9 @@ class PointCloudSet:
         y_se3 = tf.reshape( ex['se3'], (3, 3) )
 
         # 3. Apply Jitter (Data Augmentation)
-        noise = tf.random.normal( shape = tf.shape(x), mean = 0.0, stddev = 1.0 )
-        x = x + ( noise * self._jitter_stdev_m ) 
+        if( training ):
+            noise = tf.random.normal( shape = tf.shape(x), mean = 0.0, stddev = 1.0 )
+            x = x + ( noise * self._jitter_stdev_m ) 
 
         # 4. Format for Keras Model
         # Returns: inputs, {targets}
@@ -356,7 +357,7 @@ class PointCloudSet:
 
         dataset = dataset.shuffle( buffer_size = 2048 )
         dataset = dataset.repeat()
-        dataset = dataset.map( self._parse_function, num_parallel_calls = tf.data.AUTOTUNE )
+        dataset = dataset.map( lambda x: self._parse_function( x, True ), num_parallel_calls = tf.data.AUTOTUNE )
         dataset = dataset.batch( self._batch_size )
         dataset = dataset.prefetch( tf.data.AUTOTUNE )
 
@@ -370,7 +371,7 @@ class PointCloudSet:
 
         dataset = dataset.shuffle( buffer_size = 2048 )
         dataset = dataset.repeat()
-        dataset = dataset.map( self._parse_function, num_parallel_calls = tf.data.AUTOTUNE )
+        dataset = dataset.map( lambda x: self._parse_function( x, True ), num_parallel_calls = tf.data.AUTOTUNE )
         dataset = dataset.batch( self._batch_size )
         dataset = dataset.prefetch( tf.data.AUTOTUNE )
 
@@ -383,8 +384,7 @@ class PointCloudSet:
         dataset = tf.data.TFRecordDataset( files )
 
         dataset = dataset.shuffle( buffer_size = 2048 )
-        dataset = dataset.repeat()
-        dataset = dataset.map( self._parse_function, num_parallel_calls = tf.data.AUTOTUNE )
+        dataset = dataset.map( lambda x: self._parse_function( x, False ), num_parallel_calls = tf.data.AUTOTUNE )
         dataset = dataset.batch( self._batch_size )
         dataset = dataset.prefetch( tf.data.AUTOTUNE )
 
@@ -456,7 +456,12 @@ class PointCloudSet:
             return observations[:self._network_input_width], part_labels[:self._network_input_width]
         
         else:
-            repeated_indices = np.random.uniform( 0, observations.shape[0], self._network_input_width - observations.shape[0] )
+            if( self._random_seed is not None ):
+                rng = np.random.default_rng( self._random_seed )
+            else:
+                rng = np.random.default_rng()
+
+            repeated_indices = rng.integers( 0, observations.shape[0], size = self._network_input_width - observations.shape[0] )
             repeated_indices = repeated_indices.astype(np.int_)
 
             additional_obs = deepcopy( observations[repeated_indices] )
