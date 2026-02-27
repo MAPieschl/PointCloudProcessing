@@ -163,7 +163,7 @@ def get_transformation_error( truth_pose: np.ndarray, estimated_pose: np.ndarray
     translation error is simply the L2 translation error.
     '''
 
-    T_error = truth_pose.T @ estimated_pose
+    T_error = np.linalg.inv( truth_pose ) @ estimated_pose
 
     error_R = np.arccos( ( np.trace( T_error[:3, :3] ) - 1 ) / 2 )
     error_t = float( np.linalg.norm( T_error[:3, 3:].reshape( ( 3, ) ) ) )

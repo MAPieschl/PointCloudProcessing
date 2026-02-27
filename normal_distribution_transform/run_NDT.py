@@ -19,7 +19,7 @@ from utils.mat_ops import *
 FROM_MESH = 0
 FROM_FILE = 1
 
-TARGET_POINT_CLOUD = FROM_MESH
+TARGET_POINT_CLOUD = FROM_FILE
 
 def main( *args ) -> bool:
     
@@ -62,21 +62,17 @@ def main( *args ) -> bool:
             rng = np.random.default_rng( seed = 42 )
             tar_pc_pts = tar_pc_pts[ rng.choice( tar_pc_pts.shape[0], size = 300, replace = False ) ]
 
+            starting_pose = np.array( [50, 0, 8, 0, 0, 10] ).reshape( ( 6, 1 ) )
+            tar_pc_pts = [ transform_pc( tar_pc_pts, get_se3_from_vec6( starting_pose, is_in_degrees = True ) ) ]
+
         case 1:
-            aftr_dict = aftr.from_aftr_frame( 'D:/kc46_sim_collect/full_pointnet/lidar_predictions/frame_0.txt' )
+            starting_pose = None
+            aftr_dict = from_aftr_frame( 'D:/kc46_sim_collect/full_pointnet/lidar_predictions/frame_0.txt' )
 
-            R = mat.get_dcm( 0, 0, 0 )
-            aftr_dict['points'] = ( R @ aftr_dict['points'].T + np.array( [-70, 0, -10] ).reshape(( 3, 1 )) ).T
-
-            aftr_dict = aftr.organize_aftr_frame_by_part( aftr_dict )
-            tar_pc_pts = aftr_dict['points']
-            tar_pc_lbs = aftr_dict['part_labels']
-            for pt_set in tar_pc_pts:
-                for pt in pt_set:   tar_pc.add( Point( pt.reshape(( 3, 1 )), ref_pc.get_voxel( pt.reshape(( 3, 1 )) ) ) )
+            tar_pc_pts = [ aftr_dict['points'] ]
+            tar_pc_lbs = [ 'Target PC' ]
 
     # Set the position and load the TargetPointCloud
-    starting_pose = np.array( [50, 0, 8, 0, 0, 10] ).reshape( ( 6, 1 ) )
-    tar_pc_pts = [ transform_pc( tar_pc_pts, get_se3_from_vec6( starting_pose, is_in_degrees = True ) ) ]
     for pt in tar_pc_pts[0]:  tar_pc.add( Point( pt.reshape( ( 3, 1 ) ), ref_pc.get_weighted_8_nearest_voxels ) )
 
     # Align point cloud
@@ -90,8 +86,11 @@ def main( *args ) -> bool:
 
     target_se3 += convergence_steps
 
-    trans_err = get_transformation_error( get_se3_from_vec6( starting_pose, is_in_degrees = False ), np.linalg.inv( target_se3[-1] ), degrees = True )
-    print( f'Estimated Transformation:\n{np.linalg.inv( target_se3[-1] )}\n\nError:\n{trans_err[1]} & {trans_err[0]} degrees' )
+    if( starting_pose is not None ):
+        trans_err = get_transformation_error( get_se3_from_vec6( starting_pose, is_in_degrees = False ), np.linalg.inv( target_se3[-1] ), degrees = True )
+        print( f'Estimated Transformation:\n{np.linalg.inv( target_se3[-1] )}\n\nError:\n{trans_err[1]} & {trans_err[0]} degrees' )
+    else:
+        print( f'Estimated Transformation:\n{np.linalg.inv( target_se3[-1] )}' )
 
     ## Plot point cloud registration ###
     app = QApplication(sys.argv)
