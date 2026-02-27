@@ -17,7 +17,7 @@ class OptimizationP2D:
         self.lbda: float = initial_lambda
         self.lbda_step: float = lambda_step
 
-    def course_align( self, target_pc: TargetPointCloudP2D, initial_se3: np.ndarray = np.eye( 4 ) ):
+    def course_align( self, target_pc: TargetPointCloudP2D, initial_se3: np.ndarray = np.eye( 4 ) ) -> list[np.ndarray]:
 
         course_se3 = np.eye( 4 )
 
@@ -27,9 +27,12 @@ class OptimizationP2D:
         course_se3[:3, :3] = initial_se3[:3, :3]
         course_se3[:3, 3:] = t
 
-        return course_se3
+        target_pc.set_pose( get_vec6_from_se3( course_se3, get_degrees = False ) )
+        print( f'Course alignment set an initial pose of {target_pc.p.to_string()}' )
 
-    def gradient_descent( self, target_pc: TargetPointCloudP2D, initial_se3: np.ndarray, learning_rate: float, epsilon: float = 0.00001, max_iterations: int = 100 ) -> list[np.ndarray]:
+        return [ course_se3 ]
+
+    def gradient_descent( self, target_pc: TargetPointCloudP2D, initial_se3: np.ndarray, learning_rate: float, epsilon: float = 0.0001, max_iterations: int = 100 ) -> list[np.ndarray]:
 
         target_pc.set_pose( get_vec6_from_se3( initial_se3, get_degrees = False ) )
 
@@ -37,6 +40,8 @@ class OptimizationP2D:
         iterations: int = max_iterations
 
         step_se3 = []
+
+        print( f'Initializing at {target_pc.p.to_string()}' )
         
         while( delta_s > epsilon and iterations > 0 ):
 
@@ -45,25 +50,30 @@ class OptimizationP2D:
 
             delta_p = -learning_rate * g
 
-            target_pc.move_relative( delta_p )
+            target_pc.set_pose( target_pc.p.vec6 + delta_p )
             s_n1 = self.f( target_pc.get_points() )
 
             step_se3.append( target_pc.get_pose() )
 
             delta_s = abs( s_n - s_n1 )
             iterations -= 1
+             
+            print( f"Ending step {max_iterations - iterations} / {max_iterations} at {target_pc.p.to_string()} - score -> {s_n1}" )
 
         return step_se3
 
-    def newtons_method( self, target_pc: TargetPointCloudP2D, initial_se3: np.ndarray, epsilon: float = 0.00001, max_iterations: int = 100 ):
+    def newtons_method( self, target_pc: TargetPointCloudP2D, epsilon: float = 0.00001, max_iterations: int = 100 ) -> list[np.ndarray]:
 
         delta_s: float = epsilon * 10
-        p_n: np.ndarray = initial_se3
         iterations: int = max_iterations
+
+        step_se3 = []
+
+        print( f'Initializing Newton\'s Method at {target_pc.p.to_string()}' )
         
         while( delta_s > epsilon and iterations > 0 ):
 
-            H = self.f_dd( target_pc.get_points(), target_pc.J_E, target_pc.H_E, self.__validate_H ) 
+            H = self.f_dd( target_pc.get_points(), target_pc.J_E, target_pc.H_E, self.validate_H_shift ) 
             if( H is not None ):
 
                 g = self.f_d( target_pc.get_points(), target_pc.J_E )
@@ -71,119 +81,146 @@ class OptimizationP2D:
 
                 delta_p = -np.linalg.inv( H ) @ g
 
-                target_pc.move_relative( delta_p )
+                target_pc.set_pose( target_pc.p.vec6 + delta_p )
                 s_n1 = self.f( target_pc.get_points() )
+
+                step_se3.append( target_pc.get_pose() )
 
                 delta_s = abs( s_n - s_n1 )
                 iterations -= 1
 
                 print( f"Ending step {max_iterations - iterations} / {max_iterations} at {target_pc.p.to_string()} - score -> {s_n1}" )
 
-        return p_n
+        return step_se3
     
-    def levenberg_marquardt( self, target_pc: TargetPointCloudP2D, initial_se3: np.ndarray, epsilon: float = 0.00001, max_iterations: int = 10 ):
+    def levenberg_marquardt( self, target_pc: TargetPointCloudP2D, epsilon: float = 0.00001, max_iterations: int = 10 ) -> list[np.ndarray]:
 
         delta_s: float = epsilon * 10
-        p_n: np.ndarray = initial_se3
         iterations: int = max_iterations
-        
-        while( delta_s > epsilon and iterations > 0 ):
 
-            H = self.f_dd( target_pc.get_points(), target_pc.J_E, target_pc.H_E, self.__validate_H ) 
+        lbda = self.lbda
+        lbda_step = self.lbda_step
+
+        step_se3 = []
+        total_steps = -1
+        H = None
+        g = np.zeros( ( 6, 1 ) )
+
+        while( delta_s > epsilon ):
+
+            if( total_steps < len( step_se3 ) ):
+                H = self.f_dd( target_pc.get_points(), target_pc.J_E, target_pc.H_E, self.validate_H_scaled ) 
+
             if( H is not None ):
 
                 print( f"Starting step {max_iterations - iterations} / {max_iterations} at {target_pc.p.to_string()}" )
 
-                g = self.f_d( target_pc.get_points(), target_pc.J_E )
+                if( total_steps < len( step_se3 ) ):
+                    g = self.f_d( target_pc.get_points(), target_pc.J_E )
+                    total_steps += 1
+
                 s_n: float = self.f( target_pc.get_points() )
 
-                delta_p = np.linalg.inv( H ) @ g
+                delta_p = -np.linalg.inv( H + lbda * np.diag( np.diag( H ) ) ) @ g
 
-                target_pc.move_relative( delta_p )
+                current_vec6 = deepcopy( target_pc.p.vec6 )
+                target_pc.set_pose( current_vec6 + delta_p )
                 s_n1: float = self.f( target_pc.get_points() )
 
-                if( s_n1 < s_n ):
-                    self.lbda *= self.lbda_step
-                    target_pc.move_relative( -delta_p )
-                    print( f"Step {max_iterations - iterations} / {max_iterations}:  Score increased - increasing lambda to {self.lbda} to reverse direction - prediction remains {target_pc.p.to_string()} - score -> {s_n1}" )
+                iterations -= 1
+
+                if( s_n1 > s_n ):
+                    lbda *= lbda_step
+
+                    target_pc.set_pose( current_vec6 )
+
+                    print( f"Step {max_iterations - iterations} / {max_iterations}:  Score increased - increasing lambda to {lbda} to reverse direction - prediction remains {target_pc.p.to_string()} - score moved from {s_n:.6f} -> {s_n1:.6f}" )
 
                 else:
-                    self.lbda /= self.lbda_step
+                    lbda /= lbda_step
 
                     delta_s = abs( s_n1 - s_n )
-                    iterations -= 1
-                    print( f"Step {max_iterations - iterations} / {max_iterations}:  Score decreased - decreasing lambda to {self.lbda} to speed up progress toward the minima - prediction is now {target_pc.p.to_string()} - score -> {s_n1}" )
+                    step_se3.append( target_pc.get_pose() )
 
-        return p_n
+                    print( f"Step {max_iterations - iterations} / {max_iterations}:  Score decreased - decreasing lambda to {lbda} to speed up progress toward the minima - prediction is now {target_pc.p.to_string()} - score moved from {s_n:.6f} -> {s_n1:.6f}" )
+
+        return step_se3
 
     def f( self, x: list[Point] ) -> float:
 
         s = 0
         for x_i in x:
-            v: Voxel | None = x_i.is_contained_by()
-            if( type( v ) == Voxel ):
-                s += v.get_score_P2D( x_i.pos, self.d1, self.d2 )
+            for v, weight in x_i.get_nearest_weighted_voxels():
+                if( type( v ) == Voxel and not v.is_empty ):
+                    s += weight * v.get_score_P2D( x_i.pos, self.d1, self.d2 )
 
         return -s
     
-    def f_d( self, x: list[Point], J_E: Callable[[np.ndarray], np.ndarray] ) -> np.ndarray:
+    def f_d( self, x: list[Point], J_E: Callable[[Point], np.ndarray] ) -> np.ndarray:
 
         g: np.ndarray = np.zeros((6, 1))
-        for i in range( g.shape[0] ):
+
+        for j in range( g.shape[0] ):
             for x_i in x:
-                v: Voxel | None = x_i.is_contained_by()
-                if( type( v ) == Voxel ):
-                    if( not v.is_empty ):
+                for v, weight in x_i.get_nearest_weighted_voxels():
+                    if( type( v ) == Voxel and not v.is_empty ):
                         q: np.ndarray = x_i.pos - v.mu.reshape( ( 3, 1 ) )
-                        
-                        g[i] += ( self.d1( v.determinant ) * self.d2() * q.transpose() @ v.info_matrix @ J_E( q )[:, i].reshape( ( 3, 1 ) ) * np.exp( (-self.d2() / 2) * q.transpose() @ v.info_matrix @ q ) ).squeeze()
-            
+
+                        g[j] += weight * ( self.d1( v.determinant ) * self.d2() * q.transpose() @ v.info_matrix @ J_E( x_i )[:, j].reshape( ( 3, 1 ) ) * np.exp( (-self.d2() / 2) * q.transpose() @ v.info_matrix @ q ) ).squeeze()
+
         return g
 
-    def f_dd( self, x: list[Point], J_E: Callable[[np.ndarray], np.ndarray], H_E: Callable[[np.ndarray], np.ndarray], verify_H: Callable[[np.ndarray], np.ndarray | None] ) -> np.ndarray | None:
+    def f_dd( self, x: list[Point], J_E: Callable[[Point], np.ndarray], H_E: Callable[[Point], np.ndarray], verify_H: Callable[[np.ndarray], np.ndarray | None] ) -> np.ndarray | None:
 
         H: np.ndarray = np.zeros( ( 6, 6 ) )
 
-        for i in range( H.shape[0] ):
+        for k in range( H.shape[0] ):
             for j in range( H.shape[1] ):
                 for x_i in x:
-                    v: Voxel | None = x_i.is_contained_by()
-                    if( type( v ) == Voxel ):
-                        q: np.ndarray = x_i.pos - v.mu.reshape( ( 3, 1 ) )
+                    for v, weight in x_i.get_nearest_weighted_voxels():
+                        if( type( v ) == Voxel ):
+                            if( not v.is_empty ):
+                                q: np.ndarray = x_i.pos - v.mu.reshape( ( 3, 1 ) )
+                                J = J_E( x_i )
 
-                        term_1 = self.d1( v.determinant ) * self.d2() * np.exp( ( -self.d2() / 2 ) * q.transpose() @ v.info_matrix @ q )
-                        term_2a = -self.d2() * ( q.transpose() @ v.info_matrix @ J_E( q )[:, i] ) @ ( q.transpose() @ v.info_matrix @ J_E( q )[:, j] )
-                        term_2b = q.transpose() @ v.info_matrix @ H_E( q )[i, j, :]
-                        term_2c = J_E( q )[:, j].transpose() @ v.info_matrix @ J_E( q )[:, i]
+                                term_1 = self.d1( v.determinant ) * self.d2() * np.exp( ( -self.d2() / 2 ) * q.transpose() @ v.info_matrix @ q )
+                                term_2a = -self.d2() * ( q.transpose() @ v.info_matrix @ J[:, k] ) @ ( q.transpose() @ v.info_matrix @ J[:, j] )
+                                term_2b = q.transpose() @ v.info_matrix @ H_E( x_i )[k, j, :]
+                                term_2c = J[:, j].transpose() @ v.info_matrix @ J[:, k]
 
-                        H[i, j] += term_1.squeeze() * ( term_2a.squeeze() + term_2b.squeeze() + term_2c.squeeze() )
+                                H[k, j] += weight * term_1.squeeze() * ( term_2a.squeeze() + term_2b.squeeze() + term_2c.squeeze() )
 
         return verify_H( H )
     
-    def __validate_H( self, H: np.ndarray ) -> np.ndarray | None:
+    def validate_H_shift( self, H: np.ndarray ) -> np.ndarray | None:
 
         if( H.ndim != 2 or H.shape[0] != H.shape[1] ):
             print( f"Hessian must be a square, 2D matrix, not {H.shape}. Escaping..." )
             return None
         
-        # Check that Hessian is positive definite
-        pos_def = False
-        while( not pos_def ):
-            try:
-                _ = np.linalg.cholesky( H )
-                pos_def = True
+        eigvals = np.linalg.eigvals( H )
+        
+        # Check if any eigenvalues are non-positive
+        if np.any( eigvals <= 0 ):
+            lbda = -np.min( eigvals ) + 1e-3
+            H = H + np.eye( H.shape[0] ) * lbda
+        
+        return H
+    
+    def validate_H_scaled( self, H: np.ndarray ) -> np.ndarray | None:
 
-            except np.linalg.LinAlgError:
-                H += self.lbda * np.eye( H.shape[0] )
-                pos_def = False
-
-            except Exception as e:
-                print( f"Hessian validation failed with the following exception:\n\t{type(e)}: {e}" )
-
-        # Check for singularity
-        # if( np.isclose( np.linalg.det( H ), 0 ) ):
-        #     print( "Hessian is singular and non-invertable. Escaping..." )
-        #     return None
+        if( H.ndim != 2 or H.shape[0] != H.shape[1] ):
+            print( f"Hessian must be a square, 2D matrix, not {H.shape}. Escaping..." )
+            return None
+        
+        eigval, eigvec = np.linalg.eigh( H )
+        
+        # If any eigenvalue is non-positive, clip it to a small value
+        if np.any( eigval <= 0 ):
+            clipped_eigenvalues = np.maximum( eigval, 1e-6 )
+            
+            # Reconstruct the Hessian
+            H = eigvec @ np.diag( clipped_eigenvalues ) @ eigvec.T
         
         return H
     

@@ -3,13 +3,13 @@ import os
 
 from ndt.Parameters import Parameters
 from ndt.Point import Point
-from ndt.Voxel import Voxel
-from ndt.ReferencePointCloud import ReferencePointCloud
+from ndt.Voxel import Voxel, VoxelGrid
 from ndt.TargetPointCloud import TargetPointCloudP2D
 from ndt.Optimization import OptimizationP2D
 
 from gui.registration.PointCloudRegistrationPlotter import PointCloudRegistrationPlotter
 from PyQt6.QtWidgets import QApplication
+from tqdm import tqdm
 
 from mesh.MeshSampler import MeshSampler
 
@@ -35,14 +35,14 @@ def main( *args ) -> bool:
 
     ### Create Reference Point Cloud ###
     mesh = MeshSampler( MESH_PATH, CLASS_LABEL, rotation_matrix = np.array( [[ 1, 0, 0 ], [0, 0, -1], [0, 1, 0]] ) )
-    ref_pc = ReferencePointCloud( y = np.asarray( mesh.mesh.vertices ) )
+    ref_pc = VoxelGrid( pts = np.asarray( mesh.mesh.vertices ), voxel_size = 10.0 )
 
-    ref_pc_pts = ref_pc.get_pc_list()
+    ref_pc_pts = ref_pc.get_list_of_points()
     ref_pc_vox = [f'Voxel {i}' for i in range( len( ref_pc_pts ) )]
     
     ### Create Target Point Cloud ###
     p = Parameters( se3 = np.eye( 4 ) )
-    tar_pc = TargetPointCloudP2D( p, ref_pc.get_voxel )
+    tar_pc = TargetPointCloudP2D( p, ref_pc.get_weighted_8_nearest_voxels )
 
     ### Instantiate Optimizer ###
     opt = OptimizationP2D()
@@ -50,15 +50,17 @@ def main( *args ) -> bool:
     ### OPTION 1:  CREATE A UNIFORM SAMPLING OF THE REFERENCE MESH ###
     match( TARGET_POINT_CLOUD ):
         case 0:
-            tar_pc_pts, tar_pc_lbs, _, _ = mesh.create_full_sample_observations( n = 1, p = 300, pad = 300 )
-            tar_pc_pts = tar_pc_pts.squeeze()
+            tar_pc_pts = []
+            tar_pc_lbs = [ 'Target PC' ]
 
-            tar_pc_pts = transform_pc( tar_pc_pts, get_se3_from_vec6( np.array( [10, 0, 5, 0, 0, 30] ), is_in_degrees = True ) )
+            for div in ref_pc_pts:
+                for pt in div:
+                    tar_pc_pts.append( pt )
 
-            for pt in tar_pc_pts:   tar_pc.add( Point( pt.reshape(( 3, 1 )), ref_pc.get_voxel( pt.reshape(( 3, 1 )) ) ) )
+            tar_pc_pts = np.unique( np.array( tar_pc_pts ), axis = 0 )
 
-            tar_pc_pts = [ tar_pc_pts ]
-            tar_pc_lbs = [ 'Target PC' ] 
+            rng = np.random.default_rng( seed = 42 )
+            tar_pc_pts = tar_pc_pts[ rng.choice( tar_pc_pts.shape[0], size = 300, replace = False ) ]
 
         case 1:
             aftr_dict = aftr.from_aftr_frame( 'D:/kc46_sim_collect/full_pointnet/lidar_predictions/frame_0.txt' )
@@ -72,11 +74,24 @@ def main( *args ) -> bool:
             for pt_set in tar_pc_pts:
                 for pt in pt_set:   tar_pc.add( Point( pt.reshape(( 3, 1 )), ref_pc.get_voxel( pt.reshape(( 3, 1 )) ) ) )
 
+    # Set the position and load the TargetPointCloud
+    starting_pose = np.array( [50, 0, 8, 0, 0, 10] ).reshape( ( 6, 1 ) )
+    tar_pc_pts = [ transform_pc( tar_pc_pts, get_se3_from_vec6( starting_pose, is_in_degrees = True ) ) ]
+    for pt in tar_pc_pts[0]:  tar_pc.add( Point( pt.reshape( ( 3, 1 ) ), ref_pc.get_weighted_8_nearest_voxels ) )
+
     # Align point cloud
-    target_se3 = [ np.eye( 4 ) ]
-    target_se3.append( opt.course_align( tar_pc ) )
-    convergence_steps = opt.gradient_descent( tar_pc, target_se3[-1], 0.001 )
+    target_se3 = [ tar_pc.get_pose() ]
+    convergence_steps = opt.course_align( tar_pc )
+
+    while( ref_pc.get_voxel_size() >= 1.0 ):
+        print( f'Beginning iterations with voxel size set to {ref_pc.get_voxel_size()}' )
+        convergence_steps += opt.levenberg_marquardt( tar_pc, max_iterations = 500 )
+        ref_pc.build_voxel_grid( ref_pc.get_voxel_size() / 2 )
+
     target_se3 += convergence_steps
+
+    trans_err = get_transformation_error( get_se3_from_vec6( starting_pose, is_in_degrees = False ), np.linalg.inv( target_se3[-1] ), degrees = True )
+    print( f'Estimated Transformation:\n{np.linalg.inv( target_se3[-1] )}\n\nError:\n{trans_err[1]} & {trans_err[0]} degrees' )
 
     ## Plot point cloud registration ###
     app = QApplication(sys.argv)
