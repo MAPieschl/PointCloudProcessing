@@ -109,7 +109,14 @@ class LinePlot:
                     title = self._y2_axis_title,
                     overlaying = 'y',
                     side = 'right'
-                )
+                ),
+                legend=dict(
+                    x=1.15,  # Push legend further to the right (default is ~1.02)
+                    y=1.0,   # Anchor it to the top
+                    xanchor='left',
+                    yanchor='top'
+                ),
+                margin=dict(r=150)  # Increase right margin to make room for the legend
             )
 
         else:

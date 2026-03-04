@@ -3,15 +3,16 @@ import numpy as np
 from typing import Callable
 
 from ndt.Parameters import Parameters
-from se_ndt.SemanticVoxel import SemanticVoxel
+from ndt.Voxel import Voxel
 from se_ndt.LabeledPoint import LabeledPoint
+from utils.mat_ops import *
 
-class SemanticTargetPointCloud:
-    def __init__( self, p: Parameters, v: Callable[[np.ndarray], SemanticVoxel | None] ):
+class SemanticTargetPointCloudP2D:
+    def __init__( self, p: Parameters ):
 
         self.p: Parameters = p
-        self.get_voxel = v
         self.points: list[LabeledPoint] = []
+        self.points_by_label: dict[str, list[LabeledPoint]] = {}
 
         self.next_idx: int = 0
 
@@ -25,42 +26,62 @@ class SemanticTargetPointCloud:
     def get_points( self ) -> list[LabeledPoint]:
         return self.points
     
-    def get_voxels( self ) -> list[SemanticVoxel | None]:
-        voxels : list[SemanticVoxel | None] = []
+    def get_ndarray_of_points( self ) -> np.ndarray:
+        pts = []
         for pt in self.points:
-            voxels.append( pt.is_contained_by() )
+            pts.append( pt.pos )
 
-        return voxels
+        return np.array( pts )
+    
+    def get_points_labeled( self, label: str ) -> list[LabeledPoint] | None:
+        if( label in self.points_by_label.keys() ): return self.points_by_label[label]
+        else:                                       return None
+
+    def get_ndarray_of_points_labeled( self, label: str ) -> np.ndarray | None:
+        if( label in self.points_by_label.keys() ):
+            pts = []
+            for pt in self.points_by_label[label]:
+                pts.append( pt.pos )  
+            return np.array( pts )
+        
+        else:   return None  
+    
+    def get_pose( self ) -> np.ndarray:
+        return self.p.get_pose()
     
     def add( self, pt: LabeledPoint ):
+
         self.points.append( pt )
+
+        if( pt.label in self.points_by_label.keys() ):  self.points_by_label[pt.label].append( pt )
+        else:                                           self.points_by_label[pt.label] = [ pt ]
 
     def move_relative( self, delta_vec6: np.ndarray ):
 
         self.p.update( delta_vec6 )
 
         for pt in self.points:
-            pt.move_relative( delta_vec6, self.get_voxel )
+            pt.move_relative( delta_vec6 )
 
     def set_pose( self, vec6: np.ndarray ):
 
         self.p.set_vec6( vec6 )
 
         for pt in self.points:
-            pt.set_position( vec6, self.get_voxel )
+            pt.set_position( vec6 )
 
-    def J_E( self, x_i: np.ndarray ) -> np.ndarray:
+    def J_E( self, x_i: LabeledPoint ) -> np.ndarray:
 
         p = self.p
 
-        a: np.ndarray = x_i[0] * ( -p.sx * p.sz + p.cx * p.sy * p.cz )  + x_i[1] * ( -p.sx * p.cz - p.cx * p.sy * p.sz )    + x_i[2] * ( -p.cx * p.cy )
-        b: np.ndarray = x_i[0] * ( p.cx * p.sz + p.sx * p.sy * p.cz )   + x_i[1] * ( -p.sx * p.sy * p.sz + p.cx * p.cz )    + x_i[2] * ( -p.sx * p.cy )
-        c: np.ndarray = x_i[0] * ( -p.sy * p.cz )                       + x_i[1] * ( p.sy * p.sz )                          + x_i[2] * ( p.cy )
-        d: np.ndarray = x_i[0] * ( p.sx * p.cy * p.cz )                 + x_i[1] * ( -p.sx * p.cy * p.sz )                  + x_i[2] * ( p.sx * p.sy )
-        e: np.ndarray = x_i[0] * ( -p.cx * p.cy * p.cz )                + x_i[1] * ( p.cx * p.cy * p.sz )                   + x_i[2] * ( -p.cx * p.sy )
-        f: np.ndarray = x_i[0] * ( -p.cy * p.sz )                       + x_i[1] * ( -p.cy * p.cz )
-        g: np.ndarray = x_i[0] * ( p.cx * p.cz - p.sx * p.sy * p.sz )   + x_i[1] * ( -p.cx * p.sz - p.sx * p.sy * p.cz )
-        h: np.ndarray = x_i[0] * ( p.sx * p.cz + p.cx * p.sy * p.sz )   + x_i[1] * ( p.cx * p.sy * p.cz - p.sx * p.sz )
+        a: np.ndarray = x_i.orig_pos[0] * ( -p.sx * p.sz + p.cx * p.sy * p.cz )  + x_i.orig_pos[1] * ( -p.sx * p.cz - p.cx * p.sy * p.sz )    + x_i.orig_pos[2] * ( -p.cx * p.cy )
+        b: np.ndarray = x_i.orig_pos[0] * ( p.cx * p.sz + p.sx * p.sy * p.cz )   + x_i.orig_pos[1] * ( -p.sx * p.sy * p.sz + p.cx * p.cz )    + x_i.orig_pos[2] * ( -p.sx * p.cy )
+        c: np.ndarray = x_i.orig_pos[0] * ( -p.sy * p.cz )                       + x_i.orig_pos[1] * ( p.sy * p.sz )                          + x_i.orig_pos[2] * ( p.cy )
+        d: np.ndarray = x_i.orig_pos[0] * ( p.sx * p.cy * p.cz )                 + x_i.orig_pos[1] * ( -p.sx * p.cy * p.sz )                  + x_i.orig_pos[2] * ( p.sx * p.sy )
+        e: np.ndarray = x_i.orig_pos[0] * ( -p.cx * p.cy * p.cz )                + x_i.orig_pos[1] * ( p.cx * p.cy * p.sz )                   + x_i.orig_pos[2] * ( -p.cx * p.sy )
+        f: np.ndarray = x_i.orig_pos[0] * ( -p.cy * p.sz )                       + x_i.orig_pos[1] * ( -p.cy * p.cz )
+        g: np.ndarray = x_i.orig_pos[0] * ( p.cx * p.cz - p.sx * p.sy * p.sz )   + x_i.orig_pos[1] * ( -p.cx * p.sz - p.sx * p.sy * p.cz )
+        h: np.ndarray = x_i.orig_pos[0] * ( p.sx * p.cz + p.cx * p.sy * p.sz )   + x_i.orig_pos[1] * ( p.cx * p.sy * p.cz - p.sx * p.sz )
 
         return np.array(
             [[1,    0,  0,  0,              c.squeeze(),    f.squeeze()], 
@@ -68,55 +89,55 @@ class SemanticTargetPointCloud:
              [0,    0,  1,  b.squeeze(),    e.squeeze(),    h.squeeze()]]
         )
     
-    def H_E( self, x_i: np.ndarray ) -> np.ndarray:
+    def H_E( self, x_i: LabeledPoint ) -> np.ndarray:
 
         p = self.p
 
         a = np.array(
             [
                 0,
-                ( x_i[0] * ( -p.cx * p.sz - p.sx * p.sy * p.cz )  + x_i[1] * ( -p.cx * p.cz + p.sx * p.sy * p.sz )    + x_i[2] * ( p.sx * p.cy ) ).squeeze(),
-                ( x_i[0] * ( -p.sx * p.sz + p.cx * p.sy * p.cz )  + x_i[1] * ( -p.cx * p.sy * p.sz - p.sx * p.cz )    + x_i[2] * ( -p.cx * p.cy ) ).squeeze()
+                ( x_i.orig_pos[0] * ( -p.cx * p.sz - p.sx * p.sy * p.cz )  + x_i.orig_pos[1] * ( -p.cx * p.cz + p.sx * p.sy * p.sz )    + x_i.orig_pos[2] * ( p.sx * p.cy ) ).squeeze(),
+                ( x_i.orig_pos[0] * ( -p.sx * p.sz + p.cx * p.sy * p.cz )  + x_i.orig_pos[1] * ( -p.cx * p.sy * p.sz - p.sx * p.cz )    + x_i.orig_pos[2] * ( -p.cx * p.cy ) ).squeeze()
             ]
         ).reshape( ( 3, 1 ) )
 
         b = np.array(
             [
                 0,
-                ( x_i[0] * ( p.cx * p.cy * p.cz )                 + x_i[1] * ( -p.cx * p.cy * p.sz )                  + x_i[2] * ( p.cx * p.sy ) ).squeeze(),
-                ( x_i[0] * ( p.sx * p.cy * p.cz )                 + x_i[1] * ( -p.sx * p.cy * p.sz )                  + x_i[2] * ( p.sx * p.sy ) ).squeeze()
+                ( x_i.orig_pos[0] * ( p.cx * p.cy * p.cz )                 + x_i.orig_pos[1] * ( -p.cx * p.cy * p.sz )                  + x_i.orig_pos[2] * ( p.cx * p.sy ) ).squeeze(),
+                ( x_i.orig_pos[0] * ( p.sx * p.cy * p.cz )                 + x_i.orig_pos[1] * ( -p.sx * p.cy * p.sz )                  + x_i.orig_pos[2] * ( p.sx * p.sy ) ).squeeze()
             ]
         ).reshape( ( 3, 1 ) )
 
         c = np.array(
             [
                 0,
-                ( x_i[0] * ( -p.sx * p.cz - p.cx * p.sy * p.sz )  + x_i[1] * ( -p.sx * p.sz - p.cx * p.sy * p.cz ) ).squeeze(),
-                ( x_i[0] * ( p.cx * p.cz - p.sx * p.sy * p.sz )   + x_i[1] * ( -p.sx * p.sy * p.cz - p.cx * p.sz ) ).squeeze()
+                ( x_i.orig_pos[0] * ( -p.sx * p.cz - p.cx * p.sy * p.sz )  + x_i.orig_pos[1] * ( -p.sx * p.sz - p.cx * p.sy * p.cz ) ).squeeze(),
+                ( x_i.orig_pos[0] * ( p.cx * p.cz - p.sx * p.sy * p.sz )   + x_i.orig_pos[1] * ( -p.sx * p.sy * p.cz - p.cx * p.sz ) ).squeeze()
             ]
         ).reshape( ( 3, 1 ) )
 
         d = np.array(
             [
-                ( x_i[0] * ( -p.cy * p.cz )                       + x_i[1] * ( p.cy * p.sz )                          + x_i[2] * ( -p.sy ) ).squeeze(),
-                ( x_i[0] * ( -p.sx * p.sy * p.cz )                + x_i[1] * ( p.sx * p.sy * p.sz )                   + x_i[2] * ( p.sx * p.cy ) ).squeeze(),
-                ( x_i[0] * ( p.cx * p.sy * p.cz )                 + x_i[1] * ( -p.cx * p.sy * p.sz )                  + x_i[2] * ( -p.cx * p.cy ) ).squeeze()
+                ( x_i.orig_pos[0] * ( -p.cy * p.cz )                       + x_i.orig_pos[1] * ( p.cy * p.sz )                          + x_i.orig_pos[2] * ( -p.sy ) ).squeeze(),
+                ( x_i.orig_pos[0] * ( -p.sx * p.sy * p.cz )                + x_i.orig_pos[1] * ( p.sx * p.sy * p.sz )                   + x_i.orig_pos[2] * ( p.sx * p.cy ) ).squeeze(),
+                ( x_i.orig_pos[0] * ( p.cx * p.sy * p.cz )                 + x_i.orig_pos[1] * ( -p.cx * p.sy * p.sz )                  + x_i.orig_pos[2] * ( -p.cx * p.cy ) ).squeeze()
             ]
         ).reshape( ( 3, 1 ) )
 
         e = np.array(
             [
-                ( x_i[0] * ( p.sy * p.sz )                        + x_i[1] * ( p.sy * p.cz ) ).squeeze(),
-                ( x_i[0] * ( -p.sx * p.cy * p.sz )                + x_i[1] * ( -p.sx * p.cy * p.cz ) ).squeeze(),
-                ( x_i[0] * ( p.cx * p.cy * p.sz )                 + x_i[1] * ( p.cx * p.cy * p.cz ) ).squeeze()
+                ( x_i.orig_pos[0] * ( p.sy * p.sz )                        + x_i.orig_pos[1] * ( p.sy * p.cz ) ).squeeze(),
+                ( x_i.orig_pos[0] * ( -p.sx * p.cy * p.sz )                + x_i.orig_pos[1] * ( -p.sx * p.cy * p.cz ) ).squeeze(),
+                ( x_i.orig_pos[0] * ( p.cx * p.cy * p.sz )                 + x_i.orig_pos[1] * ( p.cx * p.cy * p.cz ) ).squeeze()
             ]
         ).reshape( ( 3, 1 ) )
 
         f = np.array(
             [
-                ( x_i[0] * ( -p.cy * p.cz )                       + x_i[1] * ( p.cy * p.sz ) ).squeeze(),
-                ( x_i[0] * ( -p.cx * p.sz - p.sx * p.sy * p.cz )  + x_i[1] * ( -p.cx * p.cz + p.sx * p.sy * p.sz ) ).squeeze(),
-                ( x_i[0] * ( -p.sx * p.sz + p.cx * p.sy * p.cz )  + x_i[1] * ( -p.cx * p.sy * p.sz - p.sx * p.cz ) ).squeeze()
+                ( x_i.orig_pos[0] * ( -p.cy * p.cz )                       + x_i.orig_pos[1] * ( p.cy * p.sz ) ).squeeze(),
+                ( x_i.orig_pos[0] * ( -p.cx * p.sz - p.sx * p.sy * p.cz )  + x_i.orig_pos[1] * ( -p.cx * p.cz + p.sx * p.sy * p.sz ) ).squeeze(),
+                ( x_i.orig_pos[0] * ( -p.sx * p.sz + p.cx * p.sy * p.cz )  + x_i.orig_pos[1] * ( -p.cx * p.sy * p.sz - p.sx * p.cz ) ).squeeze()
             ]
         ).reshape( ( 3, 1 ) )
 

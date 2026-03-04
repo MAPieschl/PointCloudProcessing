@@ -11,10 +11,10 @@ from utils.mat_ops import *
 
 OBJECT_P: dict[str, np.ndarray] = {
             'lidar': np.array([
-                [ 0.99993855,  0.01030838, -0.00407918,  0.0301948 ],
-                [-0.010123,    0.99901862,  0.04311979,  0.03787175],
-                [ 0.00451967, -0.04307585,  0.99906158,  0.05622288],
-                [ 0.,          0.,          0.,          1.        ]
+                [1, 0, 0, 0],
+                [0, 1, 0, 0],
+                [0, 0, 1, 0],
+                [0, 0, 0, 1]
             ]),
             'f-15_model': np.array([
                 [1, 0, 0, 0],
@@ -92,13 +92,84 @@ class ParsedAftrLog:
         return self.__lidar_pred['recall'][timestamp]
     
     def get_lidar_inference_time_at( self, timestamp: datetime ):
-        return self.__lidar_pred['inference_time'][timestamp]
+        if( timestamp in self.__lidar_pred['inference_time'].keys() ):  return self.__lidar_pred['inference_time'][timestamp]
+        else:                                                           return None
     
     def get_lidar_registration_time_at( self, timestamp: datetime ):
-        return self.__lidar_pred['registration_time'][timestamp]
-    
+        if( timestamp in self.__lidar_pred['registration_time'].keys() ):   return self.__lidar_pred['registration_time'][timestamp]
+        else:                                                               return None
+
     def get_lidar_num_points_at( self, timestamp ):
         return self.__lidar_num_pts[timestamp]
+    
+    def reprocess_using_estimates_from( self, log_dir: str, alternate_log: str ):
+
+        alt_est: dict[str, np.ndarray] = {}
+        self.__lidar_est.clear()
+        self.__lidar_pred['registration_time'].clear()
+
+        if( os.path.isfile( alternate_log ) ):
+
+            with open( alternate_log, 'r' ) as f:
+                for line in f.readlines():
+                    line = line.strip()
+                    if( '->lidar' in line ):
+                        line_l = line.split( ' ' )
+
+                        if( len( line_l ) == 21 ):
+                            
+                            R = []
+                            for el in range( 5, 21 ):
+                                R.append( float( line_l[el] ) )
+                            R = np.array( R ).reshape( ( 4, 4 ) ).T
+
+                            alt_est[line_l[4]] = R @ OBJECT_P['lidar']
+
+        if( os.path.isdir( log_dir ) ):
+            files = [f for f in os.listdir( log_dir ) if os.path.isfile( os.path.join( log_dir, f ) )]
+
+            if( len( files ) > 2 ):
+                print( f"Too many log files in {log_dir}, cannot determine the correct log to parse. Please reduce number of log files to 1." )
+                return
+            
+            log_file = [ f for f in files if 'log_' in f ][0]
+
+            with open( f"{log_dir}/{log_file}", 'r' ) as f:
+
+                timestamp = None
+
+                for line in f.readlines():
+                    line = line.strip()
+
+                    if( '->camera' in line ):
+                        continue
+
+                    elif( '->lidar' in line ):
+                        if( timestamp != None ):
+                            line_l = line.split( " " )
+
+                            if( len( line_l ) == 21 ):      frame_filename = line_l[4]
+                            elif( len( line_l ) == 19 ):    frame_filename = line_l[2]
+                            else:
+                                print( f'LiDAR line unrecognized {line}' )
+                                return
+                            
+                            if( frame_filename in alt_est.keys() ):
+                                self.__lidar_est[timestamp] = alt_est[frame_filename]
+
+                            else:
+                                self.__optitrack_truth.pop( timestamp, None )
+                                self.__camera_est.pop( timestamp, None )
+                                self.__lidar_pred['precision'].pop( timestamp, None )
+                                self.__lidar_pred['recall'].pop( timestamp, None )
+                                self.__lidar_pred['inference_time'].pop( timestamp, None )
+
+                    else:
+                        line = line.replace( '\t', ' ' ).split( ' ' )
+                            
+                        ## the magic re.sub() simply truncates the OptiTrack time to 6 digits
+                        timestamp = datetime.strptime( re.sub(r'(\.\d{6})\d+', r'\1', line.pop( 0 )), "%Y.%b.%d_%H.%M.%S.%f.UTC" )
+                        timestamp = timestamp.replace( tzinfo = timezone.utc )
 
     def __import_logs( self, log_dir: str ):
 
@@ -108,7 +179,7 @@ class ParsedAftrLog:
 
             results = {}
 
-            if( len( files ) > 1 ):
+            if( len( files ) > 2 ):
                 print( f"Too many log files in {log_dir}, cannot determine the correct log to parse. Please reduce number of log files to 1." )
                 return
 
@@ -116,6 +187,7 @@ class ParsedAftrLog:
                 print( f"Too many directories in {log_dir}, cannot determine the correct lidar directory to parse. Please reduce number of subdirectories to 1." )
                 return
             
+            if( len( files ) > 1 ): ndt_log = files.pop( files.index( [i for i in files if '_ndt.txt' in i][0] ) )
             log_file = files[0]
             lidar_dir = dirs[0]
 
@@ -151,25 +223,41 @@ class ParsedAftrLog:
                         if( timestamp != None ):
                             line_l = line.split( " " )
 
-                            if( len( line_l ) != 21 ):
-                                print( f'Unable to parse lidar line:\n\t{line_l}' )
-                                return
+                            if( len( line_l ) == 21 ):
                             
-                            self.__lidar_pred['inference_time'][timestamp] = float( line_l[2] )
-                            self.__lidar_pred['registration_time'][timestamp] = float( line_l[3] )
-                            
-                            R = []
-                            for el in range( 5, 21 ):
-                                R.append( float( line_l[el] ) )
-                            R = np.array( R ).reshape( ( 4, 4 ) ).T
+                                self.__lidar_pred['inference_time'][timestamp] = float( line_l[2] )
+                                self.__lidar_pred['registration_time'][timestamp] = float( line_l[3] )
+                                
+                                R = []
+                                for el in range( 5, 21 ):
+                                    R.append( float( line_l[el] ) )
+                                R = np.array( R ).reshape( ( 4, 4 ) ).T
 
-                            self.__lidar_est[timestamp] = R @ OBJECT_P['lidar']
+                                self.__lidar_est[timestamp] = R @ OBJECT_P['lidar']
+
+                                frame_filename = line_l[4]
+                            
+                            elif( len( line_l ) == 19 ):
+                                
+                                R = []
+                                for el in range( 3, 19 ):
+                                    R.append( float( line_l[el] ) )
+                                R = np.array( R ).reshape( ( 4, 4 ) ).T
+
+                                self.__lidar_est[timestamp] = R @ OBJECT_P['lidar']
+
+                                frame_filename = line_l[2]
+
+                            else:
+
+                                print( f'LiDAR line unrecognized {line}' )
+                                return
 
                             true_pos = {}
                             false_pos = {}
                             false_neg = {}
 
-                            with open( f'{log_dir}/{lidar_dir}/{line_l[4]}', 'r' ) as l:
+                            with open( f'{log_dir}/{lidar_dir}/{frame_filename}', 'r' ) as l:
                                 num_points = 0
                                 for lidar_line in l.readlines():
                                     lidar_line = lidar_line.strip()

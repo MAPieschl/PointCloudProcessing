@@ -275,6 +275,9 @@ def plot_histogram( data: np.ndarray,
     
     fig = go.Figure()
 
+    data = data[ data.nonzero() ]
+    if( data.size < 1 ): return fig
+
     bins = np.linspace( np.min( data ), np.max( data ), num_bins )
     bin_count = np.zeros( bins.shape )
     for bin in range( len( bins ) - 1 ):

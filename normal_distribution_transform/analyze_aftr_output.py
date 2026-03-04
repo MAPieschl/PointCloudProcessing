@@ -11,6 +11,8 @@ def main( *args ) -> bool:
     if( not os.path.isdir( args[0][3] ) ): return False
 
     aftr_log = ParsedAftrLog( args[0][1] )
+    aftr_log.reprocess_using_estimates_from( args[0][1], "D:/kc46_sim_collect/full_pointnet/kc46_sim_ndt.txt" )
+
     analysis = AnalyzeAftrLog( aftr_log, args[0][0], args[0][2]  )
 
     analysis.get_6DOF_residual_scatter_plots_by_distance( args[0][3] )

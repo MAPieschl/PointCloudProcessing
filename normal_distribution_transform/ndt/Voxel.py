@@ -16,7 +16,7 @@ class Voxel:
         if( y.shape[1] != 3 or y.ndim != 2 ):
             raise ValueError( f"y must be shape (N, 3), not {y.shape}" )
 
-        self.__y = y ## self.__y should be const! .transform always applies a transformation bsed on the original pose
+        self.__y = y ## self.__y should be const! .transform always applies a transformation based on the original pose
         self.__epsilon = conditioning_epsilon
 
         self.mu = np.mean( y, axis = 0 )
@@ -86,12 +86,19 @@ class VoxelGrid:
         self.__validate_point( pt )
         return self.__voxels[ self.__get_voxel_idx( pt ) ]
     
-    def get_list_of_points( self ):
+    def get_list_of_points( self ) -> list[np.ndarray]:
         list_of_points = []
         for idx, vox in self.__voxels.items():
             list_of_points.append( vox.get_points() )
 
         return list_of_points
+    
+    def get_list_of_voxel_means( self ) -> list[np.ndarray]:
+        list_of_means = []
+        for idx, vox in self.__voxels.items():
+            list_of_means.append( vox.mu )
+        
+        return list_of_means
     
     def get_voxel_size( self ):
         return self.__voxel_size

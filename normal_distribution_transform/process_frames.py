@@ -31,7 +31,7 @@ def main() -> bool:
     for frame in os.listdir( DATA_PATH ):
 
         p = Parameters( se3 = np.eye( 4 ) )
-        tar_pc = TargetPointCloudP2D( p, ref_pc.get_weighted_8_nearest_voxels )
+        tar_pc = TargetPointCloudP2D( p )
         ref_pc.build_voxel_grid( 10 )
 
         aftr_dict = from_aftr_frame( f'{DATA_PATH}{frame}' )
@@ -40,7 +40,7 @@ def main() -> bool:
 
         # Align point cloud
         target_se3 = [ tar_pc.get_pose() ]
-        convergence_steps = opt.course_align( tar_pc )
+        convergence_steps = opt.coarse_align( tar_pc )
 
         while( ref_pc.get_voxel_size() >= 1.0 ):
             print( f'Beginning iterations with voxel size set to {ref_pc.get_voxel_size()}' )
@@ -58,6 +58,8 @@ def main() -> bool:
             line += f'{ep[0][3]} {ep[1][3]} {ep[2][3]} {ep[3][3]}\n'
 
             f.write( line )
+
+    return True
 
 if __name__ == "__main__":
 
