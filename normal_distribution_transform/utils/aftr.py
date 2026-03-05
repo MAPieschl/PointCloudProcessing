@@ -179,7 +179,7 @@ class ParsedAftrLog:
 
             results = {}
 
-            if( len( files ) > 2 ):
+            if( len( files ) > 1 ):
                 print( f"Too many log files in {log_dir}, cannot determine the correct log to parse. Please reduce number of log files to 1." )
                 return
 
@@ -187,7 +187,6 @@ class ParsedAftrLog:
                 print( f"Too many directories in {log_dir}, cannot determine the correct lidar directory to parse. Please reduce number of subdirectories to 1." )
                 return
             
-            if( len( files ) > 1 ): ndt_log = files.pop( files.index( [i for i in files if '_ndt.txt' in i][0] ) )
             log_file = files[0]
             lidar_dir = dirs[0]
 
@@ -361,6 +360,7 @@ class AnalyzeAftrLog:
         self.__timestamp_by_distance_lidar = {}
         self.__timestamp_by_distance_camera = {}
         self.__timestamp_by_num_points = {}
+        self.__timestamp_by_initial_rotation_error = {}
 
         self.__parsed_aftr_log = parsed_aftr_log
         self.__name = name
@@ -368,7 +368,7 @@ class AnalyzeAftrLog:
 
         self.__organize_data()
 
-    def get_6DOF_residual_scatter_plots_by_distance( self, output_path: str ):
+    def get_6DOF_residual_scatter_plots_by_distance( self, output_path: str, meter_range: tuple[float, float] = ( -25, 25 ), degree_range = ( -185, 185 ) ):
 
         if( os.path.isdir( output_path ) ):
 
@@ -387,37 +387,43 @@ class AnalyzeAftrLog:
                                                       np.array( pos_res )[:, 0], 
                                                       f'{self.__name}:  x-translation residuals in LiDAR sensor frame',
                                                       'actual distance - sensor to target (m)', 
-                                                      'residual (m)' ).write_image( f'{output_path}/res_x_lidar.png', width = 800, height = 400 )
+                                                      'residual (m)',
+                                                      y_range = meter_range ).write_image( f'{output_path}/res_x_lidar_by_dist.png', width = 1200, height = 400 )
 
             plot_2D_scatter_with_mean_and_std( np.array( dists ), 
                                                       np.array( pos_res )[:, 1], 
                                                       f'{self.__name}:  y-translation residuals in LiDAR sensor frame',
                                                       'actual distance - sensor to target (m)', 
-                                                      'residual (m)' ).write_image( f'{output_path}/res_y_lidar.png', width = 800, height = 400 )
+                                                      'residual (m)',
+                                                      y_range = meter_range  ).write_image( f'{output_path}/res_y_lidar_by_dist.png', width = 1200, height = 400 )
 
             plot_2D_scatter_with_mean_and_std( np.array( dists ), 
                                                       np.array( pos_res )[:, 2], 
                                                       f'{self.__name}:  z-translation residuals in LiDAR sensor frame',
                                                       'actual distance - sensor to target (m)', 
-                                                      'residual (m)' ).write_image( f'{output_path}/res_z_lidar.png', width = 800, height = 400 )
+                                                      'residual (m)',
+                                                      y_range = meter_range  ).write_image( f'{output_path}/res_z_lidar_by_dist.png', width = 1200, height = 400 )
 
             plot_2D_scatter_with_mean_and_std( np.array( dists ), 
                                                       np.array( rpy_res )[:, 0], 
                                                       f'{self.__name}:  roll-rotation residuals in LiDAR sensor frame',
                                                       'actual distance - sensor to target (m)', 
-                                                      'residual (deg)' ).write_image( f'{output_path}/res_roll_lidar.png', width = 800, height = 400 )
+                                                      'residual (deg)',
+                                                      y_range = degree_range  ).write_image( f'{output_path}/res_roll_lidar_by_dist.png', width = 1200, height = 400 )
 
             plot_2D_scatter_with_mean_and_std( np.array( dists ), 
                                                       np.array( rpy_res )[:, 1], 
                                                       f'{self.__name}:  pitch-rotation residuals in LiDAR sensor frame',
                                                       'actual distance - sensor to target (m)', 
-                                                      'residual (deg)' ).write_image( f'{output_path}/res_pitch_lidar.png', width = 800, height = 400 )
+                                                      'residual (deg)',
+                                                      y_range = degree_range ).write_image( f'{output_path}/res_pitch_lidar_by_dist.png', width = 1200, height = 400 )
 
             plot_2D_scatter_with_mean_and_std( np.array( dists ), 
                                                       np.array( rpy_res )[:, 2], 
                                                       f'{self.__name}:  yaw-rotation residuals in LiDAR sensor frame',
                                                       'actual distance - sensor to target (m)', 
-                                                      'residual (deg)' ).write_image( f'{output_path}/res_yaw_lidar.png', width = 800, height = 400 )
+                                                      'residual (deg)',
+                                                      y_range = degree_range ).write_image( f'{output_path}/res_yaw_lidar_by_dist.png', width = 1200, height = 400 )
             
             if( len( self.__timestamp_by_distance_camera.keys() ) > 0 ):
                 ## Camera
@@ -435,37 +441,163 @@ class AnalyzeAftrLog:
                                                         np.array( pos_res )[:, 0], 
                                                         f'{self.__name}:  x-translation residuals in camera sensor frame',
                                                         'actual distance - sensor to target (m)', 
-                                                        'residual (m)' ).write_image( f'{output_path}/res_x_camera.png', width = 800, height = 400 )
+                                                        'residual (m)',
+                                                        y_range = meter_range  ).write_image( f'{output_path}/res_x_camera.png', width = 1200, height = 400 )
 
                 plot_2D_scatter_with_mean_and_std( np.array( dists ), 
                                                         np.array( pos_res )[:, 1], 
                                                         f'{self.__name}:  y-translation residuals in camera sensor frame',
                                                         'actual distance - sensor to target (m)', 
-                                                        'residual (m)' ).write_image( f'{output_path}/res_y_camera.png', width = 800, height = 400 )
+                                                        'residual (m)',
+                                                        y_range = meter_range  ).write_image( f'{output_path}/res_y_camera.png', width = 1200, height = 400 )
 
                 plot_2D_scatter_with_mean_and_std( np.array( dists ), 
                                                         np.array( pos_res )[:, 2], 
                                                         f'{self.__name}:  z-translation residuals in camera sensor frame',
                                                         'actual distance - sensor to target (m)', 
-                                                        'residual (m)' ).write_image( f'{output_path}/res_z_camera.png', width = 800, height = 400 )
+                                                        'residual (m)',
+                                                        y_range = meter_range  ).write_image( f'{output_path}/res_z_camera.png', width = 1200, height = 400 )
 
                 plot_2D_scatter_with_mean_and_std( np.array( dists ), 
                                                         np.array( pos_res )[:, 0], 
                                                         f'{self.__name}:  roll-rotation residuals in camera sensor frame',
                                                         'actual distance - sensor to target (m)', 
-                                                        'residual (deg)' ).write_image( f'{output_path}/res_rl_camera.png', width = 800, height = 400 )
+                                                        'residual (deg)',
+                                                        y_range = degree_range ).write_image( f'{output_path}/res_rl_camera.png', width = 1200, height = 400 )
 
                 plot_2D_scatter_with_mean_and_std( np.array( dists ), 
                                                         np.array( pos_res )[:, 1], 
                                                         f'{self.__name}:  pitch-rotation residuals in camera sensor frame',
                                                         'actual distance - sensor to target (m)', 
-                                                        'residual (deg)' ).write_image( f'{output_path}/res_pt_camera.png', width = 800, height = 400 )
+                                                        'residual (deg)',
+                                                        y_range = degree_range ).write_image( f'{output_path}/res_pt_camera.png', width = 1200, height = 400 )
 
                 plot_2D_scatter_with_mean_and_std( np.array( dists ), 
                                                         np.array( pos_res )[:, 2], 
                                                         f'{self.__name}:  yaw-rotation residuals in camera sensor frame',
                                                         'actual distance - sensor to target (m)', 
-                                                        'residual (deg)' ).write_image( f'{output_path}/res_yw_camera.png', width = 800, height = 400 )
+                                                        'residual (deg)',
+                                                        y_range = degree_range ).write_image( f'{output_path}/res_yw_camera.png', width = 1200, height = 400 )
+
+        else:
+            print( f"{output_path} does not exist" )
+
+    def get_6DOF_residual_scatter_plots_by_initial_rotation_error( self, output_path: str, meter_range: tuple[float, float] = ( -25, 25 ), degree_range = ( -185, 185 ) ):
+
+        if( os.path.isdir( output_path ) ):
+
+            ## LiDAR
+
+            err_r = []
+            pos_res = []
+            rpy_res = []
+
+            for err in list( self.__timestamp_by_initial_rotation_error.keys() ):
+                err_r.append( err )
+                pos_res.append( self.__res_pos_lidar_lidar_frame[self.__timestamp_by_initial_rotation_error[err]] )
+                rpy_res.append( self.__res_rpy_lidar_lidar_frame[self.__timestamp_by_initial_rotation_error[err]] )
+
+            plot_2D_scatter_with_mean_and_std( np.array( err_r ), 
+                                                      np.array( pos_res )[:, 0], 
+                                                      f'{self.__name}:  x-translation residuals in LiDAR sensor frame',
+                                                      'initial angle-off (deg)', 
+                                                      'residual (m)',
+                                                      y_range = meter_range  ).write_image( f'{output_path}/res_x_lidar_by_rot_err.png', width = 1200, height = 400 )
+
+            plot_2D_scatter_with_mean_and_std( np.array( err_r ), 
+                                                      np.array( pos_res )[:, 1], 
+                                                      f'{self.__name}:  y-translation residuals in LiDAR sensor frame',
+                                                      'initial angle-off (deg)', 
+                                                      'residual (m)',
+                                                      y_range = meter_range  ).write_image( f'{output_path}/res_y_lidar_by_rot_err.png', width = 1200, height = 400 )
+
+            plot_2D_scatter_with_mean_and_std( np.array( err_r ), 
+                                                      np.array( pos_res )[:, 2], 
+                                                      f'{self.__name}:  z-translation residuals in LiDAR sensor frame',
+                                                      'initial angle-off (deg)', 
+                                                      'residual (m)',
+                                                      y_range = meter_range  ).write_image( f'{output_path}/res_z_lidar_by_rot_err.png', width = 1200, height = 400 )
+
+            plot_2D_scatter_with_mean_and_std( np.array( err_r ), 
+                                                      np.array( rpy_res )[:, 0], 
+                                                      f'{self.__name}:  roll-rotation residuals in LiDAR sensor frame',
+                                                      'initial angle-off (deg)', 
+                                                      'residual (deg)',
+                                                      y_range = degree_range ).write_image( f'{output_path}/res_roll_lidar_by_rot_err.png', width = 1200, height = 400 )
+
+            plot_2D_scatter_with_mean_and_std( np.array( err_r ), 
+                                                      np.array( rpy_res )[:, 1], 
+                                                      f'{self.__name}:  pitch-rotation residuals in LiDAR sensor frame',
+                                                      'initial angle-off (deg)', 
+                                                      'residual (deg)',
+                                                      y_range = degree_range ).write_image( f'{output_path}/res_pitch_lidar_by_rot_err.png', width = 1200, height = 400 )
+
+            plot_2D_scatter_with_mean_and_std( np.array( err_r ), 
+                                                      np.array( rpy_res )[:, 2], 
+                                                      f'{self.__name}:  yaw-rotation residuals in LiDAR sensor frame',
+                                                      'initial angle-off (deg)', 
+                                                      'residual (deg)',
+                                                      y_range = degree_range ).write_image( f'{output_path}/res_yaw_lidar_by_rot_err.png', width = 1200, height = 400 )
+
+        else:
+            print( f"{output_path} does not exist" )
+
+    def get_6DOF_residual_scatter_plots_by_number_of_points( self, output_path: str, meter_range: tuple[float, float] = ( -25, 25 ), degree_range = ( -185, 185 ) ):
+
+        if( os.path.isdir( output_path ) ):
+
+            ## LiDAR
+
+            num_points = []
+            pos_res = []
+            rpy_res = []
+
+            for err in list( self.__timestamp_by_num_points.keys() ):
+                num_points.append( err )
+                pos_res.append( self.__res_pos_lidar_lidar_frame[self.__timestamp_by_num_points[err]] )
+                rpy_res.append( self.__res_rpy_lidar_lidar_frame[self.__timestamp_by_num_points[err]] )
+
+            plot_2D_scatter_with_mean_and_std( np.array( num_points ), 
+                                                      np.array( pos_res )[:, 0], 
+                                                      f'{self.__name}:  x-translation residuals in LiDAR sensor frame',
+                                                      'number of points in frame', 
+                                                      'residual (m)',
+                                                      y_range = meter_range  ).write_image( f'{output_path}/res_x_lidar_by_points.png', width = 1200, height = 400 )
+
+            plot_2D_scatter_with_mean_and_std( np.array( num_points ), 
+                                                      np.array( pos_res )[:, 1], 
+                                                      f'{self.__name}:  y-translation residuals in LiDAR sensor frame',
+                                                      'number of points in frame', 
+                                                      'residual (m)',
+                                                      y_range = meter_range  ).write_image( f'{output_path}/res_y_lidar_by_points.png', width = 1200, height = 400 )
+
+            plot_2D_scatter_with_mean_and_std( np.array( num_points ), 
+                                                      np.array( pos_res )[:, 2], 
+                                                      f'{self.__name}:  z-translation residuals in LiDAR sensor frame',
+                                                      'number of points in frame', 
+                                                      'residual (m)',
+                                                      y_range = meter_range  ).write_image( f'{output_path}/res_z_lidar_by_points.png', width = 1200, height = 400 )
+
+            plot_2D_scatter_with_mean_and_std( np.array( num_points ), 
+                                                      np.array( rpy_res )[:, 0], 
+                                                      f'{self.__name}:  roll-rotation residuals in LiDAR sensor frame',
+                                                      'number of points in frame', 
+                                                      'residual (deg)',
+                                                      y_range = degree_range ).write_image( f'{output_path}/res_roll_lidar_by_points.png', width = 1200, height = 400 )
+
+            plot_2D_scatter_with_mean_and_std( np.array( num_points ), 
+                                                      np.array( rpy_res )[:, 1], 
+                                                      f'{self.__name}:  pitch-rotation residuals in LiDAR sensor frame',
+                                                      'number of points in frame', 
+                                                      'residual (deg)',
+                                                      y_range = degree_range ).write_image( f'{output_path}/res_pitch_lidar_by_points.png', width = 1200, height = 400 )
+
+            plot_2D_scatter_with_mean_and_std( np.array( num_points ), 
+                                                      np.array( rpy_res )[:, 2], 
+                                                      f'{self.__name}:  yaw-rotation residuals in LiDAR sensor frame',
+                                                      'number of points in frame', 
+                                                      'residual (deg)',
+                                                      y_range = degree_range ).write_image( f'{output_path}/res_yaw_lidar_by_by_points.png', width = 1200, height = 400 )
 
         else:
             print( f"{output_path} does not exist" )
@@ -498,7 +630,34 @@ class AnalyzeAftrLog:
                 precision[cl] = np.array( precision[cl] ).T
                 recall[cl] = np.array( recall[cl] ).T
 
-                plot_class_precision_recall_scatter( { cl: precision[cl] }, { cl: recall[cl] }, f'{self.__name}: part segmentation performance for {cl} by distance', 'actual distance - sensor to target (m)' ).write_image( f'{output_path}/seg_perf_dist_{cl}.png', width = 800, height = 400 )
+                plot_class_precision_recall_scatter( { cl: precision[cl] }, { cl: recall[cl] }, f'{self.__name}: part segmentation performance for {cl} by distance', 'actual distance - sensor to target (m)' ).write_image( f'{output_path}/seg_perf_dist_{cl}.png', width = 1200, height = 400 )
+
+    def get_segmentation_performance_plots_by_number_of_points( self, output_path: str ):
+
+        if( os.path.isdir( output_path ) ):
+
+            dists = []
+            precision = {}
+            recall = {}
+
+            for dist in list( self.__timestamp_by_num_points.keys() ):
+                dists.append( dist )
+
+                for cl in self.__precision[self.__timestamp_by_num_points[dist]]:
+                    if( not( self.__precision[self.__timestamp_by_num_points[dist]][cl] < 0.001 and self.__recall[self.__timestamp_by_num_points[dist]][cl] < 0.001 ) ):
+                        if( cl not in list( precision.keys() ) ):
+                            precision[cl] = [[dist, self.__precision[self.__timestamp_by_num_points[dist]][cl]]]
+                            recall[cl] = [[dist, self.__recall[self.__timestamp_by_num_points[dist]][cl]]]
+                        else:
+                            precision[cl].append( [dist, self.__precision[self.__timestamp_by_num_points[dist]][cl]] )
+                            recall[cl].append( [dist, self.__recall[self.__timestamp_by_num_points[dist]][cl]] )
+
+            for cl in list( precision.keys() ):
+                precision[cl] = np.array( precision[cl] ).T
+                recall[cl] = np.array( recall[cl] ).T
+
+                plot_class_precision_recall_scatter( { cl: precision[cl] }, { cl: recall[cl] }, f'{self.__name}: part segmentation performance for {cl} by number of points in frame', 'number of points in frame' ).write_image( f'{output_path}/seg_perf_dist_{cl}.png', width = 1200, height = 400 )
+
 
     def get_timing_info( self, output_path: str ):
 
@@ -592,6 +751,8 @@ class AnalyzeAftrLog:
             self.__timestamp_by_distance_lidar[np.linalg.norm( self.__actual_pos_lidar_frame[timestamp] )] = timestamp
             self.__timestamp_by_num_points[self.__num_points[timestamp]] = timestamp
 
+            err_r, _ = get_transformation_error( lidar_P_global_act, np.eye( 4 ) )
+            self.__timestamp_by_initial_rotation_error[ np.rad2deg( abs( err_r ) ) ] = timestamp
 
 ###============ Free Functions ==================
 

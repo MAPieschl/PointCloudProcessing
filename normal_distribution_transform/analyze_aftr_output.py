@@ -7,17 +7,24 @@ from utils.plotting import *
 
 def main( *args ) -> bool:
     
-    if( not os.path.isdir( args[0][1] ) ): return False
-    if( not os.path.isdir( args[0][3] ) ): return False
+    if( not os.path.isdir( args[0][1] ) ): 
+        print( f'{args[0][1]} is not a valid directory.' )
+        return False
+    
+    if( not os.path.isdir( args[0][3] ) ):
+        print( f'{args[0][3]} is not a valid directory.' )
+        return False
 
     aftr_log = ParsedAftrLog( args[0][1] )
-    aftr_log.reprocess_using_estimates_from( args[0][1], "D:/kc46_sim_collect/full_pointnet/kc46_sim_ndt.txt" )
 
     analysis = AnalyzeAftrLog( aftr_log, args[0][0], args[0][2]  )
 
-    analysis.get_6DOF_residual_scatter_plots_by_distance( args[0][3] )
+    analysis.get_6DOF_residual_scatter_plots_by_distance( args[0][3], meter_range = ( -5, 5 ) )
+    analysis.get_6DOF_residual_scatter_plots_by_initial_rotation_error( args[0][3], meter_range = ( -5, 5 ) )
+    analysis.get_6DOF_residual_scatter_plots_by_number_of_points( args[0][3], meter_range = ( -5, 5 ) )
     analysis.get_segmentation_performance_hist( args[0][3] )
     analysis.get_segmentation_performance_plots_by_range( args[0][3] )
+    analysis.get_segmentation_performance_plots_by_number_of_points( args[0][3] )
     analysis.get_timing_info( args[0][3] )
 
     print( analysis.produce_minimized_extrinsic_calibration_for_lidar() )

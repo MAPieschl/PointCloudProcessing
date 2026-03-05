@@ -1,0 +1,9 @@
+call .venv\Scripts\activate
+python analyze_aftr_output.py "F-15J Simulation Full PN - Seg ICP" "D:/test_sets/f15_full_pointnet/seg_icp/" "f-15_model" "E:/AFIT/AAR/5_Thesis/doc/figures/f15_full_pointnet/seg_icp/"
+python analyze_aftr_output.py "F-15J Simulation Full PN - Seg NDT" "D:/test_sets/f15_full_pointnet/seg_ndt/" "f-15_model" "E:/AFIT/AAR/5_Thesis/doc/figures/f15_full_pointnet/seg_ndt/"
+python analyze_aftr_output.py "F-15J Simulation Vanilla PN - Seg ICP" "D:/test_sets/f15_vanilla_pointnet/seg_icp/" "f-15_model" "E:/AFIT/AAR/5_Thesis/doc/figures/f15_vanilla_pointnet/seg_icp/"
+python analyze_aftr_output.py "F-15J Simulation Vanilla PN - Seg NDT" "D:/test_sets/f15_vanilla_pointnet/seg_ndt/" "f-15_model" "E:/AFIT/AAR/5_Thesis/doc/figures/f15_vanilla_pointnet/seg_ndt/"
+python analyze_aftr_output.py "F-15J Ground Test Full PN - Seg ICP" "D:/test_sets/f15_ground_test_full_pointnet/seg_icp/" "f-15_model" "E:/AFIT/AAR/5_Thesis/doc/figures/f15_ground_test_full_pointnet/seg_icp/"
+python analyze_aftr_output.py "F-15J Ground Test Full PN - Seg NDT" "D:/test_sets/f15_ground_test_full_pointnet/seg_ndt/" "f-15_model" "E:/AFIT/AAR/5_Thesis/doc/figures/f15_ground_test_full_pointnet/seg_ndt/"
+python analyze_aftr_output.py "F-15J Ground Test Vanilla PN - Seg ICP" "D:/test_sets/f15_ground_test_vanilla_pointnet/seg_icp/" "f-15_model" "E:/AFIT/AAR/5_Thesis/doc/figures/f15_ground_test_vanilla_pointnet/seg_icp/"
+python analyze_aftr_output.py "F-15J Ground Test Vanilla PN - Seg NDT" "D:/test_sets/f15_ground_test_vanilla_pointnet/seg_ndt/" "f-15_model" "E:/AFIT/AAR/5_Thesis/doc/figures/f15_ground_test_vanilla_pointnet/seg_ndt/"

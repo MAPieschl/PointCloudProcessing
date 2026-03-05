@@ -17,11 +17,6 @@ from mesh.MeshSampler import MeshSampler
 from utils.aftr import *
 from utils.mat_ops import *
 
-FROM_MESH = 0
-FROM_FILE = 1
-
-TARGET_POINT_CLOUD = FROM_FILE
-
 def main( *args ) -> bool:
     
     if( not os.path.isdir( args[0][1] ) ): return False
@@ -50,7 +45,8 @@ def main( *args ) -> bool:
     ref_pc.resize_voxel_grids( current_voxel_size )
 
     # aftr_dict = organize_aftr_frame_by_part( from_aftr_frame( 'D:/sim_kc46_lidar/collect_2026.Jan.22_23.51.26.8719556.UTC/Lidar/frame_0.txt' ) )
-    aftr_dict = organize_aftr_frame_by_part( from_aftr_frame( 'D:/kc46_sim_collect/full_pointnet/lidar_predictions/frame_2.txt' ) )
+    # aftr_dict = organize_aftr_frame_by_part( from_aftr_frame( 'E:/repos/PointCloudProcessing/normal_distribution_transform/aftr/kc-46.txt' ) )
+    aftr_dict = organize_aftr_frame_by_part( from_aftr_frame( "D:/kc46_sim_collect/full_pointnet/lidar_predictions/frame_0.txt" ) )
     for i in range( len( aftr_dict['part_labels'] ) ):  
         for pt in aftr_dict['points'][i]:
             tar_pc.add( LabeledPoint( pt.reshape( ( 3, 1 ) ), aftr_dict['part_labels'][i], ref_pc.get_weighted_8_nearest_voxels ) )

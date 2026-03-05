@@ -98,6 +98,8 @@ def plot_2D_scatter_with_mean_and_std( x: np.ndarray,
                                       title: str, 
                                       x_label: str = 'x', 
                                       y_label: str = 'y', 
+                                      x_range: tuple = (None, None),
+                                      y_range: tuple = (None, None),
                                       print_func: Callable[[str], None] = print ) -> go.Figure:
     
     fig = go.Figure()
@@ -108,6 +110,21 @@ def plot_2D_scatter_with_mean_and_std( x: np.ndarray,
 
     x = x.squeeze()
     y = y.squeeze()
+
+    x_range_set: list[float] = []
+    y_range_set: list[float] = []
+
+    if( x_range[0] is not None ):   x_range_set.append( x_range[0] )
+    else:                           x_range_set.append( min( x ) )
+
+    if( x_range[1] is not None ):   x_range_set.append( x_range[1] )
+    else:                           x_range_set.append( max( x ) )
+
+    if( y_range[0] is not None ):   y_range_set.append( y_range[0] )
+    else:                           y_range_set.append( min( y ) )
+
+    if( y_range[1] is not None ):   y_range_set.append( y_range[1] )
+    else:                           y_range_set.append( max( y ) )
 
     means = []
     std = []
@@ -170,7 +187,9 @@ def plot_2D_scatter_with_mean_and_std( x: np.ndarray,
     fig.update_layout(
         title = title,
         xaxis_title = x_label,
-        yaxis_title = y_label
+        yaxis_title = y_label,
+        xaxis_range = x_range_set,
+        yaxis_range = y_range_set
     )
 
     return fig

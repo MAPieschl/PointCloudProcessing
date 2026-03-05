@@ -42,7 +42,7 @@ def main( *args ) -> bool:
     
     ### Create Target Point Cloud ###
     p = Parameters( se3 = np.eye( 4 ) )
-    tar_pc = TargetPointCloudP2D( p, ref_pc.get_weighted_8_nearest_voxels )
+    tar_pc = TargetPointCloudP2D( p )
 
     ### Instantiate Optimizer ###
     opt = OptimizationP2D()
@@ -67,7 +67,7 @@ def main( *args ) -> bool:
 
         case 1:
             starting_pose = None
-            aftr_dict = from_aftr_frame( 'D:/kc46_sim_collect/full_pointnet/lidar_predictions/frame_0.txt' )
+            aftr_dict = from_aftr_frame( 'E:/repos/PointCloudProcessing/normal_distribution_transform/frame_1.txt' )
 
             tar_pc_pts = [ aftr_dict['points'] ]
             tar_pc_lbs = [ 'Target PC' ]
@@ -77,7 +77,7 @@ def main( *args ) -> bool:
 
     # Align point cloud
     target_se3 = [ tar_pc.get_pose() ]
-    convergence_steps = opt.course_align( tar_pc )
+    convergence_steps = opt.coarse_align( tar_pc )
 
     while( ref_pc.get_voxel_size() >= 1.0 ):
         print( f'Beginning iterations with voxel size set to {ref_pc.get_voxel_size()}' )

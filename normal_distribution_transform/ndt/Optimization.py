@@ -2,7 +2,7 @@ import numpy as np
 
 from typing import Callable, cast
 
-from ndt.TargetPointCloud import TargetPointCloudP2D, TargetPointCloudD2D
+from ndt.TargetPointCloud import TargetPointCloudP2D
 from ndt.Voxel import VoxelGrid, Voxel
 from ndt.Point import Point
 
