@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 import plotly.graph_objects as go
+import plotly.colors
 
 from mpl_toolkits.mplot3d import Axes3D
 from typing import Callable, cast
@@ -321,6 +322,88 @@ def plot_histogram( data: np.ndarray,
         title = title,
         xaxis_title = x_label,
         yaxis_title = y_label
+    )
+
+    return fig
+
+def plot_distributions( 
+                   data: list[np.ndarray],
+                   labels: list[str],
+                   num_bins: int,
+                   title: str = '',
+                   x_label: str = '',
+                   y_label: str = '',
+                   print_func: Callable[[str], None] = print ) -> go.Figure:
+    
+    fig = go.Figure()
+
+    if( len( data ) != len( labels ) ):
+        print_func( 'There must be one label for each distribution provided to plot_distributions().' )
+        return fig
+
+    data = [ d[ d.nonzero() ] for d in data ]
+
+    bins = np.linspace( np.min( data ), np.max( data ), num_bins )
+    bin_count = [ np.zeros( bins.shape ) for _ in range( len( data ) ) ]
+    for dist in range( len( data ) ):
+        for bin in range( len( bins ) - 1 ):
+            for d in data[dist]:
+                if( d >= bins[bin] and d < bins[bin + 1] ):
+                    bin_count[dist][bin] += 1
+
+        fig.add_trace( go.Bar(
+            x = bins,
+            y = bin_count[dist],
+            marker_color = plotly.colors.sample_colorscale('Inferno', [ dist / len( data ) ]),
+            opacity = 0.5
+        ) )
+    
+    fig.update_layout(
+        barmode = 'group',
+        title = title,
+        xaxis_title = x_label,
+        yaxis_title = y_label
+    )
+
+    return fig
+
+def plot_multi_cdf(
+    data        : list[np.ndarray],
+    labels      : list[str],
+    title       : str = 'Cumulative Density Function',
+    x_label     : str = '',
+    y_label     : str = 'Cumulative Probability',
+    x_lim       : float | None = None,
+    print_func: Callable[[str], None] = print
+) -> go.Figure:
+    
+    fig = go.Figure()
+
+    if( len( data ) != len( labels ) ):
+        print_func( 'There must be one label for each distribution provided to plot_distributions().' )
+        return fig
+    
+    X = [ np.sort( d ) for d in data ]
+    Y = [ np.arange( 1, d.shape[0] + 1 ) / d.shape[0] for d in data ]
+
+    x_max = 100
+
+    for x, y, l in zip( X, Y, labels ):
+
+        if( np.max( x ) < x_max ):  x_max = np.max( x )
+
+        fig.add_trace( go.Scatter(
+            x = x,
+            y = y,
+            mode = 'lines',
+            name = l
+        ) )
+    
+    fig.update_layout(
+        title = title,
+        xaxis_title = x_label,
+        yaxis_title = y_label,
+        xaxis_range = ( 0, x_max ) if x_lim == None else ( 0, x_lim )
     )
 
     return fig

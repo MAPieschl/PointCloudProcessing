@@ -5,6 +5,7 @@ import numpy as np
 from datetime import datetime, timezone
 from typing import Callable
 from scipy.spatial.transform import Rotation
+from tqdm import tqdm
 
 from utils.plotting import *
 from utils.mat_ops import *
@@ -46,6 +47,7 @@ class ParsedAftrLog:
         self.__lidar_pred = {
             'precision': {},
             'recall': {},
+            'mIoU': {},
             'inference_time': {},
             'registration_time': {}
         }
@@ -90,6 +92,9 @@ class ParsedAftrLog:
     
     def get_lidar_recall_at( self, timestamp: datetime ):
         return self.__lidar_pred['recall'][timestamp]
+    
+    def get_lidar_mIoU_at( self, timestamp: datetime ):
+        return self.__lidar_pred['mIoU'][timestamp]
     
     def get_lidar_inference_time_at( self, timestamp: datetime ):
         if( timestamp in self.__lidar_pred['inference_time'].keys() ):  return self.__lidar_pred['inference_time'][timestamp]
@@ -171,6 +176,33 @@ class ParsedAftrLog:
                         timestamp = datetime.strptime( re.sub(r'(\.\d{6})\d+', r'\1', line.pop( 0 )), "%Y.%b.%d_%H.%M.%S.%f.UTC" )
                         timestamp = timestamp.replace( tzinfo = timezone.utc )
 
+    def __compute_mIoU( 
+            self,
+            truth_labels    :   list[str], 
+            pred_labels     :   list[str]
+        ) -> float | None:
+
+        if( len( truth_labels ) != len( pred_labels ) ):
+            print( f'truth_labels and pred_labels must be of equal length, not {len( truth_labels )} and {len( pred_labels )}' )
+            return None
+        
+        labels = []
+        for l in truth_labels:
+            if( l not in labels ):  labels.append( l )
+
+        part_ious = []
+        for l in labels:
+            truth = ( np.array( truth_labels ) == l )
+            pred = ( np.array( pred_labels ) == l )
+
+            intersection = np.sum( truth & pred )
+            union = np.sum( truth | pred )
+
+            if( union == 0 ):   part_ious.append( 1.0 )
+            else:               part_ious.append( intersection / union )
+
+        return float( np.mean( np.array( part_ious ) ) )    
+
     def __import_logs( self, log_dir: str ):
 
         if( os.path.isdir( log_dir ) ):
@@ -194,7 +226,8 @@ class ParsedAftrLog:
 
                 timestamp = None
 
-                for line in f.readlines():
+                print( f'ParsedAftrLog is parsing {log_dir}/{log_file}...' )
+                for line in tqdm( f.readlines() ):
                     line = line.strip()
 
                     if( line[0] == '#' ):  pass
@@ -256,6 +289,9 @@ class ParsedAftrLog:
                             false_pos = {}
                             false_neg = {}
 
+                            truth_list = []
+                            pred_list = []
+
                             with open( f'{log_dir}/{lidar_dir}/{frame_filename}', 'r' ) as l:
                                 num_points = 0
                                 for lidar_line in l.readlines():
@@ -290,12 +326,16 @@ class ParsedAftrLog:
                                     false_pos[lidar_line_l[-2]] += 1 if lidar_line_l[-1] != lidar_line_l[-2] else 0
                                     false_neg[lidar_line_l[-1]] += 1 if lidar_line_l[-1] != lidar_line_l[-2] else 0
 
+                                    truth_list.append( lidar_line_l[-1] )
+                                    pred_list.append( lidar_line_l[-2] )
+
                                     num_points += 1
 
                             self.__lidar_num_pts[timestamp] = num_points
 
                             self.__lidar_pred['precision'][timestamp] = {}
                             self.__lidar_pred['recall'][timestamp] = {}
+                            self.__lidar_pred['mIoU'][timestamp] = self.__compute_mIoU( truth_list, pred_list )
 
                             for key in list( true_pos.keys() ):
 
@@ -351,8 +391,11 @@ class AnalyzeAftrLog:
         self.__res_pos_camera_camera_frame = {}
         self.__res_rpy_lidar_lidar_frame = {}
         self.__res_rpy_camera_camera_frame= {}
+        self.__res_L2_lidar_lidar_frame = {}
+        self.__res_rot_lidar_lidar_frame = {}
         self.__precision = {}
         self.__recall = {}
+        self.__mIoU = {}
         self.__num_points = {}
         self.__inference_time = {}
         self.__registration_time = {}
@@ -658,24 +701,28 @@ class AnalyzeAftrLog:
 
                 plot_class_precision_recall_scatter( { cl: precision[cl] }, { cl: recall[cl] }, f'{self.__name}: part segmentation performance for {cl} by number of points in frame', 'number of points in frame' ).write_image( f'{output_path}/seg_perf_dist_{cl}.png', width = 1200, height = 400 )
 
+    def get_mIoU_distribution( self ) -> np.ndarray:
+        return np.array( [ self.__mIoU[timestamp] for timestamp in list( self.__mIoU.keys() ) ] )
+    
+    def get_L2_residual_distribution( self ) -> np.ndarray:
+        return np.array( [ self.__res_L2_lidar_lidar_frame[timestamp] for timestamp in list( self.__res_L2_lidar_lidar_frame.keys() ) ] )
+
+    def get_rot_residual_distribution( self ) -> np.ndarray:
+        return np.array( [ self.__res_rot_lidar_lidar_frame[timestamp] for timestamp in list( self.__res_rot_lidar_lidar_frame.keys() ) ] )
 
     def get_timing_info( self, output_path: str ):
 
         if( os.path.isdir( output_path ) ):
 
-            plot_histogram( np.array( list( self.__inference_time.items() ) )[:, 1], num_bins = 50, title = f'{self.__name}: inference time distribution', x_label = 'inference time (ms)' ).write_image( f'{output_path}/inference_time.png', width = 800, height = 400 )
-            plot_histogram( np.array( list( self.__registration_time.items() ) )[:, 1], num_bins = 50, title = f'{self.__name}: registration time distribution', x_label = 'registration time (ms)' ).write_image( f'{output_path}/registration_time.png', width = 800, height = 400 )
-
-    def get_6DOF_residual_table( self, output_path: str, min_dist: float, max_dist: float ):
-
-        if( os.path.isdir( output_path ) ):
-
-            '''
-            Use pandas to produce a LaTeX table with the mean and stdev between the specified distances
-            '''
-
-            return
+            plot_histogram( np.array( list( self.__inference_time.items() ) )[:, 1], num_bins = 50, title = f'{self.__name}: inference time distribution', x_label = 'inference time (ms)' ).write_image( f'{output_path}/inference_time.png', width = 1200, height = 400 )
+            plot_histogram( np.array( list( self.__registration_time.items() ) )[:, 1], num_bins = 50, title = f'{self.__name}: registration time distribution', x_label = 'registration time (ms)' ).write_image( f'{output_path}/registration_time.png', width = 1200, height = 400 )
         
+    def get_inference_timing_distribution( self ) -> np.ndarray:
+        return np.array( [ self.__inference_time[timestamp] for timestamp in list( self.__inference_time.keys() ) ] )
+    
+    def get_registration_timing_distribution( self ) -> np.ndarray:
+        return np.array( [ self.__registration_time[timestamp] for timestamp in list( self.__registration_time.keys() ) ] )
+
     def produce_minimized_extrinsic_calibration_for_lidar( self ):
 
         '''
@@ -710,7 +757,8 @@ class AnalyzeAftrLog:
 
     def __organize_data( self ):
 
-        for timestamp in self.__parsed_aftr_log.get_timestamps():
+        print( f'AnalyzeAftrLog is parsing timestamped log...' )
+        for timestamp in tqdm( self.__parsed_aftr_log.get_timestamps() ):
 
             lidar_P_global_act = self.__parsed_aftr_log.get_optitrack_data_at( timestamp )['lidar']
             target_P_global_act = self.__parsed_aftr_log.get_optitrack_data_at( timestamp )[self.__target_id]
@@ -723,6 +771,10 @@ class AnalyzeAftrLog:
             self.__est_rpy_lidar_lidar_frame[timestamp] = get_roll_pitch_yaw_deg( transform_to_target_P_sensor( target_P_global_est_lidar, lidar_P_global_act ), True )
             self.__res_pos_lidar_lidar_frame[timestamp] = self.__est_pos_lidar_lidar_frame[timestamp] - self.__actual_pos_lidar_frame[timestamp]
             self.__res_rpy_lidar_lidar_frame[timestamp] = self.__est_rpy_lidar_lidar_frame[timestamp] - self.__actual_rpy_lidar_frame[timestamp]
+            self.__res_rot_lidar_lidar_frame[timestamp], self.__res_L2_lidar_lidar_frame[timestamp] = get_transformation_error( 
+                transform_to_target_P_sensor( target_P_global_act, lidar_P_global_act ),
+                transform_to_target_P_sensor( target_P_global_est_lidar, lidar_P_global_act ),
+            )
 
             try:
 
@@ -744,6 +796,7 @@ class AnalyzeAftrLog:
 
             self.__precision[timestamp] = self.__parsed_aftr_log.get_lidar_precision_at( timestamp )
             self.__recall[timestamp] = self.__parsed_aftr_log.get_lidar_recall_at( timestamp )
+            self.__mIoU[timestamp] = self.__parsed_aftr_log.get_lidar_mIoU_at( timestamp )
             self.__inference_time[timestamp] = self.__parsed_aftr_log.get_lidar_inference_time_at( timestamp )
             self.__registration_time[timestamp] = self.__parsed_aftr_log.get_lidar_registration_time_at( timestamp )
             self.__num_points[timestamp] = self.__parsed_aftr_log.get_lidar_num_points_at( timestamp )
