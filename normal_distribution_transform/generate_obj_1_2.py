@@ -40,7 +40,9 @@ def main():
         'Number of Samples'    
     ).write_image( f'{SAVE_PATH}mIoU_dist.png', width = 1200, height = 600 )
 
-    wilcoxon_signed_rank_test( full_mIoU, vanilla_mIoU, 'Full PointNet', 'Vanilla PointNet' ).to_latex(
+    tab, sym = paired_wilcoxon_signed_rank_test( full_mIoU, vanilla_mIoU, 'Full PointNet', 'Vanilla PointNet' )
+    
+    tab.to_latex(
         f'{SAVE_PATH}miou_results.tex',
         index = False,
         caption = 'Segmentation results on the Boeing KC-46 using full and vanilla PointNet models.',
@@ -48,6 +50,8 @@ def main():
         column_format = 'L{2in} R{3in}',
         escape = False
     )
+
+    sym.write_image( f'{SAVE_PATH}mIoU_symmetry.png', width = 1200, height = 600 )
 
     full_timing     : np.ndarray = full_analysis.get_inference_timing_distribution()
     vanilla_timing  : np.ndarray = vanilla_analysis.get_inference_timing_distribution()
@@ -61,7 +65,9 @@ def main():
         'Number of Samples'    
     ).write_image( f'{SAVE_PATH}time_dist.png', width = 1200, height = 600 )
 
-    wilcoxon_signed_rank_test( full_timing, vanilla_timing, 'Full PointNet', 'Vanilla PointNet' ).to_latex(
+    tab, sym = paired_wilcoxon_signed_rank_test( full_timing, vanilla_timing, 'Full PointNet', 'Vanilla PointNet' )
+    
+    tab.to_latex(
         f'{SAVE_PATH}timing_results.tex',
         index = False,
         caption = 'Inference time on the Boeing KC-46 using full and vanilla PointNet models.',
@@ -70,6 +76,7 @@ def main():
         escape = False
     )
 
+    sym.write_image( f'{SAVE_PATH}timing_symmetry.png', width = 1200, height = 600 )
 
 if __name__ == '__main__':
 

@@ -36,6 +36,24 @@ def main():
     seg_ndt_L2_res      = seg_ndt_analysis.get_L2_residual_distribution()
     seg_ndt_rot_res     = seg_ndt_analysis.get_rot_residual_distribution()
 
+    gicp_L2_res         = gicp_L2_res[ np.isfinite( gicp_L2_res ) ]
+    gicp_rot_res        = gicp_rot_res[ np.isfinite( gicp_rot_res ) ]
+    seg_icp_L2_res      = seg_icp_L2_res[ np.isfinite( seg_icp_L2_res ) ]
+    seg_icp_rot_res     = seg_icp_rot_res[ np.isfinite( seg_icp_rot_res ) ]
+    ndt_L2_res          = ndt_L2_res[ np.isfinite( ndt_L2_res ) ]
+    ndt_rot_res         = ndt_rot_res[ np.isfinite( ndt_rot_res ) ]
+    seg_ndt_L2_res      = seg_ndt_L2_res[ np.isfinite( seg_ndt_L2_res ) ]
+    seg_ndt_rot_res     = seg_ndt_rot_res[ np.isfinite( seg_ndt_rot_res ) ]
+
+    gicp_L2_res         = gicp_L2_res[:1900]
+    gicp_rot_res        = gicp_rot_res[:1900]
+    seg_icp_L2_res      = seg_icp_L2_res[:1900]
+    seg_icp_rot_res     = seg_icp_rot_res[:1900]
+    ndt_L2_res          = ndt_L2_res[:1900]
+    ndt_rot_res         = ndt_rot_res[:1900]
+    seg_ndt_L2_res      = seg_ndt_L2_res[:1900]
+    seg_ndt_rot_res     = seg_ndt_rot_res[:1900]
+
     plot_multi_cdf(
         data    = [ gicp_L2_res, seg_icp_L2_res, ndt_L2_res, seg_ndt_L2_res ],
         labels  = [ 'GICP', 'SE-Pt2Pl-ICP', 'NDT', 'SE-P2D-NDT' ],
@@ -47,8 +65,56 @@ def main():
         data    = [ gicp_rot_res, seg_icp_rot_res, ndt_rot_res, seg_ndt_rot_res ],
         labels  = [ 'GICP', 'SE-Pt2Pl-ICP', 'NDT', 'SE-P2D-NDT' ],
         title   = 'Registration Rotation Error CDF',
-        x_label = 'Rotation error (rad)',
+        x_label = 'Rotation error (deg)',
     ).write_image( f'{SAVE_PATH}rot_error.png', width = 1200, height = 400 )
+
+    get_cdf_percentiles_with_CI(
+        data                = [ gicp_L2_res, seg_icp_L2_res, ndt_L2_res, seg_ndt_L2_res ],
+        labels              = [ 'GICP', 'SE-Pt2Pl-ICP', 'NDT', 'SE-P2D-NDT' ],
+        confidence_interval = 0.95,
+        num_bootstrap       = 10000,
+        percentiles         = [ 50, 75, 90, 95, 99 ],
+        units               = 'm',
+        seed                = 42
+    ).to_latex( 
+        f'{SAVE_PATH}L2_confidence.tex',
+        index = True,
+        caption = 'Per-algorithm translation residuals.',
+        label = 'tab:obj_1_3_l2_confidence',
+        escape = False
+    )
+
+    get_cdf_percentiles_with_CI(
+        data                = [ gicp_rot_res, seg_icp_rot_res, ndt_rot_res, seg_ndt_rot_res ],
+        labels              = [ 'GICP', 'SE-Pt2Pl-ICP', 'NDT', 'SE-P2D-NDT' ],
+        confidence_interval = 0.95,
+        num_bootstrap       = 10000,
+        percentiles         = [ 50, 75, 90, 95, 99 ],
+        units               = 'deg',
+        seed                = 42
+    ).to_latex( 
+        f'{SAVE_PATH}rot_confidence.tex',
+        index = True,
+        caption = 'Per-algorithm rotation residuals.',
+        label = 'tab:obj_1_3_rot_confidence',
+        escape = False
+    )
+
+    tab, sym = pairwise_wilcoxon_signed_rank_test(
+        data                = [ gicp_rot_res, seg_icp_rot_res, ndt_rot_res, seg_ndt_rot_res ],
+        labels              = [ '(1)', '(2)', '(3)', '(4)' ],
+        significance        = 0.05
+    )
+
+    tab.to_latex(
+        f'{SAVE_PATH}rot_wilcoxon.tex',
+        index = False,
+        caption = 'Paired Wilcoxon Signed-Rank test on rotation residuals. Algorithms are (1) GICP, (2) SE-Pt2Pl-ICP, (3) NDT, (4) SE-P2D-NDT.',
+        label = 'tab:obj_1_3_rot_wilcoxon',
+        escape = False
+    )
+
+    sym.write_image( f'{SAVE_PATH}rot_wilcoxon.png', width = 1200, height = 400 )
 
 if __name__ == '__main__':
 

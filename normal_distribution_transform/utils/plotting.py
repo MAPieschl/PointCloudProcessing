@@ -7,6 +7,7 @@ import plotly.colors
 from mpl_toolkits.mplot3d import Axes3D
 from typing import Callable, cast
 from datetime import datetime
+from plotly.subplots import make_subplots
 
 def plot_univariate_functions( funcs: list[Callable[[float], float]],
                               labels: list[str], x_range: tuple[float, float], 
@@ -291,6 +292,7 @@ def plot_histogram( data: np.ndarray,
                    title: str = '',
                    x_label: str = '',
                    y_label: str = '',
+                   add_annotations: bool = True,
                    print_func: Callable[[str], None] = print ) -> go.Figure:
     
     fig = go.Figure()
@@ -449,3 +451,30 @@ def display_point_clouds( clouds: list, labels: list, title: str = 'Point Cloud'
         )
 
         return fig
+
+def combine_plots(
+    figs            : list[ go.Figure ],
+    subplot_titles  : list[str],
+    shape           : tuple[int, int],
+    plot_title      : str = '',
+    ) -> go.Figure:
+
+    if( len( figs ) != len( subplot_titles ) ):
+        raise ValueError( f'combine_plots():  figs and suplot_titles must have the same number of elements, not {len( figs )} and {len( subplot_titles )}' )
+
+    combined_fig = make_subplots(
+        rows = shape[0],
+        cols = shape[1],
+        subplot_titles = subplot_titles
+    )
+
+    for fig in figs:
+        for trace in fig.data:
+            combined_fig.add_trace( trace )
+
+    combined_fig.update_layout(
+        title_text = plot_title,
+        showlegend = False
+    )
+
+    return combined_fig

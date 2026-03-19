@@ -377,7 +377,7 @@ class ParsedAftrLog:
             print( f"{log_dir} does not exist." )
         
 class AnalyzeAftrLog:
-    def __init__( self, parsed_aftr_log: ParsedAftrLog, name: str, target_id: str ):
+    def __init__( self, parsed_aftr_log: ParsedAftrLog, name: str, target_id: str, timestamps: list[datetime] | None = None ):
 
         self.__actual_pos_lidar_frame = {}
         self.__actual_pos_camera_frame = {}
@@ -409,7 +409,7 @@ class AnalyzeAftrLog:
         self.__name = name
         self.__target_id = target_id
 
-        self.__organize_data()
+        self.__organize_data( timestamps )
 
     def get_6DOF_residual_scatter_plots_by_distance( self, output_path: str, meter_range: tuple[float, float] = ( -25, 25 ), degree_range = ( -185, 185 ) ):
 
@@ -755,10 +755,12 @@ class AnalyzeAftrLog:
         
         return delta_P
 
-    def __organize_data( self ):
+    def __organize_data( self, timestamps : list[datetime] | None = None ):
+
+        ts_list = self.__parsed_aftr_log.get_timestamps() if timestamps is None else timestamps
 
         print( f'AnalyzeAftrLog is parsing timestamped log...' )
-        for timestamp in tqdm( self.__parsed_aftr_log.get_timestamps() ):
+        for timestamp in tqdm( ts_list ):
 
             lidar_P_global_act = self.__parsed_aftr_log.get_optitrack_data_at( timestamp )['lidar']
             target_P_global_act = self.__parsed_aftr_log.get_optitrack_data_at( timestamp )[self.__target_id]
@@ -774,6 +776,7 @@ class AnalyzeAftrLog:
             self.__res_rot_lidar_lidar_frame[timestamp], self.__res_L2_lidar_lidar_frame[timestamp] = get_transformation_error( 
                 transform_to_target_P_sensor( target_P_global_act, lidar_P_global_act ),
                 transform_to_target_P_sensor( target_P_global_est_lidar, lidar_P_global_act ),
+                degrees = True
             )
 
             try:
@@ -865,3 +868,33 @@ def organize_aftr_frame_by_part( aftr_frame: dict, print_func: Callable[[str], N
         print_func( "aftr_frame should be the dictionary output from .from_aftr_frame()" )
 
     return frame
+
+
+### FREE HELPER FUNCTIONS ###
+
+def generate_pose_aligned_timestamps_from_aftr_frames(
+        aftrLogs    : list[ParsedAftrLog],
+        pose_of     : str                   = 'lidar'
+    ) -> list[tuple]:
+
+    ts_lists = [ l.get_timestamps() for l in aftrLogs ]
+
+    last_pose = np.zeros( ( 4, 4 ) )
+    last_index = [ 0 for i in range( len( aftrLogs ) ) ]
+
+    aligned_ts = []
+
+    print( 'Finding pose-aligned samples in Aftr frames...' )
+    for ts in tqdm( ts_lists[0] ):
+
+        next_pose = aftrLogs[0].get_optitrack_data_at( ts )[pose_of]
+
+        if( not np.isclose( next_pose, last_pose ) ):
+
+            new_set = [ ts ]
+
+            for i in range( 1, len( aftrLogs ) ):
+                for j in range( last_index[i], len( ts_lists[i] ) ):
+
+
+    return [()]
