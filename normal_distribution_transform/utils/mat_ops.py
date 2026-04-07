@@ -165,9 +165,10 @@ def get_transformation_error( truth_pose: np.ndarray, estimated_pose: np.ndarray
 
     T_error = np.linalg.inv( truth_pose ) @ estimated_pose
 
-    error_R = np.arccos( ( np.trace( T_error[:3, :3] ) - 1 ) / 2 )
+    cos_theta = ( np.trace( T_error[:3, :3] ) - 1 ) / 2
+    error_R = np.arccos( np.clip( cos_theta, -1.0, 1.0 ) )
     error_t = float( np.linalg.norm( T_error[:3, 3:].reshape( ( 3, ) ) ) )
-
+    
     if( degrees ): return ( np.rad2deg( error_R ), error_t )
     else: return ( error_R, error_t )
 

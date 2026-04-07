@@ -6,16 +6,17 @@ from datetime import datetime, timezone
 from typing import Callable
 from scipy.spatial.transform import Rotation
 from tqdm import tqdm
+from copy import deepcopy
 
 from utils.plotting import *
 from utils.mat_ops import *
 
 OBJECT_P: dict[str, np.ndarray] = {
             'lidar': np.array([
-                [1, 0, 0, 0],
-                [0, 1, 0, 0],
-                [0, 0, 1, 0],
-                [0, 0, 0, 1]
+                [ 0.9975166,  -0.05654308,  0.04199431,  0.20860809],
+                [ 0.06434403,  0.97408082, -0.21685572, -0.35647181],
+                [-0.02864416,  0.21901927,  0.97529999,  0.17455017],
+                [ 0.,          0.,          0.,          1.        ]
             ]),
             'f-15_model': np.array([
                 [1, 0, 0, 0],
@@ -38,6 +39,11 @@ CAMERA_P_LIDAR: np.ndarray = np.array([
         [0, 0, 0, 1]
     ])
 
+L_TARGET: dict[str, float] = {
+    'kc-46'         : 48.579,
+    'f-15_model'    : 2.736
+}
+
 class ParsedAftrLog:
     def __init__( self, log_dir: str ):
 
@@ -45,9 +51,11 @@ class ParsedAftrLog:
         self.__camera_est = {}
         self.__lidar_est = {}
         self.__lidar_pred = {
-            'precision': {},
+            'precision' : {},
             'recall': {},
             'mIoU': {},
+            'truth_labels': {},
+            'pred_labels' : {},
             'inference_time': {},
             'registration_time': {}
         }
@@ -95,6 +103,20 @@ class ParsedAftrLog:
     
     def get_lidar_mIoU_at( self, timestamp: datetime ):
         return self.__lidar_pred['mIoU'][timestamp]
+    
+    def get_full_set_mIoU( self ):
+        truth, pred = [], []
+        for ts in list( self.__lidar_pred['truth_labels'].keys() ):
+            truth += self.__lidar_pred['truth_labels'][ts]
+            pred  += self.__lidar_pred['pred_labels'][ts]
+
+        return self.__compute_mIoU( truth, pred )
+    
+    def get_lidar_truth_labels_at( self, timestamp: datetime ):
+        return self.__lidar_pred['truth_labels'][timestamp]
+    
+    def get_lidar_pred_labels_at( self, timestamp: datetime ):
+        return self.__lidar_pred['pred_labels'][timestamp]
     
     def get_lidar_inference_time_at( self, timestamp: datetime ):
         if( timestamp in self.__lidar_pred['inference_time'].keys() ):  return self.__lidar_pred['inference_time'][timestamp]
@@ -265,7 +287,7 @@ class ParsedAftrLog:
                                     R.append( float( line_l[el] ) )
                                 R = np.array( R ).reshape( ( 4, 4 ) ).T
 
-                                self.__lidar_est[timestamp] = R @ OBJECT_P['lidar']
+                                self.__lidar_est[timestamp] = R
 
                                 frame_filename = line_l[4]
                             
@@ -276,7 +298,7 @@ class ParsedAftrLog:
                                     R.append( float( line_l[el] ) )
                                 R = np.array( R ).reshape( ( 4, 4 ) ).T
 
-                                self.__lidar_est[timestamp] = R @ OBJECT_P['lidar']
+                                self.__lidar_est[timestamp] = R
 
                                 frame_filename = line_l[2]
 
@@ -336,6 +358,8 @@ class ParsedAftrLog:
                             self.__lidar_pred['precision'][timestamp] = {}
                             self.__lidar_pred['recall'][timestamp] = {}
                             self.__lidar_pred['mIoU'][timestamp] = self.__compute_mIoU( truth_list, pred_list )
+                            self.__lidar_pred['truth_labels'][timestamp] = truth_list
+                            self.__lidar_pred['pred_labels'][timestamp] = pred_list
 
                             for key in list( true_pos.keys() ):
 
@@ -362,7 +386,7 @@ class ParsedAftrLog:
                             R = np.array( R ).reshape( ( 4, 4 ) ).T
 
                             if( name in OBJECT_P.keys() ):
-                                self.__optitrack_truth[timestamp][name] = R
+                                self.__optitrack_truth[timestamp][name] = R @ OBJECT_P[name]
 
                         ## Artificially add the camera position in based on the known offset from the lidar
                         if( 'lidar' in self.__optitrack_truth[timestamp] ):
@@ -396,14 +420,16 @@ class AnalyzeAftrLog:
         self.__precision = {}
         self.__recall = {}
         self.__mIoU = {}
+        self.__truth_labels = {}
+        self.__pred_labels = {}
         self.__num_points = {}
         self.__inference_time = {}
         self.__registration_time = {}
 
         self.__timestamp_by_distance_lidar = {}
         self.__timestamp_by_distance_camera = {}
-        self.__timestamp_by_num_points = {}
         self.__timestamp_by_initial_rotation_error = {}
+        self.__timestamps_where_target_origin_is_in_FoV = []
 
         self.__parsed_aftr_log = parsed_aftr_log
         self.__name = name
@@ -422,6 +448,7 @@ class AnalyzeAftrLog:
             rpy_res = []
 
             for dist in list( self.__timestamp_by_distance_lidar.keys() ):
+
                 dists.append( dist )
                 pos_res.append( self.__res_pos_lidar_lidar_frame[self.__timestamp_by_distance_lidar[dist]] )
                 rpy_res.append( self.__res_rpy_lidar_lidar_frame[self.__timestamp_by_distance_lidar[dist]] )
@@ -595,10 +622,10 @@ class AnalyzeAftrLog:
             pos_res = []
             rpy_res = []
 
-            for err in list( self.__timestamp_by_num_points.keys() ):
-                num_points.append( err )
-                pos_res.append( self.__res_pos_lidar_lidar_frame[self.__timestamp_by_num_points[err]] )
-                rpy_res.append( self.__res_rpy_lidar_lidar_frame[self.__timestamp_by_num_points[err]] )
+            for ts, n in self.__num_points.items():
+                num_points.append( n )
+                pos_res.append( self.__res_pos_lidar_lidar_frame[ts] )
+                rpy_res.append( self.__res_rpy_lidar_lidar_frame[ts] )
 
             plot_2D_scatter_with_mean_and_std( np.array( num_points ), 
                                                       np.array( pos_res )[:, 0], 
@@ -679,21 +706,21 @@ class AnalyzeAftrLog:
 
         if( os.path.isdir( output_path ) ):
 
-            dists = []
+            num_points = []
             precision = {}
             recall = {}
 
-            for dist in list( self.__timestamp_by_num_points.keys() ):
-                dists.append( dist )
+            for ts, n in self.__num_points.items():
+                num_points.append( n )
 
-                for cl in self.__precision[self.__timestamp_by_num_points[dist]]:
-                    if( not( self.__precision[self.__timestamp_by_num_points[dist]][cl] < 0.001 and self.__recall[self.__timestamp_by_num_points[dist]][cl] < 0.001 ) ):
+                for cl in self.__precision[ts]:
+                    if( not( self.__precision[ts][cl] < 0.001 and self.__recall[ts][cl] < 0.001 ) ):
                         if( cl not in list( precision.keys() ) ):
-                            precision[cl] = [[dist, self.__precision[self.__timestamp_by_num_points[dist]][cl]]]
-                            recall[cl] = [[dist, self.__recall[self.__timestamp_by_num_points[dist]][cl]]]
+                            precision[cl] = [[n, self.__precision[ts][cl]]]
+                            recall[cl] = [[n, self.__recall[ts][cl]]]
                         else:
-                            precision[cl].append( [dist, self.__precision[self.__timestamp_by_num_points[dist]][cl]] )
-                            recall[cl].append( [dist, self.__recall[self.__timestamp_by_num_points[dist]][cl]] )
+                            precision[cl].append( [n, self.__precision[ts][cl]] )
+                            recall[cl].append( [n, self.__recall[ts][cl]] )
 
             for cl in list( precision.keys() ):
                 precision[cl] = np.array( precision[cl] ).T
@@ -701,14 +728,104 @@ class AnalyzeAftrLog:
 
                 plot_class_precision_recall_scatter( { cl: precision[cl] }, { cl: recall[cl] }, f'{self.__name}: part segmentation performance for {cl} by number of points in frame', 'number of points in frame' ).write_image( f'{output_path}/seg_perf_dist_{cl}.png', width = 1200, height = 400 )
 
-    def get_mIoU_distribution( self ) -> np.ndarray:
-        return np.array( [ self.__mIoU[timestamp] for timestamp in list( self.__mIoU.keys() ) ] )
+    def get_mIoU_distribution( self, timestamps: list[datetime] | None = None ) -> np.ndarray:
+        return np.array( [ self.__mIoU[timestamp] for timestamp in list( self.__mIoU.keys() ) ] ) if timestamps is None else np.array( [ self.__mIoU[timestamp] for timestamp in timestamps ] )
     
-    def get_L2_residual_distribution( self ) -> np.ndarray:
-        return np.array( [ self.__res_L2_lidar_lidar_frame[timestamp] for timestamp in list( self.__res_L2_lidar_lidar_frame.keys() ) ] )
+    def get_mIoU_by_dist_angle( self, output_path: str ):
 
-    def get_rot_residual_distribution( self ) -> np.ndarray:
-        return np.array( [ self.__res_rot_lidar_lidar_frame[timestamp] for timestamp in list( self.__res_rot_lidar_lidar_frame.keys() ) ] )
+        x, y, mag = [], [], []
+
+        for ts, miou in self.__mIoU.items():
+            pos = self.__actual_pos_lidar_frame[ts]
+
+            dist = np.linalg.norm( pos ) if np.linalg.norm( pos ) > 0 else 1e-6
+            angle = np.arccos( np.clip( pos[0] / dist, -1, 1 ) )
+
+            x.append( np.rad2deg( angle ) )
+            y.append( dist )
+            mag.append( miou )
+
+        plot_2D_scatter_with_magnitude(
+            x           = np.array( x ).flatten(),
+            y           = np.array( y ).flatten(),
+            magnitude   = np.array( mag ),
+            title       = 'mIoU as a function of distance and angle-off',
+            x_label     = 'Angle-off look direction (deg)',
+            y_label     = 'Distance (m)'
+        ).write_image( f'{output_path}miou_by_dist_angle.png', width = 1200, height = 1200 )
+
+    def get_translation_error_by_dist_angle( self, output_path: str, normalize: bool = False ):
+
+        x, y, mag = [], [], []
+
+        for ts, res in self.__res_L2_lidar_lidar_frame.items():
+            pos = self.__actual_pos_lidar_frame[ts]
+
+            dist = np.linalg.norm( pos ) if np.linalg.norm( pos ) > 0 else 1e-6
+            angle = np.arccos( np.clip( pos[0] / dist, -1, 1 ) )
+
+            x.append( np.rad2deg( angle ) )
+            y.append( dist )
+            mag.append( res / L_TARGET[self.__target_id] if normalize else res )
+
+        plot_2D_scatter_with_magnitude(
+            x           = np.array( x ).flatten(),
+            y           = np.array( y ).flatten(),
+            magnitude   = np.array( mag ),
+            title       = 'L2 residuals as a function of distance and angle-off',
+            x_label     = 'Angle-off look direction (deg)',
+            y_label     = 'Distance (m)'
+        ).write_image( f'{output_path}rot_by_dist_angle.png', width = 1200, height = 1200 )
+
+    def get_rotation_error_by_dist_angle( self, output_path: str, normalize: bool ):
+
+        x, y, mag = [], [], []
+
+        for ts, res in self.__res_rot_lidar_lidar_frame.items():
+            pos = self.__actual_pos_lidar_frame[ts]
+
+            dist = np.linalg.norm( pos ) if np.linalg.norm( pos ) > 0 else 1e-6
+            angle = np.arccos( np.clip( pos[0] / dist, -1, 1 ) )
+
+            x.append( np.rad2deg( angle ) )
+            y.append( dist )
+            mag.append( res )
+
+        plot_2D_scatter_with_magnitude(
+            x           = np.array( x ).flatten(),
+            y           = np.array( y ).flatten(),
+            magnitude   = np.array( mag ),
+            title       = 'Rotation residuals as a function of distance and angle-off',
+            x_label     = 'Angle-off look direction (deg)',
+            y_label     = 'Distance (m)'
+        ).write_image( f'{output_path}L2_by_dist_angle.png', width = 1200, height = 1200 )
+    
+    def get_confusion_matrix( self, output_path: str, log_scale: bool = True ):
+        truth = []
+        pred = []
+        for ts in self.get_timestamps():
+            truth += self.__truth_labels[ts]
+            pred += self.__pred_labels[ts]
+
+        plot_confusion_matrix(
+            y_true      = np.array( truth ),
+            y_pred      = np.array( pred ),
+            title       = f'{self.__name}: Segmentation Confusion Matrix',
+            log_scale   = log_scale,
+        ).write_image( f'{output_path}/confusion_matrix.png', width = 1200, height = 1200 )
+
+    def get_L2_residual_distribution( self, timestamps: list[datetime] | None = None, normalize: bool = False ) -> np.ndarray:
+        if( timestamps is not None ):   ts = timestamps
+        else:                           ts = list( self.__res_rot_lidar_lidar_frame.keys() )
+
+        if( normalize and self.__target_id in list( L_TARGET.keys() ) ):    return np.array( [ self.__res_L2_lidar_lidar_frame[timestamp] / L_TARGET[self.__target_id] for timestamp in ts ] )
+        else:                                                               return np.array( [ self.__res_L2_lidar_lidar_frame[timestamp] for timestamp in ts ] )
+
+    def get_rot_residual_distribution( self, timestamps: list[datetime] | None = None ) -> np.ndarray:
+        if( timestamps is not None ):   ts = timestamps
+        else:                           ts = list( self.__res_rot_lidar_lidar_frame.keys() )
+
+        return np.array( [ self.__res_rot_lidar_lidar_frame[timestamp] for timestamp in ts ] )
 
     def get_timing_info( self, output_path: str ):
 
@@ -722,6 +839,18 @@ class AnalyzeAftrLog:
     
     def get_registration_timing_distribution( self ) -> np.ndarray:
         return np.array( [ self.__registration_time[timestamp] for timestamp in list( self.__registration_time.keys() ) ] )
+    
+    def get_timestamps( self ) -> list[datetime]:
+        return list( self.__actual_pos_lidar_frame.keys() )
+    
+    def get_timestamps_above_mIoU( self, mIoU: float ) -> list[datetime]:
+        return [ ts for ts, val in self.__mIoU.items() if val >= mIoU ]
+    
+    def get_timestamps_between_range_inclusive( self, distance_range: tuple[float, float] ):
+        return [ ts for dist, ts in self.__timestamp_by_distance_lidar.items() if ( dist >= distance_range[0] and dist <= distance_range[1] ) ]
+    
+    def target_origin_is_in_FoV( self, timestamp: datetime ) -> bool:
+        return timestamp in self.__timestamps_where_target_origin_is_in_FoV
 
     def produce_minimized_extrinsic_calibration_for_lidar( self ):
 
@@ -729,12 +858,12 @@ class AnalyzeAftrLog:
         Uses the Kabsch algorithm to refine the extrinsic calibration based of the sensor
         '''
 
-        delta_P = np.zeros( ( 4, 4 ) )
+        delta_P = np.eye( 4 )
 
         act_pos: np.ndarray = np.array( [ self.__actual_pos_lidar_frame[i] for i in list( self.__actual_pos_lidar_frame.keys() ) ] ).squeeze()
         est_pos: np.ndarray = np.array( [ self.__est_pos_lidar_lidar_frame[i] for i in list( self.__est_pos_lidar_lidar_frame.keys() ) ] ).squeeze()
 
-        if( act_pos.shape[1] == 3 and est_pos.shape[1] == 3 and act_pos.shape[0] == act_pos.shape[0] ):
+        if( act_pos.shape[1] == 3 and est_pos.shape[1] == 3 and act_pos.shape[0] == est_pos.shape[0] ):
 
             centroid_act = np.mean( act_pos, axis = 0 )
             centroid_est = np.mean( est_pos, axis = 0 )
@@ -742,13 +871,17 @@ class AnalyzeAftrLog:
             act_res = act_pos - centroid_act
             est_res = est_pos - centroid_est
 
-            R, rssd = Rotation.align_vectors( act_res, est_res, return_sensitivity = False )
+            H = est_res.T @ act_res
+            U, S, Vt = np.linalg.svd( H )
 
-            t_ext = centroid_act - R.as_matrix() @ centroid_est
+            d = np.linalg.det( Vt.T @ U.T )
+            D = np.diag( [1, 1, d] )
 
-            delta_P[:3, :3] = R.as_matrix()
-            delta_P[:3, 3:] = t_ext.reshape( ( 3, 1 ) )
-            delta_P[3, 3] = 1
+            R_mat = Vt.T @ D @ U.T
+            t_ext = centroid_act - R_mat @ centroid_est
+
+            delta_P[:3, :3] = R_mat
+            delta_P[:3, 3]  = t_ext
         
         else:
             print( f"Unable to minimize error with act_pos shape of {act_pos.shape} and est_pos shape of {est_pos.shape}" )
@@ -767,17 +900,53 @@ class AnalyzeAftrLog:
 
             target_P_global_est_lidar = self.__parsed_aftr_log.get_lidar_estimation_at( timestamp )
 
-            self.__actual_pos_lidar_frame[timestamp] = transform_to_target_P_sensor( target_P_global_act, lidar_P_global_act )[:3, 3:]
-            self.__est_pos_lidar_lidar_frame[timestamp] = transform_to_target_P_sensor( target_P_global_est_lidar, lidar_P_global_act )[:3, 3:]
-            self.__actual_rpy_lidar_frame[timestamp] = get_roll_pitch_yaw_deg( transform_to_target_P_sensor( target_P_global_act, lidar_P_global_act ), True )
-            self.__est_rpy_lidar_lidar_frame[timestamp] = get_roll_pitch_yaw_deg( transform_to_target_P_sensor( target_P_global_est_lidar, lidar_P_global_act ), True )
-            self.__res_pos_lidar_lidar_frame[timestamp] = self.__est_pos_lidar_lidar_frame[timestamp] - self.__actual_pos_lidar_frame[timestamp]
-            self.__res_rpy_lidar_lidar_frame[timestamp] = self.__est_rpy_lidar_lidar_frame[timestamp] - self.__actual_rpy_lidar_frame[timestamp]
-            self.__res_rot_lidar_lidar_frame[timestamp], self.__res_L2_lidar_lidar_frame[timestamp] = get_transformation_error( 
+            actual_pos_lidar_frame = transform_to_target_P_sensor( target_P_global_act, lidar_P_global_act )[:3, 3:]
+            est_pos_lidar_lidar_frame = transform_to_target_P_sensor( target_P_global_est_lidar, lidar_P_global_act @ np.linalg.inv( OBJECT_P['lidar'] ) )[:3, 3:]
+            actual_rpy_lidar_frame = get_roll_pitch_yaw_deg( transform_to_target_P_sensor( target_P_global_act, lidar_P_global_act ), True )
+            est_rpy_lidar_lidar_frame = get_roll_pitch_yaw_deg( transform_to_target_P_sensor( target_P_global_est_lidar, lidar_P_global_act ), True )
+            res_pos_lidar_lidar_frame = est_pos_lidar_lidar_frame - actual_pos_lidar_frame
+            res_rpy_lidar_lidar_frame = est_rpy_lidar_lidar_frame - actual_rpy_lidar_frame
+            res_rot_lidar_lidar_frame, res_L2_lidar_lidar_frame = get_transformation_error( 
                 transform_to_target_P_sensor( target_P_global_act, lidar_P_global_act ),
                 transform_to_target_P_sensor( target_P_global_est_lidar, lidar_P_global_act ),
                 degrees = True
             )
+
+            if(
+                np.isfinite( actual_pos_lidar_frame ).all() and
+                np.isfinite( est_pos_lidar_lidar_frame ).all() and
+                np.isfinite( actual_rpy_lidar_frame ).all() and
+                np.isfinite( est_rpy_lidar_lidar_frame ).all() and
+                np.isfinite( res_pos_lidar_lidar_frame ).all() and
+                np.isfinite( res_rpy_lidar_lidar_frame ).all() and
+                np.isfinite( res_rot_lidar_lidar_frame ).all() and
+                np.isfinite( res_L2_lidar_lidar_frame ).all()
+            ):
+                
+
+                self.__actual_pos_lidar_frame[timestamp] = actual_pos_lidar_frame
+                self.__est_pos_lidar_lidar_frame[timestamp] = est_pos_lidar_lidar_frame
+                self.__actual_rpy_lidar_frame[timestamp] = actual_rpy_lidar_frame
+                self.__est_rpy_lidar_lidar_frame[timestamp] = est_rpy_lidar_lidar_frame
+                self.__res_pos_lidar_lidar_frame[timestamp] = res_pos_lidar_lidar_frame
+                self.__res_rpy_lidar_lidar_frame[timestamp] = res_rpy_lidar_lidar_frame
+                self.__res_rot_lidar_lidar_frame[timestamp] = res_rot_lidar_lidar_frame
+                self.__res_L2_lidar_lidar_frame[timestamp] = res_L2_lidar_lidar_frame
+
+                self.__precision[timestamp] = self.__parsed_aftr_log.get_lidar_precision_at( timestamp )
+                self.__recall[timestamp] = self.__parsed_aftr_log.get_lidar_recall_at( timestamp )
+                self.__mIoU[timestamp] = self.__parsed_aftr_log.get_lidar_mIoU_at( timestamp )
+                self.__truth_labels[timestamp] = self.__parsed_aftr_log.get_lidar_truth_labels_at( timestamp )
+                self.__pred_labels[timestamp] = self.__parsed_aftr_log.get_lidar_pred_labels_at( timestamp )
+                self.__inference_time[timestamp] = self.__parsed_aftr_log.get_lidar_inference_time_at( timestamp )
+                self.__registration_time[timestamp] = self.__parsed_aftr_log.get_lidar_registration_time_at( timestamp )
+                self.__num_points[timestamp] = self.__parsed_aftr_log.get_lidar_num_points_at( timestamp )
+
+                self.__timestamp_by_distance_lidar[np.linalg.norm( self.__actual_pos_lidar_frame[timestamp] )] = timestamp
+                if( target_origin_is_in_FoV( actual_pos_lidar_frame, ( 54.0, 37.0 ) ) ):    self.__timestamps_where_target_origin_is_in_FoV.append( timestamp )
+
+                err_r, _ = get_transformation_error( lidar_P_global_act, np.eye( 4 ) )
+                self.__timestamp_by_initial_rotation_error[ np.rad2deg( abs( err_r ) ) ] = timestamp
 
             try:
 
@@ -796,19 +965,6 @@ class AnalyzeAftrLog:
             except KeyError:
                 ## Camera data not required - the above block will throw a KeyError if no camera data were provided
                 pass
-
-            self.__precision[timestamp] = self.__parsed_aftr_log.get_lidar_precision_at( timestamp )
-            self.__recall[timestamp] = self.__parsed_aftr_log.get_lidar_recall_at( timestamp )
-            self.__mIoU[timestamp] = self.__parsed_aftr_log.get_lidar_mIoU_at( timestamp )
-            self.__inference_time[timestamp] = self.__parsed_aftr_log.get_lidar_inference_time_at( timestamp )
-            self.__registration_time[timestamp] = self.__parsed_aftr_log.get_lidar_registration_time_at( timestamp )
-            self.__num_points[timestamp] = self.__parsed_aftr_log.get_lidar_num_points_at( timestamp )
-
-            self.__timestamp_by_distance_lidar[np.linalg.norm( self.__actual_pos_lidar_frame[timestamp] )] = timestamp
-            self.__timestamp_by_num_points[self.__num_points[timestamp]] = timestamp
-
-            err_r, _ = get_transformation_error( lidar_P_global_act, np.eye( 4 ) )
-            self.__timestamp_by_initial_rotation_error[ np.rad2deg( abs( err_r ) ) ] = timestamp
 
 ###============ Free Functions ==================
 
@@ -874,8 +1030,9 @@ def organize_aftr_frame_by_part( aftr_frame: dict, print_func: Callable[[str], N
 
 def generate_pose_aligned_timestamps_from_aftr_frames(
         aftrLogs    : list[ParsedAftrLog],
-        pose_of     : str                   = 'lidar'
-    ) -> list[tuple]:
+        pose_of     : str                   = 'lidar',
+        num_samples : int | None            = None
+    ) -> list[list]:
 
     ts_lists = [ l.get_timestamps() for l in aftrLogs ]
 
@@ -889,12 +1046,76 @@ def generate_pose_aligned_timestamps_from_aftr_frames(
 
         next_pose = aftrLogs[0].get_optitrack_data_at( ts )[pose_of]
 
-        if( not np.isclose( next_pose, last_pose ) ):
+        if( not np.allclose( next_pose, last_pose ) ):
 
+            last_pose = deepcopy( next_pose )
             new_set = [ ts ]
 
             for i in range( 1, len( aftrLogs ) ):
                 for j in range( last_index[i], len( ts_lists[i] ) ):
 
+                    test_pose = aftrLogs[i].get_optitrack_data_at( ts_lists[i][j] )[pose_of]
 
-    return [()]
+                    if( np.allclose( next_pose, test_pose ) ):
+                        last_index[i] = j
+                        new_set.append( ts_lists[i][j] )
+                        break
+            
+            if( len( new_set ) == len( aftrLogs ) ):
+                aligned_ts.append( new_set )
+                if( num_samples is not None ):
+                    if( len( aligned_ts ) >= num_samples ):
+                        break
+
+    print( f'{len( aligned_ts )} matching frames found.' )
+
+    return [ list( col ) for col in zip( *aligned_ts ) ]
+
+def verify_timestamps_and_filter(
+        aftrLogs                    : list[AnalyzeAftrLog],
+        paired_timestamps           : list[list],
+        ensure_target_origin_in_FoV : bool
+    ):
+
+    if( len( aftrLogs ) != len( paired_timestamps ) ):
+        raise ValueError( f"verify_timestamps_and_filter found {len( aftrLogs )} aftrLogs and {len( paired_timestamps )} paired_timestamps" )
+    
+    good_ts = [l.get_timestamps() for l in aftrLogs]
+
+    good_sets = []
+    for p_sets in zip( *paired_timestamps ):
+
+        new_set = []
+        for i, p in enumerate( p_sets ):
+            if( p in good_ts[i] and ( not ensure_target_origin_in_FoV or aftrLogs[i].target_origin_is_in_FoV( p ) ) ):  new_set.append( p )
+
+        if( len( new_set ) == len( aftrLogs ) ):  good_sets.append( new_set )
+
+    print( f'{len( paired_timestamps[0] ) - len( good_sets )} frames filtered out - {len( good_sets )} frames remaining.' )
+
+    return [ list( col ) for col in zip( *good_sets ) ]
+
+def find_timestamps_parallel_to( paired_timestamps: list[list[datetime]], paired_timestamp_index: int, timestamps: list[datetime] ):
+    
+    new_pairs = []
+
+    for ts in timestamps:
+        i = paired_timestamps[paired_timestamp_index].index( ts )
+        new_pairs.append( [ paired_timestamps[t][i] for t in range( len( paired_timestamps ) ) ] )
+
+    return [ list( col ) for col in zip( *new_pairs ) ]
+
+def target_origin_is_in_FoV(
+        target_t_sensor     : np.ndarray,
+        fov_deg             : tuple[float, float]
+    ) -> bool:
+
+    target_t_sensor = target_t_sensor.flatten()
+
+    if( not target_t_sensor.shape == ( 3, ) ):
+        raise ValueError( f'target_t_sensor must flatten to shape (3,). {target_t_sensor} does not.' )
+
+    az = np.arctan2( target_t_sensor[1], target_t_sensor[0] )
+    el = np.arctan2( target_t_sensor[2], target_t_sensor[0] )
+
+    return abs( az ) <= np.deg2rad( fov_deg[0] / 2.0 ) and abs( el ) <= np.deg2rad( fov_deg[1] / 2.0 )

@@ -8,6 +8,8 @@ from mpl_toolkits.mplot3d import Axes3D
 from typing import Callable, cast
 from datetime import datetime
 from plotly.subplots import make_subplots
+from sklearn.metrics import confusion_matrix
+from copy import deepcopy
 
 def plot_univariate_functions( funcs: list[Callable[[float], float]],
                               labels: list[str], x_range: tuple[float, float], 
@@ -282,7 +284,43 @@ def plot_class_precision_recall_scatter( precision_data: dict[str, np.ndarray],
     fig.update_layout(
         title = title,
         xaxis_title = x_label,
-        yaxis_title = ''
+        yaxis_title = '',
+        xaxis_range = (0.0, 1.0)
+    )
+
+    return fig
+
+def plot_2D_scatter_with_magnitude(
+    x           : np.ndarray,
+    y           : np.ndarray,
+    magnitude   : np.ndarray,
+    title       : str,
+    x_label     : str           = '',
+    y_label     : str           = '',
+    mag_label   : str           = ''
+) -> go.Figure:
+    
+    fig = go.Figure()
+
+    fig.add_trace( go.Scatter(
+        x = x,
+        y = y,
+        mode = 'markers',
+        marker = dict(
+            color       = magnitude,
+            colorscale  = 'Plasma',
+            showscale   = True,
+            colorbar    = dict(
+                title       = mag_label
+            )
+        )
+    ) )
+
+    fig.update_layout(
+        title       = title,
+        xaxis_title = x_label,
+        yaxis_title = y_label,
+        font            = dict( size = 24 )
     )
 
     return fig
@@ -313,7 +351,7 @@ def plot_histogram( data: np.ndarray,
         marker_color = 'blue'
      ) )
     
-    fig.add_annotation(
+    if( add_annotations ):  fig.add_annotation(
         x = np.mean( data ),
         y = np.max( bin_count ),
         text = f"Mean: {np.mean( data )}\nStDev: {np.std( data )}"
@@ -335,6 +373,8 @@ def plot_distributions(
                    title: str = '',
                    x_label: str = '',
                    y_label: str = '',
+                   x_lim: tuple[float, float] | None = None,
+                   y_lim: tuple[float, float] | None = None,
                    print_func: Callable[[str], None] = print ) -> go.Figure:
     
     fig = go.Figure()
@@ -343,9 +383,9 @@ def plot_distributions(
         print_func( 'There must be one label for each distribution provided to plot_distributions().' )
         return fig
 
-    data = [ d[ d.nonzero() ] for d in data ]
+    # data = [ d[ d.nonzero() ] for d in data ]
 
-    bins = np.linspace( np.min( data ), np.max( data ), num_bins )
+    bins = np.linspace( np.min( np.array( data ) ), np.max( np.array( data ) ), num_bins )
     bin_count = [ np.zeros( bins.shape ) for _ in range( len( data ) ) ]
     for dist in range( len( data ) ):
         for bin in range( len( bins ) - 1 ):
@@ -356,8 +396,9 @@ def plot_distributions(
         fig.add_trace( go.Bar(
             x = bins,
             y = bin_count[dist],
-            marker_color = plotly.colors.sample_colorscale('Inferno', [ dist / len( data ) ]),
-            opacity = 0.5
+            marker_color = plotly.colors.sample_colorscale('Inferno', [ dist / len( data ) ])[0],
+            opacity = 0.5,
+            name = labels[dist]
         ) )
     
     fig.update_layout(
@@ -366,6 +407,16 @@ def plot_distributions(
         xaxis_title = x_label,
         yaxis_title = y_label
     )
+
+    if( type( x_lim ) == tuple[float, float] ):
+        fig.update_layout(
+            xaxis_range = x_lim
+        )
+
+    if( type( y_lim ) == tuple[float, float] ):
+        fig.update_layout(
+            yaxis_range = y_lim
+        )
 
     return fig
 
@@ -468,9 +519,13 @@ def combine_plots(
         subplot_titles = subplot_titles
     )
 
-    for fig in figs:
+    for i, fig in enumerate( figs ):
+
+        row = ( i // shape[1] ) + 1
+        col = ( i % shape[1] ) + 1
+
         for trace in fig.data:
-            combined_fig.add_trace( trace )
+            combined_fig.add_trace( trace, row = row, col = col )
 
     combined_fig.update_layout(
         title_text = plot_title,
@@ -478,3 +533,39 @@ def combine_plots(
     )
 
     return combined_fig
+
+def plot_confusion_matrix(
+        y_true      : np.ndarray, 
+        y_pred      : np.ndarray, 
+        title       : str           = 'Confusion Matrix',
+        log_scale   : bool          = False
+    ) -> go.Figure:
+    
+    unique_classes = np.unique( np.concatenate( ( y_true, y_pred ) ) )
+    class_labels = [ str( c ) for c in unique_classes ]
+        
+    cm = confusion_matrix( y_true, y_pred )
+    cm_scaled = deepcopy( cm )
+    if( log_scale ):    cm_scaled = np.log10( cm_scaled + 1 )
+    
+    fig = go.Figure( data = go.Heatmap(
+        z               = cm_scaled,
+        x               = class_labels,
+        y               = class_labels,
+        colorscale      = 'Blues',
+        text            = cm,    
+        texttemplate    = "%{text}",
+        textfont        = { "size": 24 }
+    ))
+    
+    fig.update_layout(
+        title           = title,
+        xaxis_title     = 'Predicted Class',
+        yaxis_title     = 'True Class',
+        yaxis_autorange = 'reversed',
+        width           = max( 600, len( class_labels ) * 50 ),
+        height          = max( 600, len( class_labels ) * 50 ),
+        font            = dict( size = 24 )
+    )
+    
+    return fig

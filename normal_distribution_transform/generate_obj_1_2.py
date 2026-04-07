@@ -8,8 +8,8 @@ from utils.mat_ops import *
 from utils.plotting import *
 from utils.stats import *
 
-FULL_PATH = 'D:/test_sets/kc46_full_pointnet/seg_gicp/'
-VANILLA_PATH = 'D:/test_sets/kc46_vanilla_pointnet/seg_ndt/'
+FULL_PATH = 'D:/test_sets/obj_1/full/se_icp/'
+VANILLA_PATH = 'D:/test_sets/obj_1/vanilla/se_icp/'
 SAVE_PATH = 'E:/AFIT/AAR/5_Thesis/doc/figures/obj_1_2/'
 
 def main():
@@ -17,34 +17,44 @@ def main():
     full    : ParsedAftrLog = ParsedAftrLog( FULL_PATH )
     vanilla : ParsedAftrLog = ParsedAftrLog( VANILLA_PATH )
 
-    full_analysis       : AnalyzeAftrLog = AnalyzeAftrLog( full, 'Full PointNet', 'kc-46' )
-    vanilla_analysis    : AnalyzeAftrLog = AnalyzeAftrLog( vanilla, 'Vanilla PointNet', 'kc-46' )
+    paired_timestamps = generate_pose_aligned_timestamps_from_aftr_frames(
+        aftrLogs        = [ full, vanilla ],
+        pose_of         = 'lidar',
+        num_samples     = 2000
+    )
+
+    full_analysis       : AnalyzeAftrLog = AnalyzeAftrLog( full, 'Full PointNet', 'kc-46', paired_timestamps[0] )
+    vanilla_analysis    : AnalyzeAftrLog = AnalyzeAftrLog( vanilla, 'Vanilla PointNet', 'kc-46', paired_timestamps[1] )
 
     full_analysis.get_segmentation_performance_hist( f'{SAVE_PATH}full/hist/' )
     full_analysis.get_segmentation_performance_plots_by_range( f'{SAVE_PATH}full/by_range/' )
     full_analysis.get_segmentation_performance_plots_by_number_of_points( f'{SAVE_PATH}full/by_num_points/' )
+    full_analysis.get_confusion_matrix( f'{SAVE_PATH}full/' )
+    full_analysis.get_mIoU_by_dist_angle( f'{SAVE_PATH}full/' )
 
     vanilla_analysis.get_segmentation_performance_hist( f'{SAVE_PATH}vanilla/hist/' )
     vanilla_analysis.get_segmentation_performance_plots_by_range( f'{SAVE_PATH}vanilla/by_range/' )
     vanilla_analysis.get_segmentation_performance_plots_by_number_of_points( f'{SAVE_PATH}vanilla/by_num_points/' )
+    vanilla_analysis.get_confusion_matrix( f'{SAVE_PATH}vanilla/' )
+    vanilla_analysis.get_mIoU_by_dist_angle( f'{SAVE_PATH}vanilla/' )
     
     full_mIoU       : np.ndarray = full_analysis.get_mIoU_distribution()
     vanilla_mIoU    : np.ndarray = vanilla_analysis.get_mIoU_distribution()
 
     plot_distributions( 
-        [ full_mIoU, vanilla_mIoU ], 
-        [ 'Full PointNet', 'Vanilla PointNet' ],
-        100,
-        'Per-sample mIoU Distributions',
-        'mIoU',
-        'Number of Samples'    
+        data        = [ full_mIoU, vanilla_mIoU ], 
+        labels      = [ 'Full PointNet', 'Vanilla PointNet' ],
+        num_bins    = 100,
+        title       = 'Per-sample mIoU Distributions',
+        x_label     = 'mIoU',
+        y_label     = 'Number of Samples'
     ).write_image( f'{SAVE_PATH}mIoU_dist.png', width = 1200, height = 600 )
 
     tab, sym = paired_wilcoxon_signed_rank_test( full_mIoU, vanilla_mIoU, 'Full PointNet', 'Vanilla PointNet' )
     
     tab.to_latex(
         f'{SAVE_PATH}miou_results.tex',
-        index = False,
+        index = True,
         caption = 'Segmentation results on the Boeing KC-46 using full and vanilla PointNet models.',
         label = 'tab:obj_1_2_wilcoxon',
         column_format = 'L{2in} R{3in}',
@@ -57,19 +67,19 @@ def main():
     vanilla_timing  : np.ndarray = vanilla_analysis.get_inference_timing_distribution()
 
     plot_distributions( 
-        [ full_timing, vanilla_timing ], 
-        [ 'Full PointNet', 'Vanilla PointNet' ],
-        100,
-        'Per-sample Inference Time Distributions',
-        'time (ms)',
-        'Number of Samples'    
+        data        = [ full_timing, vanilla_timing ], 
+        labels      = [ 'Full PointNet', 'Vanilla PointNet' ],
+        num_bins    = 100,
+        title       = 'Per-sample Inference Time Distributions',
+        x_label     = 'time (ms)',
+        y_label     = 'Number of Samples'    
     ).write_image( f'{SAVE_PATH}time_dist.png', width = 1200, height = 600 )
 
     tab, sym = paired_wilcoxon_signed_rank_test( full_timing, vanilla_timing, 'Full PointNet', 'Vanilla PointNet' )
     
     tab.to_latex(
         f'{SAVE_PATH}timing_results.tex',
-        index = False,
+        index = True,
         caption = 'Inference time on the Boeing KC-46 using full and vanilla PointNet models.',
         label = 'tab:obj_1_2_timing',
         column_format = 'L{2in} R{3in}',
@@ -77,6 +87,8 @@ def main():
     )
 
     sym.write_image( f'{SAVE_PATH}timing_symmetry.png', width = 1200, height = 600 )
+
+    print( full.get_full_set_mIoU() )
 
 if __name__ == '__main__':
 
